@@ -15,6 +15,7 @@ import com.talenthire.auth.entity.UserRole;
 import com.talenthire.auth.exception.UserAlreadyExistsException;
 import com.talenthire.auth.repository.UserRepository;
 import com.talenthire.auth.security.CustomUserDetailsImpl;
+import com.talenthire.auth.utils.JwtUtils;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class AuthServiceImpl  implements AuthService{
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
+	private final JwtUtils jwtUtils;
 	
 	
 	
@@ -74,13 +76,16 @@ if(isUserExists)
 		System.out.println(fullyAuthenticatedDetails.getPrincipal());// custom user details
 		CustomUserDetailsImpl userDetails = (CustomUserDetailsImpl) fullyAuthenticatedDetails.getPrincipal();
 		
+		String token=jwtUtils.generateJwt(userDetails);
+		
+		
 		User user=userDetails.getUser();
 		
 
 		
 		
 		
-	return new AuthResponse(user.getUserId(),user.getName(),user.getEmail(),user.getUserRole().name(),"Login successful");
+	return new AuthResponse(user.getUserId(),user.getName(),user.getEmail(),user.getUserRole().name(),"Login successful",token);
 	}
 
 	
