@@ -2,10 +2,44 @@ import "./Login.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { loginUser } from "../../api/axiosService";
 
 function Login() {
 
     const [showPassword, setShowPassword] = useState(false);
+     const [data,setData]=useState({email:"",password:""});
+
+
+      const onTextChange=(e)=>{
+     var copyData={...data};
+     copyData[e.target.name]=e.target.value;
+     setData(copyData);
+         }
+     
+          const  login = async(e)=>{
+      e.preventDefault();
+     
+     
+         try {
+             console.log(data);
+     
+             const response = await loginUser(data);
+     
+             console.log(response);
+     
+             alert("login Successful");
+     
+         } catch (error) {
+     
+             console.log(error);
+     
+             alert("login Failed");
+     
+         }
+        }
+     
+
+
 
     return (
 
@@ -36,6 +70,7 @@ function Login() {
                         <label>Email Address</label>
 
                         <input
+                          onChange={onTextChange} value={data.email} name="email"
                             type="email"
                             placeholder="Enter your email"
                         />
@@ -49,6 +84,7 @@ function Login() {
                         <div className="password-box">
 
                             <input
+                              onChange={onTextChange} value={data.password} name="password"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Enter your password"
                             />
@@ -84,7 +120,7 @@ function Login() {
 
                     </div>
 
-                    <button className="login-btn">
+                    <button className="login-btn" onClick={login}>
 
                         Sign In
 

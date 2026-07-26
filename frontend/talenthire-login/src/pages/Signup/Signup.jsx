@@ -2,11 +2,47 @@ import "./Signup.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { registerUser } from "../../api/axiosService";
 
 function Signup() {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [data,setData]=useState({name:"",email:"",password:"",confirmPassword:"",userRole:""});
+
+     const onTextChange=(e)=>{
+var copyData={...data};
+copyData[e.target.name]=e.target.value;
+setData(copyData);
+    }
+
+     const  create = async(e)=>{
+ e.preventDefault();
+
+ if (data.password !== data.confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    try {
+        console.log(data);
+
+        const response = await registerUser(data);
+
+        console.log(response);
+
+        alert("Registration Successful");
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("Registration Failed");
+
+    }
+
+
+     }
 
     return (
 
@@ -37,6 +73,7 @@ function Signup() {
                         <label>Full Name</label>
 
                         <input
+                        onChange={onTextChange} value={data.name} name="name"
                             type="text"
                             placeholder="Enter your full name"
                         />
@@ -48,6 +85,7 @@ function Signup() {
                         <label>Email Address</label>
 
                         <input
+                        onChange={onTextChange} value={data.email} name="email"
                             type="email"
                             placeholder="Enter your email"
                         />
@@ -61,6 +99,7 @@ function Signup() {
                         <div className="password-box">
 
                             <input
+                            onChange={onTextChange} value={data.password} name="password"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Create password"
                             />
@@ -83,6 +122,7 @@ function Signup() {
                         <div className="password-box">
 
                             <input
+                            onChange={onTextChange} value={data.confirmPassword} name="confirmPassword"
                                 type={showConfirmPassword ? "text" : "password"}
                                 placeholder="Confirm password"
                             />
@@ -100,7 +140,22 @@ function Signup() {
 
                     </div>
 
-                    <button className="signup-btn">
+                    <div className="input-group">
+
+               <label>Role</label>
+
+                <select
+                onChange={onTextChange} value={data.userRole} 
+        name="userRole"
+    >
+        <option value="">-- Select Role --</option>
+        <option value="CANDIDATE">Candidate</option>
+        <option value="RECRUITER">Recruiter</option>
+    </select>
+
+</div>
+
+                    <button className="signup-btn" onClick={create}>
 
                         Create Account
 
