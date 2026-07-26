@@ -1,4 +1,4 @@
-package com.talenthire.job.util;
+package com.talenthire.assessment.util;
 
 import javax.crypto.SecretKey;
 

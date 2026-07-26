@@ -60,7 +60,7 @@ public class Job {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private JobStatus status=JobStatus.DRAFT;
+	private JobStatus status=JobStatus.OPEN;
 	
 	
 	@Column(name="work_mode",nullable=false)
