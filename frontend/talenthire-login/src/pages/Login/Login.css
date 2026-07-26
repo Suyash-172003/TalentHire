@@ -1,0 +1,438 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+.login-page{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#F8F5EF;
+    position:relative;
+    overflow:hidden;
+    padding:40px;
+}
+
+/* ===========================
+      BACKGROUND BLURS
+=========================== */
+
+.blur{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(130px);
+    z-index:1;
+}
+
+.blur-one{
+    width:420px;
+    height:420px;
+    background:#F7B348;
+    left:-120px;
+    bottom:-120px;
+    opacity:.7;
+}
+
+.blur-two{
+    width:380px;
+    height:380px;
+    background:#8A74FF;
+    right:-100px;
+    top:-80px;
+    opacity:.55;
+}
+
+.blur-three{
+    width:250px;
+    height:250px;
+    background:#FFE18B;
+    top:45%;
+    left:48%;
+    opacity:.5;
+}
+
+/* ===========================
+        LOGIN CARD
+=========================== */
+
+.login-card{
+
+    width:100%;
+    max-width:500px;
+
+    background:rgba(255,255,255,.82);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:30px;
+
+    padding:50px;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.08);
+
+    position:relative;
+
+    z-index:5;
+
+}
+
+.logo{
+
+    text-align:center;
+
+    font-size:38px;
+
+    font-weight:800;
+
+    color:#171428;
+
+    margin-bottom:15px;
+
+}
+
+.welcome-tag{
+
+    display:block;
+
+    width:max-content;
+
+    margin:auto;
+
+    background:white;
+
+    padding:10px 18px;
+
+    border-radius:40px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    font-weight:600;
+
+    margin-bottom:25px;
+
+}
+
+.login-card h1{
+
+    font-size:52px;
+
+    font-family:'Cormorant Garamond',serif;
+
+    text-align:center;
+
+    color:#171428;
+
+    margin-bottom:10px;
+
+}
+
+.login-card p{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:35px;
+
+    line-height:1.7;
+
+}
+
+/* ===========================
+            FORM
+=========================== */
+
+.input-group{
+
+    margin-bottom:22px;
+
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+    color:#171428;
+
+}
+
+.input-group input{
+
+    width:100%;
+
+    height:58px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    background:white;
+
+    padding:0 18px;
+
+    font-size:15px;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.05);
+
+}
+
+.input-group input:focus{
+
+    border:2px solid #8A74FF;
+
+}
+
+/* Password */
+
+.password-box{
+
+    position:relative;
+
+}
+
+.password-box input{
+
+    padding-right:50px;
+
+}
+
+.eye{
+
+    position:absolute;
+
+    right:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#777;
+
+    font-size:18px;
+
+}
+
+/* ===========================
+         OPTIONS
+=========================== */
+
+.options{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+    font-size:14px;
+
+}
+
+.options label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#555;
+
+}
+
+.options a{
+
+    text-decoration:none;
+
+    color:#6B5BFF;
+
+    font-weight:600;
+
+}
+
+/* ===========================
+          BUTTONS
+=========================== */
+
+.login-btn{
+
+    width:100%;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#171428;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.login-btn:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 18px 35px rgba(23,20,40,.25);
+
+}
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin:30px 0;
+
+    color:#888;
+
+}
+
+.divider::before,
+
+.divider::after{
+
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:#ddd;
+
+}
+
+.google-btn{
+
+    width:100%;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.05);
+
+}
+
+.google-btn:hover{
+
+    transform:translateY(-3px);
+
+}
+
+/* ===========================
+         FOOTER
+=========================== */
+
+.bottom-text{
+
+    margin-top:30px;
+
+    text-align:center;
+
+    color:#666;
+
+}
+
+.bottom-text a{
+
+    text-decoration:none;
+
+    color:#6B5BFF;
+
+    font-weight:700;
+
+    margin-left:8px;
+
+}
+
+/* ===========================
+        RESPONSIVE
+=========================== */
+
+@media(max-width:600px){
+
+.login-page{
+
+    padding:20px;
+
+}
+
+.login-card{
+
+    padding:35px 25px;
+
+}
+
+.login-card h1{
+
+    font-size:40px;
+
+}
+
+.logo{
+
+    font-size:30px;
+
+}
+
+.options{
+
+    flex-direction:column;
+
+    gap:15px;
+
+    align-items:flex-start;
+
+}
+
+}

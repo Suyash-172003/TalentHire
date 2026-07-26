@@ -1,0 +1,57 @@
+.trusted{
+
+padding:80px 100px;
+
+text-align:center;
+
+background:#F8F5EF;
+
+}
+
+.trusted p{
+
+font-size:22px;
+
+font-weight:600;
+
+margin-bottom:40px;
+
+color:#444;
+
+}
+
+.company-list{
+
+display:flex;
+
+justify-content:center;
+
+gap:25px;
+
+flex-wrap:wrap;
+
+}
+
+.company-card{
+
+padding:18px 35px;
+
+background:white;
+
+border-radius:18px;
+
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+font-size:20px;
+
+font-weight:700;
+
+transition:.3s;
+
+}
+
+.company-card:hover{
+
+transform:translateY(-8px);
+
+}
