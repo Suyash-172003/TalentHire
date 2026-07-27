@@ -22,6 +22,8 @@ public class JobResponse {
 
 	    private String title;
 
+	    private String companyName;
+	    
 	    private String description;
 
 	    private String location;

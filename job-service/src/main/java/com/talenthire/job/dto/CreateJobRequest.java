@@ -17,6 +17,8 @@ import lombok.Setter;
 public class CreateJobRequest {
 
 	    private String title;
+	    
+	    private String companyName;
 
 	    private String description;
 

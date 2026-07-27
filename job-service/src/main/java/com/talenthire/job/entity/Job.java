@@ -44,6 +44,9 @@ public class Job {
 
 	@Column(nullable = false, length = 100)
 	private String location;
+	
+	@Column(name ="company_name",nullable = false, length = 100)
+	private String companyName;
 
 	private BigDecimal salary;
 	

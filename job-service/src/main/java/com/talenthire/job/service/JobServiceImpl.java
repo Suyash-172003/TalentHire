@@ -29,6 +29,7 @@ public class JobServiceImpl implements JobService {
 	
 	public CreateJobResponse createJob(CreateJobRequest request,Integer recruiterId) {
 		Job job=new Job();
+		job.setCompanyName(request.getCompanyName());
 		job.setRecruiterID(recruiterId);
 		job.setDescription(request.getDescription());
 		job.setEmploymentType(EmploymentType.valueOf(request.getEmploymentType()));
@@ -82,6 +83,7 @@ public class JobServiceImpl implements JobService {
 	    response.setJobId(job.getJobId());
 	    response.setTitle(job.getTitle());
 	    response.setDescription(job.getDescription());
+	    response.setCompanyName(job.getCompanyName());
 
 	    response.setLocation(job.getLocation());
 	    response.setSalary(job.getSalary());
