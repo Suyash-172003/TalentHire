@@ -30,6 +30,7 @@ public class JobServiceImpl implements JobService {
 	public CreateJobResponse createJob(CreateJobRequest request,Integer recruiterId) {
 		Job job=new Job();
 		job.setCompanyName(request.getCompanyName());
+		job.setVacancies(request.getVacancies());
 		job.setRecruiterID(recruiterId);
 		job.setDescription(request.getDescription());
 		job.setEmploymentType(EmploymentType.valueOf(request.getEmploymentType()));
@@ -85,6 +86,7 @@ public class JobServiceImpl implements JobService {
 	    response.setDescription(job.getDescription());
 	    response.setCompanyName(job.getCompanyName());
 
+	   response.setVacancies(job.getVacancies());
 	    response.setLocation(job.getLocation());
 	    response.setSalary(job.getSalary());
 	    response.setExperience(job.getExperienceRequired());
@@ -131,6 +133,8 @@ List<Job> jobs= jobRepository.findByRecruiterID(recruiterId);
 if (!existingJob.getRecruiterID().equals(recruiterId)) {
     throw new RuntimeException("You cannot update this job");
 }
+
+existingJob.setCompanyName(request.getCompanyName());
 
 existingJob.setTitle(request.getTitle());
 existingJob.setDescription(request.getDescription());
@@ -212,6 +216,9 @@ return response;
 	    return response;
 		
 	}
+
+
+	
 	
 	
 

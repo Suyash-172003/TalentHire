@@ -35,11 +35,19 @@ public class ResumeController {
         return ResponseEntity.ok(response);
     }
 	
-	@GetMapping("/view")
-	public ResponseEntity<?> viewResume(
+	@GetMapping
+	public ResponseEntity<?> getMyResumes(
 	        @RequestHeader("X-User-Id") Integer candidateId) {
 
-		Resource resource = resumeService.viewResume(candidateId);
+	    return ResponseEntity.ok(
+	            resumeService.getMyResumes(candidateId));
+	}
+	
+	@GetMapping("/view")
+	public ResponseEntity<?> viewResume(Integer resumeId,
+	        @RequestHeader("X-User-Id") Integer candidateId) {
+
+		Resource resource = resumeService.viewResume(resumeId,candidateId);
 
 	    return ResponseEntity.ok()
 	            .contentType(MediaType.APPLICATION_PDF)

@@ -6,6 +6,7 @@ import com.talenthire.job.dto.CreateJobRequest;
 import com.talenthire.job.dto.CreateJobResponse;
 import com.talenthire.job.dto.JobResponse;
 import com.talenthire.job.dto.VerifyJobResponse;
+import com.talenthire.job.entity.JobStatus;
 
 public interface JobService {
 
@@ -23,5 +24,7 @@ public interface JobService {
 	CreateJobResponse closeJob(Integer jobId, Integer recruiterId);
 
 	VerifyJobResponse verifyJob(Integer jobId);
+
+	
 
 }

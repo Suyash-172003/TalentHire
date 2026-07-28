@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenthire.application.dto.ApplyJobResponse;
 import com.talenthire.application.dto.JobApplicationResponse;
 import com.talenthire.application.dto.JobResponse;
 import com.talenthire.application.dto.MyApplicationResponse;
+import com.talenthire.application.dto.UploadResumeResponse;
 import com.talenthire.application.dto.VerifyJobResponse;
 import com.talenthire.application.entity.Application;
 import com.talenthire.application.entity.Resume;
@@ -22,46 +24,49 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationServiceImpl implements ApplicationService {
 	
 	private final ResumeRepository resumeRepository;
+	private final ResumeService resumeService;
 	private final JobClient jobClient;
 	private final ApplicationRepository applicationRepository;
 
-	@Override
-	public ApplyJobResponse applyJob(Integer jobId, Integer candidateId) {
-		Resume resume= resumeRepository.findByCandidateId(candidateId).orElseThrow(()-> new RuntimeException("First Upload Resume"));
-		
-		VerifyJobResponse response=jobClient.getJobById(jobId);
-		
-		if(!response.getStatus().equals("OPEN"))
-		{
-			 throw new RuntimeException("Job is not accepting applications.");
-		}
-		
-		if (applicationRepository.existsByJobIdAndCandidateId(
-	            jobId,
-	            candidateId)) {
+	public ApplyJobResponse applyJob(MultipartFile resumeFile,
+            Integer jobId,
+            Integer candidateId) {
 
-	        throw new RuntimeException(
-	                "You have already applied for this job.");
-	    }
-		
-		Application application=new Application();
-		application.setResume(resume);
-		application.setCandidateId(candidateId);
-		application.setJobId(jobId);
 
-		
-		Application saved = applicationRepository.save(application);
+VerifyJobResponse job = jobClient.getJobById(jobId);
 
-	    ApplyJobResponse applyJobResponse = new ApplyJobResponse();
-	    applyJobResponse.setApplicationId(saved.getApplicationId());
-	    applyJobResponse.setStatus(saved.getStatus().name());
-	    applyJobResponse.setMessage("Application submitted successfully.");
-	  
+if (!job.getStatus().equals("OPEN")) {
+throw new RuntimeException("Job is not accepting applications.");
+}
 
-	    return applyJobResponse;
-		
 
-	}
+if (applicationRepository.existsByJobIdAndCandidateId(jobId, candidateId)) {
+throw new RuntimeException("You have already applied for this job.");
+}
+
+
+UploadResumeResponse uploadedResume =
+resumeService.uploadResume(resumeFile, candidateId);
+
+
+Resume resume = resumeRepository.findById(uploadedResume.getResumeId())
+.orElseThrow(() -> new RuntimeException("Resume not found."));
+
+
+Application application = new Application();
+application.setCandidateId(candidateId);
+application.setJobId(jobId);
+application.setResume(resume);
+
+Application saved = applicationRepository.save(application);
+
+ApplyJobResponse response = new ApplyJobResponse();
+response.setApplicationId(saved.getApplicationId());
+response.setStatus(saved.getStatus().name());
+response.setMessage("Application submitted successfully.");
+
+return response;
+}
 
 	@Override
 	public List<MyApplicationResponse>  getMyApplications(Integer candidateId) {

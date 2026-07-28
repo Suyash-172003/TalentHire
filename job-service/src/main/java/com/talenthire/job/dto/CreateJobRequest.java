@@ -29,6 +29,8 @@ public class CreateJobRequest {
 	    private Integer experienceRequired;
 
 	    private Integer vacancies;
+	    
+	 
 
 	    private String employmentType;
 

@@ -7,15 +7,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.talenthire.application.service.ApplicationService;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @RestController
 @RequestMapping("/application")
@@ -24,13 +22,15 @@ public class ApplicationController {
 	
 	private final ApplicationService applicationService;
 
-    @PostMapping("/apply/{jobId}")
+    @PostMapping("/jobs/{jobId}/apply")
     public ResponseEntity<?> applyJob(
             @PathVariable Integer jobId,
+            @RequestParam MultipartFile resumeFile,
             @RequestHeader("X-User-Id") Integer candidateId) {
+     
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.applyJob(jobId, candidateId));
+                .body(applicationService.applyJob(resumeFile,jobId,candidateId));
     }
     
     @GetMapping("/my")

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenthire.application.dto.ResumeResponse;
 import com.talenthire.application.dto.UploadResumeResponse;
 import com.talenthire.application.entity.Resume;
 import com.talenthire.application.entity.ResumeSkill;
@@ -92,10 +94,15 @@ public class ResumeServiceImpl implements ResumeService {
 	private String generateFileName(MultipartFile file, Integer candidateId) {
 		String fileName=file.getOriginalFilename();
 		
+		if (fileName == null || fileName.isBlank()) {
+	        fileName = "resume.pdf";
+	    }
+		
 		 fileName = fileName.replaceAll("\\s+", "_");
+		 String uniqueId=UUID.randomUUID().toString().substring(0,8);
 		
 	
-		return candidateId + "_"+ fileName;
+		return candidateId + "_" + uniqueId + "_"+  fileName;
 	}
 
 	private void validateFile(MultipartFile file) {
@@ -115,16 +122,45 @@ public class ResumeServiceImpl implements ResumeService {
 	}
 
 	
-	public Resource viewResume(Integer candidateId) {
-		Resume resume= resumeRepository.findByCandidateId(candidateId).orElseThrow(()-> new RuntimeException("Resume not found"));
-	Path path=Paths.get(resume.getFileUrl());
-	
-	Resource resource = new FileSystemResource(path); 
-	if (!resource.exists())
-	{ throw new RuntimeException("Resume file not found.");
+	public Resource viewResume(Integer resumeId, Integer candidateId) {
+
+	    Resume resume = resumeRepository.findById(resumeId)
+	            .orElseThrow(() -> new RuntimeException("Resume not found"));
+
+	    if (!resume.getCandidateId().equals(candidateId)) {
+	        throw new RuntimeException("You are not authorized to view this resume.");
+	    }
+
+	    Path path = Paths.get(resume.getFileUrl());
+
+	    Resource resource = new FileSystemResource(path);
+
+	    if (!resource.exists()) {
+	        throw new RuntimeException("Resume file not found.");
+	    }
+
+	    return resource;
 	}
+
+	@Override
+	public List<ResumeResponse> getMyResumes(Integer candidateId) {
+		List<Resume> resumes =
+	            resumeRepository.findAllByCandidateId(candidateId);
+
+	    List<ResumeResponse> response = new ArrayList<>();
+
+	    for (Resume resume : resumes) {
+
+	        ResumeResponse dto = new ResumeResponse();
+
+	        dto.setResumeId(resume.getResumeId());
+	        dto.setFileName(resume.getFileName());
+	        dto.setFileUrl(resume.getFileUrl());
+	        response.add(dto);
+	    }
+
+	    return response;
 		
-		return resource;
 	}
 
 }
