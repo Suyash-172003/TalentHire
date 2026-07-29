@@ -1,0 +1,245 @@
+/* ===========================
+        NAVBAR
+=========================== */
+
+.th-navbar{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:85px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 90px;
+
+    background:rgba(248,245,239,.75);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    z-index:999;
+
+    box-sizing:border-box;
+
+}
+
+/* ===========================
+          LOGO
+=========================== */
+
+.logo{
+
+    font-size:35px;
+
+    font-weight:800;
+
+    letter-spacing:-1px;
+
+    color:#171428;
+
+    flex-shrink:0;
+
+}
+
+/* ===========================
+        NAV LINKS
+=========================== */
+
+.nav-links{
+
+    display:flex;
+
+    align-items:center;
+
+    list-style:none;
+
+    gap:45px;
+
+    margin:0;
+
+    padding:0;
+
+}
+
+.nav-links li{
+
+    margin:0;
+
+}
+
+.nav-links a{
+
+    text-decoration:none;
+
+    color:#171428;
+
+    font-size:18px;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+.nav-links a:hover{
+
+    color:#8577FF;
+
+}
+
+/* ===========================
+        BUTTONS
+=========================== */
+
+.nav-buttons{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    flex-shrink:0;
+
+}
+
+.login,
+.signup{
+
+    text-decoration:none;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:12px 25px;
+
+    border-radius:12px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+/* Login */
+
+.login{
+
+    background:#fff;
+
+    color:#171428;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.login:hover{
+
+    color:#171428;
+
+    transform:translateY(-3px);
+
+}
+
+/* Signup */
+
+.signup{
+
+    background:#171428;
+
+    color:#fff;
+
+}
+
+.signup:hover{
+
+    color:#fff;
+
+    transform:translateY(-3px);
+
+    box-shadow:0 12px 25px rgba(23,20,40,.25);
+
+}
+
+/* ===========================
+        RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .th-navbar{
+
+        padding:0 40px;
+
+    }
+
+    .nav-links{
+
+        gap:25px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .th-navbar{
+
+        padding:0 20px;
+
+        height:75px;
+
+    }
+
+    .nav-links{
+
+        display:none;
+
+    }
+
+    .logo{
+
+        font-size:28px;
+
+    }
+
+    .login,
+    .signup{
+
+        padding:10px 18px;
+
+        font-size:15px;
+
+    }
+
+}
+
+@media(max-width:480px){
+
+    .nav-buttons{
+
+        gap:10px;
+
+    }
+
+    .login,
+    .signup{
+
+        padding:8px 14px;
+
+        font-size:14px;
+
+    }
+
+}

@@ -1,0 +1,413 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+}
+
+.recruiter-dashboard{
+    display:flex;
+    min-height:100vh;
+    background:#F8F5EF;
+    position:relative;
+    overflow:hidden;
+}
+
+/* Background Glow */
+
+.recruiter-dashboard::before{
+    content:"";
+    position:absolute;
+    width:450px;
+    height:450px;
+    background:#F7B348;
+    border-radius:50%;
+    filter:blur(150px);
+    left:-180px;
+    bottom:-180px;
+    opacity:.45;
+}
+
+.recruiter-dashboard::after{
+    content:"";
+    position:absolute;
+    width:420px;
+    height:420px;
+    background:#8A74FF;
+    border-radius:50%;
+    filter:blur(150px);
+    right:-180px;
+    top:-150px;
+    opacity:.35;
+}
+
+/* Sidebar */
+
+.sidebar{
+    width:270px;
+    margin:20px;
+    border-radius:28px;
+    background:rgba(255,255,255,.75);
+    backdrop-filter:blur(20px);
+    padding:35px 25px;
+    box-shadow:0 25px 50px rgba(0,0,0,.08);
+    z-index:2;
+}
+
+.sidebar h2{
+    font-size:40px;
+    font-family:'Cormorant Garamond',serif;
+    color:#171428;
+    margin-bottom:40px;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar li{
+    padding:15px 18px;
+    margin-bottom:10px;
+    border-radius:15px;
+    cursor:pointer;
+    transition:.3s;
+    color:#555;
+    font-weight:500;
+}
+
+.sidebar li:hover,
+.sidebar .active{
+    background:#171428;
+    color:white;
+}
+
+/* Main */
+
+.main{
+    flex:1;
+    padding:30px 40px;
+    z-index:2;
+}
+
+/* Topbar */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.topbar input{
+    width:360px;
+    height:52px;
+    border:none;
+    outline:none;
+    border-radius:30px;
+    padding:0 22px;
+    background:white;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+
+.profile{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background:white;
+    padding:8px 18px;
+    border-radius:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+}
+
+.profile img{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+}
+
+/* Welcome */
+
+.welcome{
+    margin-top:45px;
+}
+
+.tag{
+    display:inline-block;
+    background:white;
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:600;
+}
+
+.welcome h1{
+    margin-top:20px;
+    font-size:64px;
+    line-height:1;
+    font-family:'Cormorant Garamond',serif;
+    color:#171428;
+}
+
+.welcome p{
+    margin-top:18px;
+    color:#666;
+    font-size:18px;
+    max-width:550px;
+}
+
+.welcome button{
+    margin-top:30px;
+    padding:16px 34px;
+    border:none;
+    border-radius:16px;
+    background:#171428;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.welcome button:hover{
+    transform:translateY(-3px);
+}
+
+/* Stats */
+
+.stats{
+    margin-top:45px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.stat-card{
+    background:rgba(255,255,255,.8);
+    backdrop-filter:blur(15px);
+    padding:25px;
+    border-radius:22px;
+    box-shadow:0 20px 40px rgba(0,0,0,.07);
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h2{
+    font-size:42px;
+    color:#171428;
+}
+
+.stat-card p{
+    margin-top:8px;
+    color:#666;
+}
+
+/* Dashboard Content */
+
+.dashboard-content{
+    margin-top:45px;
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+}
+
+/* Job Card */
+
+
+/* Job Card */
+
+.job-card{
+    background:#fff;
+    border-radius:22px;
+    padding:28px;
+    margin-bottom:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,.07);
+    transition:.3s;
+}
+
+.job-card:hover{
+    transform:translateY(-5px);
+}
+
+/* Header */
+
+.job-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:20px;
+}
+
+.job-header h3{
+    font-size:30px;
+    color:#171428;
+    margin-bottom:8px;
+}
+
+.job-header h4{
+    font-size:18px;
+    color:#666;
+    font-weight:500;
+}
+
+/* Action Buttons */
+
+    .job-actions{
+        display:flex;
+        gap:10px;
+    }
+
+    .view-btn,
+    .edit-btn{
+        border:none;
+        padding:10px 20px;
+        border-radius:12px;
+        cursor:pointer;
+        font-size:14px;
+        font-weight:600;
+        transition:.3s;
+    }
+
+    .view-btn{
+        background:#171428;
+        color:#fff;
+    }
+
+    .view-btn:hover{
+        background:#2B2550;
+    }
+
+    .edit-btn{
+        background:#F7B348;
+        color:#171428;
+    }
+
+    .edit-btn:hover{
+        background:#E89A22;
+    }
+
+/* Job Info */
+
+.job-info{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:15px;
+}
+
+.job-info span{
+    background:#F4F5F8;
+    color:#555;
+    padding:8px 16px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:500;
+}
+
+/* Status */
+
+.job-info .status{
+    background:#EAF8EE;
+    color:#1F8A4D;
+    font-weight:600;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+    .job-header{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .job-actions{
+        width:100%;
+    }
+
+    .view-btn,
+    .edit-btn{
+        flex:1;
+    }
+}
+
+
+/* Right Cards */
+
+.info-card{
+    background:white;
+    padding:25px;
+    border-radius:22px;
+    margin-bottom:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,.07);
+}
+
+.info-card h3{
+    margin-bottom:18px;
+    color:#171428;
+}
+
+.info-card p{
+    margin-bottom:12px;
+    color:#666;
+}
+
+.info-card button{
+    width:100%;
+    margin-top:12px;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:#171428;
+    color:white;
+    cursor:pointer;
+}
+
+/* Responsive */
+
+@media(max-width:1100px){
+
+.sidebar{
+    display:none;
+}
+
+.dashboard-content{
+    grid-template-columns:1fr;
+}
+
+.stats{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.topbar{
+    flex-direction:column;
+    gap:20px;
+}
+
+.topbar input{
+    width:100%;
+}
+
+.welcome h1{
+    font-size:48px;
+}
+
+}
+
+@media(max-width:700px){
+
+.stats{
+    grid-template-columns:1fr;
+}
+
+.main{
+    padding:20px;
+}
+
+
+
+
+}

@@ -5,15 +5,13 @@ function Navbar() {
 
   return (
 
-    <nav className="navbar">
+    <nav className="th-navbar">
 
-      <div className="logo">
-
+    <div className="logo">
         TalentHire
+    </div>
 
-      </div>
-
-      <ul>
+    <ul className="nav-links">
 
         <li>Hire Talent</li>
 
@@ -21,25 +19,21 @@ function Navbar() {
 
         <li>Recruiters</li>
 
-      </ul>
+    </ul>
 
-      <div className="nav-buttons">
+    <div className="nav-buttons">
 
         <Link to="/login" className="login">
-
-          Login
-
+            Login
         </Link>
 
         <Link to="/signup" className="signup">
-
-          Sign Up
-
+            Sign Up
         </Link>
 
-      </div>
+    </div>
 
-    </nav>
+</nav>
 
   );
 

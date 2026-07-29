@@ -1,0 +1,496 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+/* ===========================
+        PAGE
+=========================== */
+
+.login-page{
+    min-height:100vh;
+    background:#F8F5EF;
+    position:relative;
+    overflow:hidden;
+    padding:40px 15px;
+}
+
+/* ===========================
+      BACKGROUND BLURS
+=========================== */
+
+.blur{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(130px);
+    z-index:1;
+}
+
+.blur-one{
+    width:420px;
+    height:420px;
+    background:#F7B348;
+    left:-120px;
+    bottom:-120px;
+    opacity:.7;
+}
+
+.blur-two{
+    width:380px;
+    height:380px;
+    background:#8A74FF;
+    right:-100px;
+    top:-80px;
+    opacity:.55;
+}
+
+.blur-three{
+    width:250px;
+    height:250px;
+    background:#FFE18B;
+    left:48%;
+    top:45%;
+    opacity:.5;
+}
+
+/* ===========================
+        LOGIN CARD
+=========================== */
+
+.login-card{
+
+    width:100%;
+    max-width:500px;
+
+    background:rgba(255,255,255,.82);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border-radius:30px;
+
+    padding:50px;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.08);
+
+    position:relative;
+
+    z-index:5;
+
+}
+
+/* ===========================
+        LOGO
+=========================== */
+
+.logo{
+
+    text-align:center;
+
+    font-size:38px;
+
+    font-weight:800;
+
+    color:#171428;
+
+    margin-bottom:15px;
+
+}
+
+/* ===========================
+      WELCOME TAG
+=========================== */
+
+.welcome-tag{
+
+    display:block;
+
+    width:max-content;
+
+    margin:auto;
+
+    background:#fff;
+
+    padding:10px 18px;
+
+    border-radius:40px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    font-weight:600;
+
+    margin-bottom:25px;
+
+}
+
+/* ===========================
+        HEADING
+=========================== */
+
+.login-card h1{
+
+    font-size:52px;
+
+    font-family:'Cormorant Garamond',serif;
+
+    text-align:center;
+
+    color:#171428;
+
+    margin-bottom:10px;
+
+}
+
+.login-card p{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:35px;
+
+    line-height:1.7;
+
+}
+
+/* ===========================
+        FORM LABELS
+=========================== */
+
+.form-label{
+
+    font-weight:600;
+
+    color:#171428;
+
+    margin-bottom:8px;
+
+}
+
+/* ===========================
+        INPUTS
+=========================== */
+
+.form-control.custom-input{
+
+    height:58px;
+
+    border:none !important;
+
+    border-radius:16px;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.05);
+
+    padding:0 18px;
+
+    font-size:15px;
+
+    background:#fff;
+
+}
+
+.form-control.custom-input:focus{
+
+    border:2px solid #8A74FF !important;
+
+    box-shadow:none;
+
+}
+
+/* ===========================
+      PASSWORD EYE
+=========================== */
+
+.position-relative{
+
+    position:relative;
+
+}
+
+.eye{
+
+    position:absolute;
+
+    right:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#777;
+
+    font-size:18px;
+
+    z-index:10;
+
+}
+
+.eye:hover{
+
+    color:#171428;
+
+}
+
+/* ===========================
+      CHECKBOX
+=========================== */
+
+.form-check{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.form-check-input{
+
+    cursor:pointer;
+
+}
+
+.form-check-input:checked{
+
+    background:#8A74FF;
+
+    border-color:#8A74FF;
+
+}
+
+.form-check-input:focus{
+
+    box-shadow:none;
+
+}
+
+.form-check-label{
+
+    color:#555;
+
+    cursor:pointer;
+
+}
+
+/* ===========================
+      FORGOT PASSWORD
+=========================== */
+
+a{
+
+    text-decoration:none;
+
+}
+
+.d-flex a{
+
+    color:#6B5BFF;
+
+    font-weight:600;
+
+}
+
+/* ===========================
+      LOGIN BUTTON
+=========================== */
+
+.btn.login-btn{
+
+    height:58px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#171428;
+
+    color:#fff;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn.login-btn:hover{
+
+    background:#171428;
+
+    color:#fff;
+
+    transform:translateY(-4px);
+
+    box-shadow:0 18px 35px rgba(23,20,40,.25);
+
+}
+
+/* ===========================
+      DIVIDER
+=========================== */
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin:30px 0;
+
+    color:#888;
+
+}
+
+.divider::before,
+.divider::after{
+
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:#ddd;
+
+}
+
+/* ===========================
+      GOOGLE BUTTON
+=========================== */
+
+.btn.google-btn{
+
+    height:58px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-weight:600;
+
+    box-shadow:0 10px 20px rgba(0,0,0,.05);
+
+    transition:.3s;
+
+}
+
+.btn.google-btn:hover{
+
+    background:#fff;
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.08);
+
+}
+
+/* ===========================
+      FOOTER
+=========================== */
+
+.bottom-text{
+
+    margin-top:30px;
+
+    text-align:center;
+
+    color:#666;
+
+}
+
+.bottom-text a{
+
+    color:#6B5BFF;
+
+    font-weight:700;
+
+    margin-left:8px;
+
+}
+
+/* ===========================
+      RESPONSIVE
+=========================== */
+
+@media(max-width:768px){
+
+    .login-card{
+
+        padding:40px 30px;
+
+    }
+
+    .login-card h1{
+
+        font-size:42px;
+
+    }
+
+    .logo{
+
+        font-size:32px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .login-page{
+
+        padding:20px 15px;
+
+    }
+
+    .login-card{
+
+        padding:35px 25px;
+
+        border-radius:24px;
+
+    }
+
+    .login-card h1{
+
+        font-size:38px;
+
+    }
+
+    .logo{
+
+        font-size:30px;
+
+    }
+
+    .d-flex{
+
+        flex-direction:column;
+
+        align-items:flex-start !important;
+
+        gap:15px;
+
+    }
+
+}
