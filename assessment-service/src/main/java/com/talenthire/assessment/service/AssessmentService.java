@@ -2,10 +2,13 @@ package com.talenthire.assessment.service;
 
 import java.util.List;
 
+
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
+
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodeExecutionResponse;
+import com.talenthire.assessment.dto.CodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateAssessmentRequest;
 import com.talenthire.assessment.dto.CreateAssessmentResponse;
 import com.talenthire.assessment.dto.CreateCodingQuestionRequest;
@@ -22,6 +25,7 @@ public interface AssessmentService {
 
 	public String addTestCase(Integer codingQuestionId, Integer recruiterId, CreateTestCaseRequest request);
 
+
 	 AssessmentResponse createAssessment(AssessmentRequest request);
 
 	    AssessmentResponse getAssessmentById(Integer id);
@@ -31,4 +35,9 @@ public interface AssessmentService {
 	    AssessmentResponse updateAssessment(Integer id, AssessmentRequest request);
 
 	    void deleteAssessment(Integer id);
+
+	public List<CodingQuestionResponse> getCodingQuestions(Integer assessmentId);
+
+	
+
 }

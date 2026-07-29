@@ -5,23 +5,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenthire.application.dto.JobResponse;
 import com.talenthire.application.dto.ResumeResponse;
 import com.talenthire.application.dto.UploadResumeResponse;
+import com.talenthire.application.entity.ApplicationScreening;
 import com.talenthire.application.entity.Resume;
 import com.talenthire.application.entity.ResumeSkill;
+import com.talenthire.application.entity.ScreeningStatus;
+import com.talenthire.application.repository.ApplicationScreeningRepository;
 import com.talenthire.application.repository.ResumeRepository;
+import com.talenthire.application.util.ResumeTextExtractor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,13 +36,24 @@ public class ResumeServiceImpl implements ResumeService {
 	
 	private final ResumeRepository resumeRepository;
 	
+	private final OllamaService ollamaService;
+	private final JobClient jobClient;
+	private final ResumeTextExtractor resumeTextExtractor;
+	
 	@Value("${file.upload-path}")
 	private String uploadPath;
 
 	@Override
-	public UploadResumeResponse uploadResume(MultipartFile file, Integer candidateId) {
+	public UploadResumeResponse uploadResume(MultipartFile file, Integer candidateId){
 		 validateFile(file);
 
+		 String text="";
+		try {
+			text = ResumeTextExtractor.extractText(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	     String fileName = generateFileName(file, candidateId);
 
 	     try {
@@ -51,21 +67,38 @@ public class ResumeServiceImpl implements ResumeService {
 	     resume.setFileUrl(uploadPath+ "/"+ fileName);
 	     resume.setCandidateId(candidateId);
 	     
-	     List<ResumeSkill> skills=new ArrayList();
-	     
-	     ResumeSkill skill1 = new ResumeSkill();
-	     skill1.setSkillName("Java");
-	     skill1.setResume(resume);
-	     skills.add(skill1);
+	    
+	    
 
-	     ResumeSkill skill2 = new ResumeSkill();
-	     skill2.setSkillName("Spring Boot");
-	     skill2.setResume(resume);
-	     skills.add(skill2);
+	    	 
+	    	 System.out.println("2. Resume text extracted.");
+
+	    	 List<String> extractedSkills = ollamaService.extractSkills(text);
+
+	    	 System.out.println("3. Skills extracted.");
+
+	    	 System.out.println(extractedSkills);;
+		
 	     
-	     resume.setResumeSkills(skills);
-	     
+	    	 List<ResumeSkill> resumeSkills = new ArrayList<>();
+
+	    	 for (String skillName : extractedSkills) {
+
+	    	     ResumeSkill resumeSkill = new ResumeSkill();
+
+	    	     resumeSkill.setSkillName(skillName);
+	    	     resumeSkill.setResume(resume);
+
+	    	     resumeSkills.add(resumeSkill);
+	    	 }
+
+	    	 resume.setResumeSkills(resumeSkills);
+	    	 
+
 	     Resume saved=resumeRepository.save(resume);
+	     
+	     
+	     
 	     
 	     UploadResumeResponse response= new UploadResumeResponse();
 	     

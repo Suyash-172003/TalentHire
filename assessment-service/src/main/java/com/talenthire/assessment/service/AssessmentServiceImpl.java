@@ -16,6 +16,7 @@ import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodeExecutionResponse;
+import com.talenthire.assessment.dto.CodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateAssessmentRequest;
 import com.talenthire.assessment.dto.CreateAssessmentResponse;
 import com.talenthire.assessment.dto.CreateCodingQuestionRequest;
@@ -23,6 +24,7 @@ import com.talenthire.assessment.dto.CreateCodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateTestCaseRequest;
 import com.talenthire.assessment.dto.ExecutionStatus;
 import com.talenthire.assessment.dto.RunResult;
+import com.talenthire.assessment.dto.SampleTestCaseResponse;
 import com.talenthire.assessment.dto.TestCaseDto;
 import com.talenthire.assessment.dto.TestCaseResultDto;
 import com.talenthire.assessment.dto.VerifyJobResponse;
@@ -273,6 +275,43 @@ public class AssessmentServiceImpl implements AssessmentService {
 		   
 
 		    return "Test Case Added Successfully.";
+	}
+
+	@Override
+	public List<CodingQuestionResponse> getCodingQuestions(Integer assessmentId) {
+
+	    List<CodingQuestion> questions =
+	            codingQuestionRepository
+	                    .findByAssessmentAssessmentIdOrderByQuestionOrder(
+	                            assessmentId);
+
+	    List<CodingQuestionResponse> response = new ArrayList<>();
+
+	    for (CodingQuestion question : questions) {
+
+	        CodingQuestionResponse dto = new CodingQuestionResponse();
+
+	        dto.setCodingQuestionId(question.getCodingQuestionId());
+	        dto.setTitle(question.getTitle());
+	        dto.setProblemStatement(question.getProblemStatement());
+	        dto.setMarks(question.getMarks());
+	        dto.setQuestionOrder(question.getQuestionOrder());
+
+	        List<SampleTestCaseResponse> sampleTestCases = question.getTestCases()
+	                .stream()
+	                .filter(CodingTestCase::getSample)
+	                .map(testCase -> new SampleTestCaseResponse(
+	                        testCase.getInput(),
+	                        testCase.getExpectedOutput()))
+	                .toList();
+
+	        dto.setSampleTestCases(sampleTestCases);
+
+	        response.add(dto);
+	    }
+	    
+
+	    return response;
 	}
 	
 	

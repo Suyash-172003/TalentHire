@@ -9,6 +9,7 @@ import com.talenthire.assessment.entity.AssessmentStatus;
 import com.talenthire.assessment.entity.AssessmentType;
 
 public interface AssessmentRepository extends JpaRepository<Assessment, Integer> {
+	
 
 
 	   

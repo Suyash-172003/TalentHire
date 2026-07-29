@@ -1,4 +1,4 @@
-package com.talenthire.assessment.dto;
+package com.talenthire.application.dto;
 
 import java.util.List;
 
@@ -11,12 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeExecutionRequest {
-	
-	private String language;
-	
-	private String sourceCode;
-	
-	List<TestCaseDto> testcases;
-	
+public class JobSkillResponse {
+
+    private Integer jobId;
+    private String title;
+    private List<String> skills;
+
 }

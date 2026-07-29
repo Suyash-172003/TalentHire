@@ -1,7 +1,5 @@
 package com.talenthire.assessment.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeExecutionRequest {
-	
-	private String language;
-	
-	private String sourceCode;
-	
-	List<TestCaseDto> testcases;
-	
+public class SampleTestCaseResponse {
+
+    private String input;
+
+    private String expectedOutput;
+
 }
