@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.talenthire.auth.dto.CandidateDetailsRequest;
 import com.talenthire.auth.dto.LoginRequest;
 import com.talenthire.auth.dto.RegisterRequest;
 import com.talenthire.auth.service.AuthService;
@@ -22,6 +23,15 @@ public class AuthController {
 	public AuthController(AuthService authService)
 	{
 		this.authService=authService;
+	}
+	
+	
+	@PostMapping("/users/details")
+	public ResponseEntity<?> getCandidateDetails(
+	        @RequestBody CandidateDetailsRequest request) {
+
+	    return ResponseEntity.ok(
+	            authService.getCandidateDetails(request));
 	}
 	
 	

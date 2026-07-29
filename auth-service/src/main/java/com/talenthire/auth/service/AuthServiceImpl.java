@@ -1,5 +1,8 @@
 package com.talenthire.auth.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -7,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.talenthire.auth.dto.AuthResponse;
+import com.talenthire.auth.dto.CandidateDetailsRequest;
+import com.talenthire.auth.dto.CandidateDetailsResponse;
 import com.talenthire.auth.dto.LoginRequest;
 import com.talenthire.auth.dto.RegisterRequest;
 import com.talenthire.auth.dto.RegisterResponse;
@@ -86,6 +91,30 @@ if(isUserExists)
 		
 		
 	return new AuthResponse(user.getUserId(),user.getName(),user.getEmail(),user.getUserRole().name(),"Login successful",token);
+	}
+
+
+	@Override
+	public List<CandidateDetailsResponse> getCandidateDetails(CandidateDetailsRequest request) {
+		 List<User> users =
+		            userRepository.findByUserIdIn(request.getUserIds());
+
+		    List<CandidateDetailsResponse> responses =
+		            new ArrayList<>();
+
+		    for (User user : users) {
+
+		        CandidateDetailsResponse response =
+		                new CandidateDetailsResponse();
+
+		        response.setUserId(user.getUserId());
+		        response.setName(user.getName());
+		        response.setEmail(user.getEmail());
+
+		        responses.add(response);
+		    }
+
+		    return responses;
 	}
 
 	

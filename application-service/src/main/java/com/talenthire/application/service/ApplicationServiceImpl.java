@@ -1,12 +1,16 @@
 package com.talenthire.application.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenthire.application.dto.ApplyJobResponse;
+import com.talenthire.application.dto.CandidateDetailsRequest;
+import com.talenthire.application.dto.CandidateDetailsResponse;
 import com.talenthire.application.dto.JobApplicationResponse;
 import com.talenthire.application.dto.JobResponse;
 import com.talenthire.application.dto.MyApplicationResponse;
@@ -26,6 +30,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private final ResumeRepository resumeRepository;
 	private final ResumeService resumeService;
 	private final JobClient jobClient;
+	private final AuthClient authClient;
 	private final ApplicationRepository applicationRepository;
 
 	public ApplyJobResponse applyJob(MultipartFile resumeFile,
@@ -105,11 +110,36 @@ return response;
 
 		    List<Application> applications =
 		            applicationRepository.findByJobId(jobId);
+		    
+		    List<Integer> candidateIds = new ArrayList<>();
+
+		    for (Application application : applications) {
+		        candidateIds.add(application.getCandidateId());
+		    }
+		    
+		    CandidateDetailsRequest request =
+		            new CandidateDetailsRequest();
+
+		    request.setUserIds(candidateIds);
+		    
+		    List<CandidateDetailsResponse> candidates =
+		            authClient.getCandidateDetails(request);
 
 		    List<JobApplicationResponse> responses =
 		            new ArrayList<>();
+		    
+		    Map<Integer, CandidateDetailsResponse> candidateMap =
+		            new HashMap<>();
+
+		    for (CandidateDetailsResponse candidate : candidates) {
+		        candidateMap.put(candidate.getUserId(), candidate);
+		    }
+
 
 		    for (Application application : applications) {
+		    	
+		    	CandidateDetailsResponse candidate =
+		                candidateMap.get(application.getCandidateId());
 
 		        JobApplicationResponse response =
 		                new JobApplicationResponse();
@@ -122,6 +152,15 @@ return response;
 
 		        response.setApplicationStatus(
 		                application.getStatus().name());
+		        
+		        response.setCandidateName(
+		                candidate.getName());
+
+		        response.setCandidateEmail(
+		                candidate.getEmail());
+
+		        response.setResumeId(
+		                application.getResume().getResumeId());
 
 		        responses.add(response);
 		    }

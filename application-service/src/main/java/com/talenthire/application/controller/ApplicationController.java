@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationController {
 	
 	private final ApplicationService applicationService;
-
+	
     @PostMapping("/jobs/{jobId}/apply")
     public ResponseEntity<?> applyJob(
             @PathVariable Integer jobId,
