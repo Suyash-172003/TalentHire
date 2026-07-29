@@ -2,9 +2,10 @@ package com.talenthire.application.entity;
 
 public enum ScreeningStatus {
 
-	PENDING,
 
-    COMPLETED,
+    SHORTLISTED,
 
-    FAILED
+    UNDER_REVIEW,
+
+    REJECTED
 }
