@@ -1,5 +1,9 @@
 package com.talenthire.assessment.service;
 
+import java.util.List;
+
+import com.talenthire.assessment.dto.AssessmentRequest;
+import com.talenthire.assessment.dto.AssessmentResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodeExecutionResponse;
 import com.talenthire.assessment.dto.CreateAssessmentRequest;
@@ -18,5 +22,13 @@ public interface AssessmentService {
 
 	public String addTestCase(Integer codingQuestionId, Integer recruiterId, CreateTestCaseRequest request);
 
-	
+	 AssessmentResponse createAssessment(AssessmentRequest request);
+
+	    AssessmentResponse getAssessmentById(Integer id);
+
+	    List<AssessmentResponse> getAllAssessments();
+
+	    AssessmentResponse updateAssessment(Integer id, AssessmentRequest request);
+
+	    void deleteAssessment(Integer id);
 }

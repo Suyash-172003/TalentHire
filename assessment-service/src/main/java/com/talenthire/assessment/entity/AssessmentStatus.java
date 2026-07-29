@@ -5,6 +5,7 @@ public enum AssessmentStatus {
 
 	 PUBLISHED,
 
-	 CLOSED
-
+	 CLOSED,
+	 SCHEDULED,
+	 COMPLETED
 }

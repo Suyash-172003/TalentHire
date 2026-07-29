@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +16,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Assessment {
 
 	    @Id
@@ -43,6 +46,16 @@ public class Assessment {
 
 	    @Column(nullable = false)
 	    private Integer duration;      
+	    
+	    @Column(name = "start_time", nullable = false)
+	    private LocalDateTime startTime;
+
+	    @Enumerated(EnumType.STRING)
+	    @Column(name = "assessment_type", nullable = false)
+	    private AssessmentType assessmentType;
+	    
+	    @Column(name = "end_time", nullable = false)
+	    private LocalDateTime endTime;
 
 	    @Column(name = "total_marks")
 	    private Integer totalMarks = 0;
@@ -53,6 +66,9 @@ public class Assessment {
 	    @Enumerated(EnumType.STRING)
 	    @Column(name="assessment_status",nullable = false)
 	    private AssessmentStatus status = AssessmentStatus.DRAFT;
+	    
+	    @Column(name = "created_by", nullable = false)
+	    private Integer createdBy;
 
 	    @CreationTimestamp
 	    @Column(name="created_at",updatable = false)
@@ -67,6 +83,13 @@ public class Assessment {
 	            cascade = CascadeType.ALL,
 	            orphanRemoval = true)
 	    private List<CodingQuestion> codingQuestions = new ArrayList<>();
+	    
+	    @OneToMany(
+	            mappedBy = "assessment",
+	            cascade = CascadeType.ALL,
+	            orphanRemoval = true
+	    )
+	    private List<MCQQuestion> questions = new ArrayList<>();
 
 	}
 
