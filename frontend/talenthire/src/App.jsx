@@ -8,6 +8,7 @@ import RecruiterDashboard from "./pages/RecruiterDashboard/RecruiterDashboard";
 import CreateJob from "./pages/RecruiterDashboard/CreateJob";
 import EditJob from "./pages/RecruiterDashboard/EditJob";
 import Applicants from "./pages/RecruiterDashboard/Applicants"
+import CodingAssessment from "./pages/Assessment/CodingAssessment";
 
 
 function App() {
@@ -33,6 +34,11 @@ function App() {
         <Route path="/recruiter/edit-job/:jobId" element={<EditJob />} />
 
          <Route path="/recruiter/applicants/:jobId" element={<Applicants />}/>
+
+         <Route path="/assessment/:assessmentId" element={<CodingAssessment />}
+/>
+
+  
 
          
       </Routes>
