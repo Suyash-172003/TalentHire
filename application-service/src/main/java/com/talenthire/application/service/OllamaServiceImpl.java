@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.talenthire.application.dto.AtsScoreResponse;
 import com.talenthire.application.dto.OllamaRequest;
 import com.talenthire.application.dto.OllamaResponse;
-import com.talenthire.application.dto.SkillsExtractionResponse;
 
 @Service
 public class OllamaServiceImpl implements OllamaService {
@@ -28,12 +28,12 @@ public class OllamaServiceImpl implements OllamaService {
 	    private ObjectMapper objectMapper;
 
 	@Override
-	public List<String> extractSkills(String resumeText) {
+	public AtsScoreResponse extractSkills(String resumeText,List<String> jobSkills) {
 		 try {
 			 
 			 System.out.println("Coming in the Extract Skills");
 
-	            String prompt = buildSkillPrompt(resumeText);
+	            String prompt = buildSkillPrompt(resumeText,jobSkills);
 
 	            OllamaRequest request =
 	                    new OllamaRequest(model, prompt, false);
@@ -56,55 +56,55 @@ public class OllamaServiceImpl implements OllamaService {
 	            System.out.println("========== CLEAN JSON ==========");
 	            System.out.println(json);
 
-	            SkillsExtractionResponse skillResponse =
+	            AtsScoreResponse atsResponse =
 	                    objectMapper.readValue(
 	                            json,   
-	                            SkillsExtractionResponse.class);
+	                            AtsScoreResponse.class);
 
-	            return skillResponse.getSkills();
+
+return atsResponse;
 
 	        } catch (Exception e) {
 	            throw new RuntimeException("Unable to extract skills", e);
 	        }
 	}
 
-	private String buildSkillPrompt(String resumeText) {
+	private String buildSkillPrompt(String resumeText,List<String> jobSkills) {
 		
-		System.out.println("Resume length: " + resumeText.length());
-		
-		return """ 
-				You are an ATS resume parser.
+		return """
+				You are an ATS screening system.
 
-		Extract ALL technical skills explicitly mentioned in the resume.
+				Compare the resume with the required job skills.
 
-		Include programming languages, frameworks, libraries, databases, APIs, cloud platforms, DevOps tools, build tools, testing tools, version control systems, operating systems, message brokers and other technologies.
+				Required Job Skills:
+				%s
 
-		Rules:
-		- Return ONLY valid JSON.
-		- The response MUST begin with '{' and end with '}'.
-		- Do NOT use markdown.
-		- Do NOT use ```json.
-		- Do NOT write any explanation.
-		- Do NOT return objects.
-		- Do NOT return descriptions.
-		- Remove duplicate skills.
-		- Do NOT invent skills.
+				Resume:
+				%s
 
-		Output:
+				Rules:
+				- Compare skills semantically.
+				- Spring Boot matches Spring.
+				- Hibernate matches JPA.
+				- REST API matches RESTful Services.
+				- Apache Kafka matches Kafka.
+				- JavaScript matches JS.
+				- If no required skills are found, score must be 0.
+				- If all required skills are found, score must be 100.
+				- Return only valid JSON.
+				- No markdown.
+				- No explanation.
 
-		{
-		  "skills": [
-		    "Java",
-		    "Spring Boot",
-		    "Hibernate",
-		    "MySQL",
-		    "Git"
-		  ]
-		}
+				Return exactly this JSON structure:
 
-		Resume:
-
-		""" + resumeText;
+				{
+				  "matchPercentage": <number>,
+				  "resumeScore": <integer>
+				}
+				""".formatted(
+				        String.join(", ", jobSkills),
+				        resumeText
+				);
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package com.talenthire.application.dto;
 
 import java.time.LocalDateTime;
 
+import com.talenthire.application.entity.ScreeningStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +21,7 @@ public class ApplyJobResponse {
 	    private String status;
 
 	    private String message;
+	    
+	    private ScreeningStatus screeningStatus;
 
 }

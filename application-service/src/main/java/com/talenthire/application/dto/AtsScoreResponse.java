@@ -1,7 +1,5 @@
 package com.talenthire.application.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SkillsExtractionResponse {
-	
-	 private List<String> skills;
+public class AtsScoreResponse {
 
+    private Double matchPercentage;
+    private Integer resumeScore;
 }

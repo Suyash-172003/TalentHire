@@ -18,6 +18,8 @@ public class CreateJobRequest {
 
 	    private String title;
 	    
+	    private Integer shortlistScore;
+	    
 	    private String companyName;
 
 	    private String description;

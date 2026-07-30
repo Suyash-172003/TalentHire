@@ -47,13 +47,6 @@ public class ResumeServiceImpl implements ResumeService {
 	public UploadResumeResponse uploadResume(MultipartFile file, Integer candidateId){
 		 validateFile(file);
 
-		 String text="";
-		try {
-			text = ResumeTextExtractor.extractText(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	     String fileName = generateFileName(file, candidateId);
 
 	     try {
@@ -66,33 +59,21 @@ public class ResumeServiceImpl implements ResumeService {
 	     resume.setFileName(fileName);
 	     resume.setFileUrl(uploadPath+ "/"+ fileName);
 	     resume.setCandidateId(candidateId);
+	
 	     
-	    
-	    
-
-	    	 
-	    	 System.out.println("2. Resume text extracted.");
-
-	    	 List<String> extractedSkills = ollamaService.extractSkills(text);
-
-	    	 System.out.println("3. Skills extracted.");
-
-	    	 System.out.println(extractedSkills);;
-		
-	     
-	    	 List<ResumeSkill> resumeSkills = new ArrayList<>();
-
-	    	 for (String skillName : extractedSkills) {
-
-	    	     ResumeSkill resumeSkill = new ResumeSkill();
-
-	    	     resumeSkill.setSkillName(skillName);
-	    	     resumeSkill.setResume(resume);
-
-	    	     resumeSkills.add(resumeSkill);
-	    	 }
-
-	    	 resume.setResumeSkills(resumeSkills);
+//	    	 List<ResumeSkill> resumeSkills = new ArrayList<>();
+//
+//	    	 for (String skillName : extractedSkills) {
+//
+//	    	     ResumeSkill resumeSkill = new ResumeSkill();
+//
+//	    	     resumeSkill.setSkillName(skillName);
+//	    	     resumeSkill.setResume(resume);
+//
+//	    	     resumeSkills.add(resumeSkill);
+//	    	 }
+//
+//	    	 resume.setResumeSkills(resumeSkills);
 	    	 
 
 	     Resume saved=resumeRepository.save(resume);

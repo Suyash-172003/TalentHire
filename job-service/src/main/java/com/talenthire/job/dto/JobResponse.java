@@ -39,6 +39,8 @@ public class JobResponse {
 	    private EmploymentType employmentType;
 
 	    private WorkMode workMode;
+	    
+	    private Integer shortlistScore;
 
 
 	    private List<String> skills;

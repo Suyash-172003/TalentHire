@@ -2,10 +2,12 @@ package com.talenthire.application.service;
 
 import java.util.List;
 
+import com.talenthire.application.dto.AtsScoreResponse;
+
 public interface OllamaService {
 
 
-    List<String> extractSkills(String resumeText);
+	AtsScoreResponse extractSkills(String resumeText,List<String> jobSkills);
 
     String generateRemarks(
             List<String> jobSkills,

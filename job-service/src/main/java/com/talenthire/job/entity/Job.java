@@ -50,6 +50,9 @@ public class Job {
 
 	private BigDecimal salary;
 	
+	@Column(name ="shortlist_score",nullable = false)
+	private Integer shortlistScore;
+	
 	
 	@Column(name="experience_required",nullable=false)
 	private Integer experienceRequired;
