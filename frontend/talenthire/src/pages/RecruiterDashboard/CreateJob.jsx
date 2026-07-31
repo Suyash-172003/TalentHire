@@ -15,22 +15,20 @@ function CreateJob() {
         salary: "",
         experienceRequired: "",
         vacancies: "",
+        shortlistScore: "",
         employmentType: "FULL_TIME",
         workMode: "ONSITE",
         skills: ""
     });
 
     const handleChange = (e) => {
-
         setJob({
             ...job,
             [e.target.name]: e.target.value
         });
-
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         try {
@@ -40,9 +38,11 @@ function CreateJob() {
                 salary: Number(job.salary),
                 experienceRequired: Number(job.experienceRequired),
                 vacancies: Number(job.vacancies),
+                shortlistScore: Number(job.shortlistScore),
                 skills: job.skills
                     .split(",")
                     .map(skill => skill.trim())
+                    .filter(skill => skill !== "")
             };
 
             await createJob(payload);
@@ -54,15 +54,12 @@ function CreateJob() {
         } catch (error) {
 
             console.error(error);
-
             alert("Failed to create job");
 
         }
-
     };
 
     return (
-
         <div className="create-job">
 
             <div className="create-job-card">
@@ -110,7 +107,7 @@ function CreateJob() {
                     <input
                         type="number"
                         name="experienceRequired"
-                        placeholder="Experience Required"
+                        placeholder="Experience Required (Years)"
                         value={job.experienceRequired}
                         onChange={handleChange}
                         required
@@ -122,6 +119,17 @@ function CreateJob() {
                         placeholder="Vacancies"
                         value={job.vacancies}
                         onChange={handleChange}
+                        required
+                    />
+
+                    <input
+                        type="number"
+                        name="shortlistScore"
+                        placeholder="Shortlist Score"
+                        value={job.shortlistScore}
+                        onChange={handleChange}
+                        min="0"
+                        max="100"
                         required
                     />
 
@@ -176,9 +184,7 @@ function CreateJob() {
             </div>
 
         </div>
-
     );
-
 }
 
 export default CreateJob;

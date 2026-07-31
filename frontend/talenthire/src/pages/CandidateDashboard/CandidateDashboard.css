@@ -187,14 +187,11 @@
 
 /* ================= TOPBAR ================= */
 
-.topbar {
-
+.topbar{
     display:flex;
-
-    justify-content:space-between;
-
+    justify-content:flex-end;
     align-items:center;
-
+    margin-bottom:8px;
 }
 
 .topbar input {
@@ -216,93 +213,126 @@
     box-shadow:0 10px 25px rgba(0,0,0,.06);
 
 }
+.profile{
+    display:flex;
+    align-items:center;
+    gap:18px;
 
-.topbar div {
+    background:rgba(255,255,255,.9);
+
+    padding:14px 22px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.notification{
+
+    font-size:22px;
+
+    cursor:pointer;
+
+}
+
+.profile-details{
 
     display:flex;
 
-    align-items:center;
+    flex-direction:column;
 
-    gap:20px;
-
-    background:white;
-
-    padding:8px 18px;
-
-    border-radius:30px;
+    line-height:1.2;
 
 }
 
-.topbar img {
+.profile-details h4{
+    font-size:15px;
+    font-weight:700;
+}
 
-    width:42px;
+.profile-details p{
 
-    height:42px;
+    margin:4px 0 0;
 
-    border-radius:50%;
+    color:#777;
+
+    font-size:13px;
 
 }
 
-/* ================= WELCOME ================= */
+.logout-btn{
 
-.welcome {
+    padding:8px 15px;
 
-    margin-top:45px;
+    font-size:14px;
 
+    border-radius:12px;
 }
 
-.welcome span {
+.logout-btn:hover{
 
-    background:white;
-
-    padding:10px 18px;
-
-    border-radius:30px;
-
-    font-weight:600;
-
-}
-
-.welcome h1 {
-
-    margin-top:25px;
-
-    font-size:65px;
-
-    line-height:1;
+    background:#F7B348;
 
     color:#171428;
 
-    font-family:'Cormorant Garamond';
+}
+/* ================= WELCOME ================= */
 
+.welcome{
+    margin-top:10px;
+    max-width:850px;
 }
 
-.welcome p {
+.welcome h1{
+    font-family:'Cormorant Garamond', serif;
+    font-size:72px;
+    line-height:1;
+    color:#171428;
+}
 
-    margin-top:20px;
+.welcome h2{
+    margin-top:8px;
+    font-size:46px;
+    font-weight:700;
+    color:#F6B04D;
+}
 
-    color:#666;
-
+.welcome p{
+    margin-top:18px;
+    max-width:650px;
     font-size:18px;
-
+    line-height:1.7;
+    color:#666;
 }
 
-.welcome button {
+.welcome-actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:28px;
+}
 
-    margin-top:30px;
-
-    padding:16px 35px;
-
+.welcome-actions button{
+    margin:0;
+    padding:15px 34px;
     border:none;
-
+    border-radius:14px;
     background:#171428;
-
-    color:white;
-
-    border-radius:16px;
-
+    color:#fff;
     font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+}
 
+.welcome-search{
+    width:330px;
+    height:52px;
+    border:none;
+    outline:none;
+    border-radius:30px;
+    padding:0 22px;
+    background:#fff;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
 }
 
 /* ================= STATS ================= */

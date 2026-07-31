@@ -183,18 +183,20 @@ function CandidateDashboard() {
 
                 <header className="topbar">
 
-                    <input
-                        placeholder="Search jobs..."
-                    />
+                    <div className="profile">
 
-                    <div>
+                        <span className="notification">🔔</span>
 
-                        🔔
+                        <div className="profile-details">
+                            <h4>{user?.name || "Candidate"}</h4>
+                        </div>
 
-                        <img
-                            src="https://i.pravatar.cc/100?img=12"
-                            alt="Profile"
-                        />
+                        <button
+                            className="logout-btn"
+                            onClick={logout}
+                        >
+                            Logout
+                        </button>
 
                     </div>
 
@@ -204,24 +206,28 @@ function CandidateDashboard() {
 
                 <section className="welcome">
 
-                    <span>
-                        👋 Welcome Back  {user.name} 
-                    </span>
-                   
+                    <h1>Welcome Back,</h1>
 
-                    <h1>
-                        Find your next
-                        <br />
-                        career opportunity
-                    </h1>
+                    <h2>{user?.name || "Candidate"}</h2>
 
                     <p>
-                        Discover jobs from top companies and track your hiring journey.
+                        Find your next career opportunity and discover jobs from top companies
+                        that match your skills and career goals.
                     </p>
 
-                    <button>
-                        Browse Jobs
-                    </button>
+                    <div className="welcome-actions">
+
+                        <button>
+                            Browse Jobs
+                        </button>
+
+                        <input
+                            className="welcome-search"
+                            type="text"
+                            placeholder="Search jobs..."
+                        />
+
+                    </div>
 
                 </section>
 

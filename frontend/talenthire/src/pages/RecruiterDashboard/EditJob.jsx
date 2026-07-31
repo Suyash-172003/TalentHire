@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     getJobById,
-    updateJob
+    updateJob,
+    closeJob
 } from "./recruiterDashboardService";
 import "./CreateJob.css";
 
@@ -17,8 +18,9 @@ function EditJob() {
         description: "",
         location: "",
         salary: "",
-        experience: "",
+        experienceRequired: "",
         vacancies: "",
+        shortlistScore: "",
         employmentType: "FULL_TIME",
         workMode: "ONSITE",
         skills: ""
@@ -29,13 +31,13 @@ function EditJob() {
     }, []);
 
     const loadJob = async () => {
-
         try {
 
             const response = await getJobById(jobId);
 
             setJob({
                 ...response.data,
+                experienceRequired: response.data.experience,
                 skills: response.data.skills.join(", ")
             });
 
@@ -45,16 +47,13 @@ function EditJob() {
             alert("Failed to load job");
 
         }
-
     };
 
     const handleChange = (e) => {
-
         setJob({
             ...job,
             [e.target.name]: e.target.value
         });
-
     };
 
     const handleSubmit = async (e) => {
@@ -69,17 +68,15 @@ function EditJob() {
                 description: job.description,
                 location: job.location,
                 salary: Number(job.salary),
-
-                // Backend expects this field
-                experienceRequired: Number(job.experience),
-
+                experienceRequired: Number(job.experienceRequired),
                 vacancies: Number(job.vacancies),
+                shortlistScore: Number(job.shortlistScore),
                 employmentType: job.employmentType,
                 workMode: job.workMode,
-
                 skills: job.skills
                     .split(",")
                     .map(skill => skill.trim())
+                    .filter(skill => skill !== "")
             };
 
             await updateJob(jobId, payload);
@@ -97,6 +94,30 @@ function EditJob() {
 
     };
 
+    const handleCloseJob = async () => {
+
+        if (!window.confirm("Are you sure you want to close this job?")) {
+            return;
+        }
+
+        try {
+
+            await closeJob(jobId);
+            
+
+            alert("Job Closed Successfully");
+
+            navigate("/recruiter/dashboard");
+
+        } catch (error) {
+
+            console.error(error);
+            alert("Failed to close job");
+
+        }
+
+    };
+
     return (
 
         <div className="create-job">
@@ -104,6 +125,28 @@ function EditJob() {
             <div className="create-job-card">
 
                 <h1>Edit Job</h1>
+
+                <div className="edit-job-header">
+
+                    <button
+                        type="button"
+                        className="back-btn"
+                        onClick={() => navigate("/recruiter/dashboard")}
+                    >
+                        ← Back
+                    </button>
+
+
+
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={handleCloseJob}
+                    >
+                        Close Job
+                    </button>
+
+                </div>
 
                 <form onSubmit={handleSubmit}>
 
@@ -145,9 +188,9 @@ function EditJob() {
 
                     <input
                         type="number"
-                        name="experience"
+                        name="experienceRequired"
                         placeholder="Experience (Years)"
-                        value={job.experience}
+                        value={job.experienceRequired}
                         onChange={handleChange}
                         required
                     />
@@ -158,6 +201,17 @@ function EditJob() {
                         placeholder="Vacancies"
                         value={job.vacancies}
                         onChange={handleChange}
+                        required
+                    />
+
+                    <input
+                        type="number"
+                        name="shortlistScore"
+                        placeholder="Shortlist Score"
+                        value={job.shortlistScore}
+                        onChange={handleChange}
+                        min="0"
+                        max="100"
                         required
                     />
 
@@ -214,7 +268,6 @@ function EditJob() {
         </div>
 
     );
-
 }
 
 export default EditJob;

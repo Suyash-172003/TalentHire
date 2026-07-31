@@ -99,3 +99,19 @@ export const viewResume = (resumeId, candidateId) => {
 
 };
 
+export const closeJob = async (jobId) => {
+
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(jobId);
+    return axiosService.patch(
+        `/job/${jobId}/close`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "X-User-Id": user.userId
+            }
+        }
+    );
+};

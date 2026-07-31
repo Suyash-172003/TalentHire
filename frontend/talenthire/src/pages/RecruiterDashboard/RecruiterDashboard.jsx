@@ -10,6 +10,7 @@ function RecruiterDashboard() {
   const [loading, setLoading] = useState(true);
   const totalJobs = jobs.length;
   const activeJobs = jobs.filter(job => job.status === "OPEN").length;
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
   const logout = () => {
 
@@ -85,56 +86,60 @@ function RecruiterDashboard() {
 
       <main className="main">
 
-        {/* Topbar */}
-
+        {/* Top Bar */}
         <header className="topbar">
-
-          <input
-            type="text"
-            placeholder="Search jobs..."
-          />
 
           <div className="profile">
 
-            <span>🔔</span>
+            <span className="notification">🔔</span>
 
-            <img
-              src="https://i.pravatar.cc/100?img=5"
-              alt=""
-            />
+            <div className="profile-details">
+              <h4>{user.name || "Recruiter"}</h4>
+            </div>
 
-            <p>ABC Technologies</p>
+            <button
+              className="logout-btn"
+              onClick={logout}
+            >
+              Logout
+            </button>
 
           </div>
 
         </header>
 
 
-
-        {/* Welcome */}
+        {/* Hero Section */}
 
         <section className="welcome">
 
-          <span className="tag">
-            🚀 Recruiter Dashboard
-          </span>
+          <h1>Welcome Back,</h1>
 
-          <h1>
-            Welcome Back
-          </h1>
+          <h2>{user.name}</h2>
 
           <p>
-            Manage jobs, applicants and assessments from one place.
+            Manage your job postings, review applicants,
+            assign assessments and track hiring progress
+            from one place.
           </p>
 
-          <button
-            onClick={() => navigate("/recruiter/create-job")}
-          >
-            + Create New Job
-          </button>
+          <div className="welcome-actions">
+
+            <button
+              onClick={() => navigate("/recruiter/create-job")}
+            >
+              + Create New Job
+            </button>
+
+            <input
+              className="welcome-search"
+              type="text"
+              placeholder="Search jobs..."
+            />
+
+          </div>
 
         </section>
-
 
 
         {/* Stats */}
@@ -209,18 +214,27 @@ function RecruiterDashboard() {
 
                     <div className="job-actions">
 
+
+
                       <button
-                       className="view-btn"
+                        className="view-btn"
                         onClick={() => navigate(`/recruiter/applicants/${job.jobId}`)}
                       >
-                        View Applicants
+                        Applicants
+                      </button>
+
+                      <button
+                        className="assessment-btn"
+                        onClick={() => navigate(`/recruiter/assessment/${job.jobId}`)}
+                      >
+                        Assessment
                       </button>
 
                       <button
                         className="edit-btn"
                         onClick={() => navigate(`/recruiter/edit-job/${job.jobId}`)}
                       >
-                        Edit
+                      Edit
                       </button>
 
                     </div>

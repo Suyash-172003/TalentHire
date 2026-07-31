@@ -9,6 +9,10 @@ import CreateJob from "./pages/RecruiterDashboard/CreateJob";
 import EditJob from "./pages/RecruiterDashboard/EditJob";
 import Applicants from "./pages/RecruiterDashboard/Applicants"
 import CodingAssessment from "./pages/Assessment/CodingAssessment";
+import RecruiterAssessmentPage from "./pages/RecruiterDashboard/RecruiterAssessmentPage";
+import McqInstructions from "./pages/CandidateDashboard/mcq/McqInstructions";
+import McqExam from "./pages/CandidateDashboard/mcq/McqExam";
+
 
 
 function App() {
@@ -35,10 +39,13 @@ function App() {
 
          <Route path="/recruiter/applicants/:jobId" element={<Applicants />}/>
 
-         <Route path="/assessment/:assessmentId" element={<CodingAssessment />}
-/>
+         <Route path="/assessment/:assessmentId" element={<CodingAssessment />}/>
 
-  
+        <Route path="/recruiter/assessment/:jobId" element={<RecruiterAssessmentPage />}/> 
+
+        <Route path="/candidate/mcq/:assessmentId" element={<McqInstructions />} />
+
+       <Route path="/candidate/mcq/exam/:attemptId" element={<McqExam />}/>
 
          
       </Routes>
