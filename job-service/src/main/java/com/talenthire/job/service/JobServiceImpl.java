@@ -137,7 +137,7 @@ if (!existingJob.getRecruiterID().equals(recruiterId)) {
 }
 
 existingJob.setCompanyName(request.getCompanyName());
-
+existingJob.setVacancies(request.getVacancies());
 existingJob.setTitle(request.getTitle());
 existingJob.setDescription(request.getDescription());
 existingJob.setLocation(request.getLocation());

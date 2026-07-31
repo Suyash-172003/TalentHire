@@ -5,9 +5,13 @@ import java.io.IOException;
 
 import java.util.List;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/assessment")
+@CrossOrigin(origins = "http://localhost:5173/")
 public class AssessmentController {
 
 	
@@ -145,6 +150,28 @@ public class AssessmentController {
 
 	        assessmentService.deleteAssessment(id);
 	        return ResponseEntity.ok("Assessment deleted successfully.");
+	    }
+	    
+	    @GetMapping("/job/{jobId}")
+	    public ResponseEntity<AssessmentResponse> getAssessmentByJobId(
+	            @PathVariable Integer jobId) {
+
+	        return ResponseEntity.ok(
+	                assessmentService.getAssessmentByJobId(jobId));
+	    }
+	    
+	    
+	    @GetMapping("/coding/template")
+	    public ResponseEntity<Resource> downloadCodingTemplate() throws IOException {
+
+	        ClassPathResource resource =
+	                new ClassPathResource("templates/Coding_Template.xlsx");
+
+	        return ResponseEntity.ok()
+	                .header(HttpHeaders.CONTENT_DISPOSITION,
+	                        "attachment; filename=Coding_Template.xlsx")
+	                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	                .body(resource);
 	    }
 	
 	

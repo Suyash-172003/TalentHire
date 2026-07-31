@@ -16,8 +16,9 @@ import com.talenthire.assessment.service.MCQExamService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/mcq/exam")
+@RequestMapping("/assessment/mcq/exam")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173/")
 public class MCQExamController {
 
     private final MCQExamService mcqExamService;

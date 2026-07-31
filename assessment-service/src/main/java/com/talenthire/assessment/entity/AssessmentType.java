@@ -4,6 +4,7 @@ package com.talenthire.assessment.entity;
 public enum AssessmentType {
 
     MCQ,
-    CODING
+    CODING,
+    BOTH
 
 }

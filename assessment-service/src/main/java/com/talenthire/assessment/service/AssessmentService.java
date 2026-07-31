@@ -37,6 +37,8 @@ public interface AssessmentService {
 	    void deleteAssessment(Integer id);
 
 	public List<CodingQuestionResponse> getCodingQuestions(Integer assessmentId);
+	
+	AssessmentResponse getAssessmentByJobId(Integer jobId);
 
 	
 

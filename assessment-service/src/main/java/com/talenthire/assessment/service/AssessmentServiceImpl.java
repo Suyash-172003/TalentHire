@@ -373,6 +373,16 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         assessmentRepository.delete(assessment);
     }
+    
+    @Override
+    public AssessmentResponse getAssessmentByJobId(Integer jobId) {
+
+        Assessment assessment = assessmentRepository
+                .findFirstByJobId(jobId)
+                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+
+        return assessmentMapper.toResponse(assessment);
+    }
 
 	
 

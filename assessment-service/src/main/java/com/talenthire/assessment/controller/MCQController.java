@@ -1,8 +1,13 @@
 package com.talenthire.assessment.controller;
 
+import java.io.IOException;
+import org.springframework.http.HttpHeaders;
 import java.util.List;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,8 +20,9 @@ import com.talenthire.assessment.service.MCQService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/mcq")
+@RequestMapping("/assessment/mcq")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173/")
 public class MCQController {
 
     private final MCQService mcqService;
@@ -66,6 +72,19 @@ public class MCQController {
         excelService.uploadQuestions(assessmentId, file);
 
         return ResponseEntity.ok("MCQ Questions uploaded successfully.");
+    }
+    
+    @GetMapping("/template")
+    public ResponseEntity<Resource> downloadTemplate() throws IOException {
+
+        ClassPathResource resource =
+                new ClassPathResource("templates/MCQ_Template.xlsx");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=MCQ_Template.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
 }

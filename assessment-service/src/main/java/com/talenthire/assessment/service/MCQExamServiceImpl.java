@@ -2,6 +2,7 @@ package com.talenthire.assessment.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,22 +41,50 @@ public class MCQExamServiceImpl implements MCQExamService {
                 .orElseThrow(() -> new RuntimeException("Assessment not found"));
 
         // Check existing attempt
-        attemptRepository.findByAssessment_AssessmentIdAndCandidateId(
-                request.getAssessmentId(),
-                request.getCandidateId())
-                .ifPresent(existing -> {
+//        attemptRepository.findByAssessment_AssessmentIdAndCandidateId(
+//                request.getAssessmentId(),
+//                request.getCandidateId())
+//                .ifPresent(existing -> {
+//
+//                    if (existing.getStatus() == ExamStatus.COMPLETED) {
+//                        throw new RuntimeException("You have already completed this assessment.");
+//                    }
+//
+//                    if (existing.getStatus() == ExamStatus.IN_PROGRESS) {
+//                        throw new RuntimeException(
+//                                "Exam already started. Continue with Attempt ID : "
+//                                        + existing.getId());
+//                    }
+//
+//                });
+        
+        Optional<MCQExamAttempt> existingAttempt =
+                attemptRepository.findByAssessment_AssessmentIdAndCandidateId(
+                        request.getAssessmentId(),
+                        request.getCandidateId());
 
-                    if (existing.getStatus() == ExamStatus.COMPLETED) {
-                        throw new RuntimeException("You have already completed this assessment.");
-                    }
+        if (existingAttempt.isPresent()) {
 
-                    if (existing.getStatus() == ExamStatus.IN_PROGRESS) {
-                        throw new RuntimeException(
-                                "Exam already started. Continue with Attempt ID : "
-                                        + existing.getId());
-                    }
+            MCQExamAttempt existing = existingAttempt.get();
 
-                });
+            if (existing.getStatus() == ExamStatus.COMPLETED) {
+                throw new RuntimeException("You have already completed this assessment.");
+            }
+
+            if (existing.getStatus() == ExamStatus.IN_PROGRESS) {
+
+                return StartExamResponse.builder()
+                        .attemptId(existing.getId())
+                        .assessmentId(existing.getAssessment().getAssessmentId())
+                        .candidateId(existing.getCandidateId())
+                        .startTime(existing.getStartTime())
+                        .duration(existing.getAssessment().getDuration())
+                        .totalQuestions(existing.getTotalQuestions())
+                        .totalMarks(existing.getTotalMarks())
+                        .message("Resuming existing attempt")
+                        .build();
+            }
+        }
 
         // Fetch questions
         List<MCQQuestion> questions =
@@ -90,57 +119,57 @@ public class MCQExamServiceImpl implements MCQExamService {
                 .build();
     }
 
-    @Override
-    public ExamResultResponse submitExam(Integer attemptId,
-                                         SubmitExamRequest request) {
-
-        MCQExamAttempt attempt = attemptRepository.findById(attemptId)
-                .orElseThrow(() -> new RuntimeException("Attempt not found"));
-
-        if (attempt.getSubmitted()) {
-            throw new RuntimeException("Exam already submitted.");
-        }
-
-        int obtainedMarks = 0;
-
-        for (SubmitAnswerRequest answer : request.getAnswers()) {
-
-            MCQQuestion question = mcqQuestionRepository.findById(answer.getQuestionId())
-                    .orElseThrow(() -> new RuntimeException("Question not found"));
-
-            if (question.getCorrectAnswer().equalsIgnoreCase(answer.getSelectedAnswer())) {
-                obtainedMarks += question.getMarks();
-            }
-        }
-
-        attempt.setObtainedMarks(obtainedMarks);
-        attempt.setEndTime(LocalDateTime.now());
-        attempt.setSubmitted(true);
-        attempt.setStatus(ExamStatus.COMPLETED);
-
-        attemptRepository.save(attempt);
-
-        Assessment assessment = assessmentRepository.findById(
-                attempt.getAssessment().getAssessmentId())
-                .orElseThrow(() -> new RuntimeException("Assessment not found"));
-
-        double percentage =
-                ((double) obtainedMarks / attempt.getTotalMarks()) * 100;
-
-        String result =
-                obtainedMarks >= assessment.getPassMarks()
-                        ? "PASS"
-                        : "FAIL";
-
-        return ExamResultResponse.builder()
-                .attemptId(attempt.getId())
-                .totalQuestions(attempt.getTotalQuestions())
-                .totalMarks(attempt.getTotalMarks())
-                .obtainedMarks(obtainedMarks)
-                .percentage(percentage)
-                .result(result)
-                .build();
-    }
+	    @Override
+	    public ExamResultResponse submitExam(Integer attemptId,
+	                                         SubmitExamRequest request) {
+	
+	        MCQExamAttempt attempt = attemptRepository.findById(attemptId)
+	                .orElseThrow(() -> new RuntimeException("Attempt not found"));
+	
+	        if (attempt.getSubmitted()) {
+	            throw new RuntimeException("Exam already submitted.");
+	        }
+	
+	        int obtainedMarks = 0;
+	
+	        for (SubmitAnswerRequest answer : request.getAnswers()) {
+	
+	            MCQQuestion question = mcqQuestionRepository.findById(answer.getQuestionId())
+	                    .orElseThrow(() -> new RuntimeException("Question not found"));
+	
+	            if (question.getCorrectAnswer().equalsIgnoreCase(answer.getSelectedAnswer())) {
+	                obtainedMarks += question.getMarks();
+	            }
+	        }
+	
+	        attempt.setObtainedMarks(obtainedMarks);
+	        attempt.setEndTime(LocalDateTime.now());
+	        attempt.setSubmitted(true);
+	        attempt.setStatus(ExamStatus.COMPLETED);
+	
+	        attemptRepository.save(attempt);
+	
+	        Assessment assessment = assessmentRepository.findById(
+	                attempt.getAssessment().getAssessmentId())
+	                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+	
+	        double percentage =
+	                ((double) obtainedMarks / attempt.getTotalMarks()) * 100;
+	
+	        String result =
+	                obtainedMarks >= assessment.getPassMarks()
+	                        ? "PASS"
+	                        : "FAIL";
+	
+	        return ExamResultResponse.builder()
+	                .attemptId(attempt.getId())
+	                .totalQuestions(attempt.getTotalQuestions())
+	                .totalMarks(attempt.getTotalMarks())
+	                .obtainedMarks(obtainedMarks)
+	                .percentage(percentage)
+	                .result(result)
+	                .build();
+	    }
 
     @Override
     @Transactional(readOnly = true)
