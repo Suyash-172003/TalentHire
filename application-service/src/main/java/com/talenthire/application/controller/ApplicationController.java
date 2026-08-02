@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.talenthire.application.service.ApplicationService;
+import com.talenthire.application.service.GroqService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +22,11 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationController {
 	
 	private final ApplicationService applicationService;
+	 private final GroqService groqService;
+
+	
+	
+
 	
     @PostMapping("/jobs/{jobId}/apply")
     public ResponseEntity<?> applyJob(

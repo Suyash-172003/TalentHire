@@ -10,9 +10,10 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Component;
 
 import com.talenthire.assessment.dto.RunResult;
+import com.talenthire.assessment.service.CodeExecutor;
 
 @Component
-public class DockerExecutor {
+public class JavaExecutor implements CodeExecutor {
 	
 	
 
@@ -140,6 +141,11 @@ public class DockerExecutor {
 		
 		return null;
 		
+	}
+
+	@Override
+	public String getLanguage() {
+		return "java";
 	}
 
 	

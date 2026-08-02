@@ -3,15 +3,14 @@ package com.talenthire.assessment.service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.talenthire.assessment.docker.DockerExecutor;
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
@@ -44,7 +43,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AssessmentServiceImpl implements AssessmentService {
 	
-	private final DockerExecutor dockerExecutor;
+	
+	private final CodeExecutorFactory executorFactory;
 	private final AssessmentRepository assessmentRepository;
 	private final JobClient jobClient;
 	private final CodingQuestionRepository codingQuestionRepository;
@@ -54,17 +54,40 @@ public class AssessmentServiceImpl implements AssessmentService {
 	@Override
 	public CodeExecutionResponse execute(CodeExecutionRequest request) {
 		// TODO Auto-generated method stub
+		
+		CodeExecutor executor =
+		        executorFactory.getExecutor(request.getLanguage());
 		CodeExecutionResponse response = new CodeExecutionResponse();
 
 		
 		try {
 			Path workSpace=createWorkSpace();
 			
-			Path javaFile=workSpace.resolve("Main.java");
+			String fileName;
+
+			switch (request.getLanguage().toLowerCase()) {
+
+			    case "java":
+			        fileName = "Main.java";
+			        break;
+
+			    case "cpp":
+			        fileName = "main.cpp";
+			        break;
+
+			    case "python":
+			        fileName = "main.py";
+			        break;
+
+			    default:
+			        throw new IllegalArgumentException("Unsupported language");
+			}
+			
+			Path javaFile=workSpace.resolve(fileName);
 			
 			Files.writeString(javaFile,request.getSourceCode());
 			
-			String compileError=dockerExecutor.compile(workSpace);
+			String compileError=executor.compile(workSpace);
 			
 			if(compileError!=null)
 			{
@@ -97,7 +120,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 				
 				TestCaseDto testCase=request.getTestcases().get(i);
 				
-				RunResult output=dockerExecutor.run(workSpace,testCase.getInput());
+				RunResult output=executor.run(workSpace,testCase.getInput());
 				
 				executionTime=output.getExecutionTime();
 				

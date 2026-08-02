@@ -47,14 +47,14 @@ public class Assessment {
 	    @Column(nullable = false)
 	    private Integer duration;      
 	    
-	    @Column(name = "start_time", nullable = false)
+	    @Column(name = "start_time", nullable = true)
 	    private LocalDateTime startTime;
 
 	    @Enumerated(EnumType.STRING)
 	    @Column(name = "assessment_type", nullable = false)
 	    private AssessmentType assessmentType;
 	    
-	    @Column(name = "end_time", nullable = false)
+	    @Column(name = "end_time", nullable = true)
 	    private LocalDateTime endTime;
 
 	    @Column(name = "total_marks")

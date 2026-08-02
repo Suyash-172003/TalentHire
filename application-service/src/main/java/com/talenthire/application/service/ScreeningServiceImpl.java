@@ -25,7 +25,7 @@ public class ScreeningServiceImpl implements ScreeningService{
 
 	private final ApplicationScreeningRepository applicationScreeningRepository;
 	private final JobClient jobClient;
-	private final OllamaService ollamaService;
+	private final GroqService groqService;
 	private final ApplicationRepository applicationRepository;
 	private final ResumeService resumeService;
 	private final ResumeTextExtractor resumeTextExtractor;
@@ -45,7 +45,7 @@ public class ScreeningServiceImpl implements ScreeningService{
 	        List<String> jobSkills = jobResponse.getSkills();
 
 	        AtsScoreResponse score =
-	                ollamaService.extractSkills(resumeText, jobSkills);
+	        		groqService.extractSkills(resumeText, jobSkills);
 
 	        ApplicationScreening screening =
 	                new ApplicationScreening();
