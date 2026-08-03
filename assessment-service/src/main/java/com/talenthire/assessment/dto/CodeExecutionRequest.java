@@ -13,10 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CodeExecutionRequest {
 	
+	 private Integer codingQuestionId;
+	
 	private String language;
 	
 	private String sourceCode;
 	
-	List<TestCaseDto> testcases;
 	
 }

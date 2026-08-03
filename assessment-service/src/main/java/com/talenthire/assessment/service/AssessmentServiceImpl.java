@@ -24,14 +24,18 @@ import com.talenthire.assessment.dto.CreateTestCaseRequest;
 import com.talenthire.assessment.dto.ExecutionStatus;
 import com.talenthire.assessment.dto.RunResult;
 import com.talenthire.assessment.dto.SampleTestCaseResponse;
-import com.talenthire.assessment.dto.TestCaseDto;
+import com.talenthire.assessment.dto.SubmitAssessmentRequest;
+import com.talenthire.assessment.dto.SubmitAssessmentResponse;
 import com.talenthire.assessment.dto.TestCaseResultDto;
 import com.talenthire.assessment.dto.VerifyJobResponse;
 import com.talenthire.assessment.entity.Assessment;
+import com.talenthire.assessment.entity.AssessmentSubmission;
 import com.talenthire.assessment.entity.CodingQuestion;
 import com.talenthire.assessment.entity.CodingTestCase;
+import com.talenthire.assessment.entity.SubmissionStatus;
 import com.talenthire.assessment.mapper.AssessmentMapper;
 import com.talenthire.assessment.repository.AssessmentRepository;
+import com.talenthire.assessment.repository.AssessmentSubmissionRepository;
 import com.talenthire.assessment.repository.CodingQuestionRepository;
 import com.talenthire.assessment.repository.CodingTestCaseRepository;
 
@@ -50,10 +54,11 @@ public class AssessmentServiceImpl implements AssessmentService {
 	private final CodingQuestionRepository codingQuestionRepository;
 	private final CodingTestCaseRepository codingTestCaseRepository;
 	private final AssessmentMapper assessmentMapper;
+	private final AssessmentSubmissionRepository assessmentSubmissionRepository;
 
 	@Override
 	public CodeExecutionResponse execute(CodeExecutionRequest request) {
-		// TODO Auto-generated method stub
+		
 		
 		CodeExecutor executor =
 		        executorFactory.getExecutor(request.getLanguage());
@@ -88,6 +93,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 			Files.writeString(javaFile,request.getSourceCode());
 			
 			String compileError=executor.compile(workSpace);
+			List<CodingTestCase> testCases =
+			        codingTestCaseRepository
+			        .findByCodingQuestionCodingQuestionId(
+			                request.getCodingQuestionId());
 			
 			if(compileError!=null)
 			{
@@ -98,16 +107,19 @@ public class AssessmentServiceImpl implements AssessmentService {
 
 				response.setPassedTestCases(0);
 
-				response.setTotalTestCases(request.getTestcases().size());
+				response.setTotalTestCases(testCases.size());
 
 				response.setResults(Collections.emptyList());
 
 				response.setRuntimeError(null);
+				response.setObtainedMarks(0);
 
 				response.setExecutionTime(null);
 
 				return response;
 			}
+			
+		
 			
 			List<TestCaseResultDto> results = new ArrayList<>();
 			
@@ -115,10 +127,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 			
 			 long executionTime = 0;
 			
-			for(int i=0;i<request.getTestcases().size();i++)
+			for(int i=0;i<testCases.size();i++)
 			{
 				
-				TestCaseDto testCase=request.getTestcases().get(i);
+				CodingTestCase testCase=testCases.get(i);
 				
 				RunResult output=executor.run(workSpace,testCase.getInput());
 				
@@ -134,9 +146,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 
 					response.setPassedTestCases(passed);
 
-					response.setTotalTestCases(request.getTestcases().size());
+					response.setTotalTestCases(testCases.size());
 
 					response.setResults(results);
+					response.setObtainedMarks(0);
 
 					response.setRuntimeError(output.getRuntimeError());
 
@@ -162,10 +175,25 @@ public class AssessmentServiceImpl implements AssessmentService {
 					passed++;
 				}
 				
-				results.add(result);
+				if(testCase.getSample()) {
+				    results.add(result);
+				}
 				
 			
 			}
+			
+			CodingQuestion question =
+			        codingQuestionRepository
+			        .findById(request.getCodingQuestionId())
+			        .orElseThrow(() -> new RuntimeException("Question not found"));
+
+			int totalMarks = question.getMarks();
+
+			int obtainedMarks =
+			        (passed * totalMarks) / testCases.size();
+			
+			response.setTotalMarks(totalMarks);
+			response.setObtainedMarks(obtainedMarks);
 			
 
 			response.setStatus(ExecutionStatus.SUCCESS);
@@ -174,7 +202,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 
 			response.setPassedTestCases(passed);
 
-			response.setTotalTestCases(request.getTestcases().size());
+			response.setTotalTestCases(testCases.size());
 
 			response.setResults(results);
 
@@ -406,6 +434,63 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         return assessmentMapper.toResponse(assessment);
     }
+
+	@Override
+	public SubmitAssessmentResponse submitAssessment(SubmitAssessmentRequest request) {
+		
+		int obtainedMarks = 0;
+	    for(CodeExecutionRequest answer : request.getAnswers()) {
+
+	        CodeExecutionResponse response = execute(answer);
+
+	        obtainedMarks += response.getObtainedMarks();
+	    }
+
+	    Assessment assessment =
+	            assessmentRepository.findById(
+	                    request.getAssessmentId())
+	            .orElseThrow(() ->
+	                    new RuntimeException("Assessment not found"));
+
+	    AssessmentSubmission submission =
+	            new AssessmentSubmission();
+
+	    submission.setAssessment(assessment);
+submission.setCandidateId(request.getCandidateId());
+	
+	    submission.setObtainedMarks(obtainedMarks);
+
+
+	    if(obtainedMarks >= assessment.getCodingPassMarks()) {
+
+	        submission.setStatus(
+	                SubmissionStatus.PASS);
+
+	    } else {
+
+	        submission.setStatus(
+	                SubmissionStatus.FAIL);
+	    }
+
+	    submission.setSubmittedAt(
+	            LocalDateTime.now());
+
+	    assessmentSubmissionRepository.save(submission);
+
+	    SubmitAssessmentResponse result =
+	            new SubmitAssessmentResponse();
+
+	    result.setObtainedMarks(
+	            obtainedMarks);
+
+	    result.setTotalMarks(
+	            assessment.getCodingTotalMarks());
+
+	    result.setStatus(
+	            submission.getStatus().name());
+
+	    return result;
+	}
 
 	
 

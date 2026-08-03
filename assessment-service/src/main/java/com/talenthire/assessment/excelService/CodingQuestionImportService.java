@@ -1,6 +1,7 @@
 package com.talenthire.assessment.excelService;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -81,6 +82,18 @@ public class CodingQuestionImportService {
 	                    getCellValue(row.getCell(9)),
 	                    false);
 	        }
+	        
+	        List<CodingQuestion> questions =
+	                codingQuestionRepository.findByAssessmentAssessmentId(assessmentId);
+
+	        int total = 0;
+
+	        for (CodingQuestion question : questions) {
+	            total += question.getMarks();
+	        }
+
+	        assessment.setCodingTotalMarks(total);
+	     
 
 	        workbook.close();
 

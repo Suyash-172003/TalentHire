@@ -30,6 +30,8 @@ import com.talenthire.assessment.dto.CodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateAssessmentRequest;
 import com.talenthire.assessment.dto.CreateCodingQuestionRequest;
 import com.talenthire.assessment.dto.CreateTestCaseRequest;
+import com.talenthire.assessment.dto.SubmitAssessmentRequest;
+import com.talenthire.assessment.dto.SubmitAssessmentResponse;
 import com.talenthire.assessment.excelService.CodingQuestionImportService;
 import com.talenthire.assessment.service.AssessmentService;
 
@@ -46,6 +48,14 @@ public class AssessmentController {
 	
 	private final AssessmentService assessmentService;
 	private final CodingQuestionImportService codingQuestionImportService;
+	
+	@PostMapping("/submit")
+	public SubmitAssessmentResponse submitAssessment(
+	        @RequestBody SubmitAssessmentRequest request) {
+
+	    return assessmentService.submitAssessment(request);
+
+	}
 	
 	
 	@PostMapping("/{assessmentId}/coding/upload")

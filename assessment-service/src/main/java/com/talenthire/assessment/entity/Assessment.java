@@ -54,6 +54,13 @@ public class Assessment {
 	    @Column(name = "assessment_type", nullable = false)
 	    private AssessmentType assessmentType;
 	    
+	    @Column(name = "coding_total_marks")
+	    private Integer codingTotalMarks = 0;
+
+	    @Column(name = "coding_pass_marks")
+	    private Integer codingPassMarks = 0;
+
+	    
 	    @Column(name = "end_time", nullable = true)
 	    private LocalDateTime endTime;
 
@@ -90,6 +97,13 @@ public class Assessment {
 	            orphanRemoval = true
 	    )
 	    private List<MCQQuestion> questions = new ArrayList<>();
+	    
+	    @OneToMany(
+	            mappedBy = "assessment",
+	            cascade = CascadeType.ALL,
+	            orphanRemoval = true
+	    )
+	    private List<AssessmentSubmission> submissions = new ArrayList<>();
 
 	}
 

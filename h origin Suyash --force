@@ -1,0 +1,273 @@
+[33mcommit e60f68c31c415a4770399df1b26a2166c50a15ab[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mSuyash[m[33m)[m
+Author: Suyash Neema <suyashneema17@gmail.com>
+Date:   Sun Aug 2 16:21:43 2026 +0530
+
+    Change in Resume Parsing
+
+[1mdiff --git a/application-service/pom.xml b/application-service/pom.xml[m
+[1mindex 896e63a..4253d9f 100644[m
+[1m--- a/application-service/pom.xml[m
+[1m+++ b/application-service/pom.xml[m
+[36m@@ -46,6 +46,12 @@[m
+ 	[m
+ 	<dependencies>[m
+ 	[m
+[32m+[m	[32m<dependency>[m
+[32m+[m[32m    <groupId>com.openai</groupId>[m
+[32m+[m[32m    <artifactId>openai-java</artifactId>[m
+[32m+[m[32m    <version>4.43.0</version>[m
+[32m+[m[32m</dependency>[m
+[32m+[m[41m	[m
+ 	<dependency>[m
+     <groupId>org.apache.pdfbox</groupId>[m
+     <artifactId>pdfbox</artifactId>[m
+[1mdiff --git a/application-service/resumeUploads/1_49ac9728_Suyash_Resume_(2).pdf b/application-service/resumeUploads/1_49ac9728_Suyash_Resume_(2).pdf[m
+[1mnew file mode 100644[m
+[1mindex 0000000..527b088[m
+[1m--- /dev/null[m
+[1m+++ b/application-service/resumeUploads/1_49ac9728_Suyash_Resume_(2).pdf[m
+[36m@@ -0,0 +1,78 @@[m
+[32m+[m[32m            +91-8305963185           Suyash Neema[m
+[32m+[m
+[32m+[m[32m                                            Software Engineer[m
+[32m+[m
+[32m+[m[32m                                   suyashneema17@gmail.com linkedin.com/in/suyash-neema-961114230/[m
+[32m+[m
+[32m+[m[32mSummary[m
+[32m+[m
+[32m+[m[32mJava Backend Developer skilled in Java, Spring Boot, REST APIs, JDBC, SQL, and multi-threading. Strong[m
+[32m+[m[32mfoundation in backend development, API design, and database operations. Dedicated to writing clean, reliable code[m
+[32m+[m[32mand continuously enhancing technical skills.[m
+[32m+[m
+[32m+[m[32mSkills[m
+[32m+[m
+[32m+[m[32mProgramming & Querying: Java, SQL[m
+[32m+[m[32mWeb Development: J2EE, HTML, CSS, JavaScript[m
+[32m+[m[32mFramework & Library: Spring Boot, jQuery, Hibernate, Bootstrap, React[m
+[32m+[m[32mTools: Maven, Git, Postman[m
+[32m+[m
+[32m+[m[32mAwards & Certifications[m
+[32m+[m
+[32m+[m[32m    • Java – ThinkingMachines (2024): Completed core and advanced Java training, focused on multi-threading and[m
+[32m+[m[32m        JDBC API.[m
+[32m+[m
+[32m+[m[32m     • Machine Learning – IBM (2026): Completed an introductory course focused on the fundamental concepts and[m
+[32m+[m[32m        practical applications of machine learning.[m
+[32m+[m
+[32m+[m[32m     • Artificial Intelligence – Google (2026): Completed an introductory program covering AI foundations and their[m
+[32m+[m[32m        real-world impact.[m
+[32m+[m
+[32m+[m[32mExperience[m
+[32m+[m
+[32m+[m[32mSoftware Developer Intern                                              Aug 2025 – Oct 2025[m
+[32m+[m
+[32m+[m[32mVKTechno Solutions Private Limited (Onsite)                            Tech: Spring Boot, SQL[m
+[32m+[m
+[32m+[m[32m– Developed secure authentication and validation workflows in Spring Boot using JWT, enhancing user[m
+[32m+[m[32m   access reliability.[m
+[32m+[m
+[32m+[m[32m– Implemented RESTful API endpoints integrated with PostgreSQL to streamline backend data operations and improve[m
+[32m+[m[32m   performance.[m
+[32m+[m
+[32m+[m[32m– Collaborated in the software development lifecycle using Git for version control and Postman for API testing and[m
+[32m+[m[32m   verification.[m
+[32m+[m
+[32m+[m[32mProjects[m
+[32m+[m
+[32m+[m[32mStudent Data Management | Java, SQL                                    April 2024 – May 2024[m
+[32m+[m
+[32m+[m[32m– Developed a multi-tier Java Student Management System with separate data, business, and presentation[m
+[32m+[m
+[32m+[m[32mlayers.[m
+[32m+[m
+[32m+[m[32m– Implemented MySQL for efficient data storage, integrated Socket I/O for seamless network communication, and built a[m
+[32m+[m
+[32m+[m[32muser-friendly interface using AWT and Swing.[m
+[32m+[m
+[32m+[m[32mReal-time White Board | Java                                           June 2024 – July 2024[m
+[32m+[m
+[32m+[m[32m– Designed a real-time whiteboard application using Java and AWT.[m
+[32m+[m
+[32m+[m[32m– Established efficient client-server communication using Java sockets to ensure smooth and responsive data transmission.[m
+[32m+[m
+[32m+[m[32m– Built a collaborative whiteboard system with features for drawing, erasing, and clearing the canvas, allowing multiple[m
+[32m+[m
+[32m+[m[32musers to interact simultaneously.[m
+[32m+[m
+[32m+[m[32mEducation[m
+[32m+[m
+[32m+[m[32mB. Tech Computer Science (CGPA: 8.07 / 10)                             Graduated: 2025[m
+[32m+[m[32mMahakal Institute of Technology, Ujjain[m
+[32m+[m
+[32m+[m[32mClass XII - Higher Secondary (92.6%)                                                                2020 – 2021[m
+[32m+[m[32mExcellence School, Ujjain[m
+[32m+[m
+[32m+[m[32mClass X - Secondary (92.8%)                                                                         2018 – 2019[m
+[32m+[m[32mSant Meera Convent School, Ujjain[m
+[32m+[m[32m[m
+[1mdiff --git a/application-service/resumeUploads/1_54168759_Suyash_Resume_(2).pdf b/application-service/resumeUploads/1_54168759_Suyash_Resume_(2).pdf[m
+[1mnew file mode 100644[m
+[1mindex 0000000..527b088[m
+[1m--- /dev/null[m
+[1m+++ b/application-service/resumeUploads/1_54168759_Suyash_Resume_(2).pdf[m
+[36m@@ -0,0 +1,78 @@[m
+[32m+[m[32m            +91-8305963185           Suyash Neema[m
+[32m+[m
+[32m+[m[32m                                            Software Engineer[m
+[32m+[m
+[32m+[m[32m                                   suyashneema17@gmail.com linkedin.com/in/suyash-neema-961114230/[m
+[32m+[m
+[32m+[m[32mSummary[m
+[32m+[m
+[32m+[m[32mJava Backend Developer skilled in Java, Spring Boot, REST APIs, JDBC, SQL, and multi-threading. Strong[m
+[32m+[m[32mfoundation in backend development, API design, and database operations. Dedicated to writing clean, reliable code[m
+[32m+[m[32mand continuously enhancing technical skills.[m
+[32m+[m
+[32m+[m[32mSkills[m
+[32m+[m
+[32m+[m[32mProgramming & Querying: Java, SQL[m
+[32m+[m[32mWeb Development: J2EE, HTML, CSS, JavaScript[m
+[32m+[m[32mFramework & Library: Spring Boot, jQuery, Hibernate, Bootstrap, React[m
+[32m+[m[32mTools: Maven, Git, Postman[m
+[32m+[m
+[32m+[m[32mAwards & Certifications[m
+[32m+[m
+[32m+[m[32m    • Java – ThinkingMachines (2024): Completed core and advanced Java training, focused on multi-threading and[m
+[32m+[m[32m        JDBC API.[m
+[32m+[m
+[32m+[m[32m     • Machine Learning – IBM (2026): Completed an introductory course focused on the fundamental concepts and[m
+[32m+[m[32m        practical applications of machine learning.[m
+[32m+[m
+[32m+[m[32m     • Artificial Intelligence – Google (2026): Completed an introductory program covering AI foundations and their[m
+[32m+[m[32m        real-world impact.[m
+[32m+[m
+[32m+[m[32mExperience[m
+[32m+[m
+[32m+[m[32mSoftware Developer Intern                                              Aug 2025 – Oct 2025[m
+[32m+[m
+[32m+[m[32mVKTechno Solutions Private Limited (Onsite)                            Tech: Spring Boot, SQL[m
+[32m+[m
+[32m+[m[32m– Developed secure authentication and validation workflows in Spring Boot using JWT, enhancing user[m
+[32m+[m[32m   access reliability.[m
+[32m+[m
+[32m+[m[32m– Implemented RESTful API endpoints integrated with PostgreSQL to streamline backend data operations and improve[m
+[32m+[m[32m   performance.[m
+[32m+[m
+[32m+[m[32m– Collaborated in the software development lifecycle using Git for version control and Postman for API testing and[m
+[32m+[m[32m   verification.[m
+[32m+[m
+[32m+[m[32mProjects[m
+[32m+[m
+[32m+[m[32mStudent Data Management | Java, SQL                                    April 2024 – May 2024[m
+[32m+[m
+[32m+[m[32m– Developed a multi-tier Java Student Management System with separate data, business, and presentation[m
+[32m+[m
+[32m+[m[32mlayers.[m
+[32m+[m
+[32m+[m[32m– Implemented MySQL for efficient data storage, integrated Socket I/O for seamless network communication, and built a[m
+[32m+[m
+[32m+[m[32muser-friendly interface using AWT and Swing.[m
+[32m+[m
+[32m+[m[32mReal-time White Board | Java                                           June 2024 – July 2024[m
+[32m+[m
+[32m+[m[32m– Designed a real-time whiteboard application using Java and AWT.[m
+[32m+[m
+[32m+[m[32m– Established efficient client-server communication using Java sockets to ensure smooth and responsive data transmission.[m
+[32m+[m
+[32m+[m[32m– Built a collaborative whiteboard system with features for drawing, erasing, and clearing the canvas, allowing multiple[m
+[32m+[m
+[32m+[m[32musers to interact simultaneously.[m
+[32m+[m
+[32m+[m[32mEducation[m
+[32m+[m
+[32m+[m[32mB. Tech Computer Science (CGPA: 8.07 / 10)                             Graduated: 2025[m
+[32m+[m[32mMahakal Institute of Technology, Ujjain[m
+[32m+[m
+[32m+[m[32mClass XII - Higher Secondary (92.6%)                                                                2020 – 2021[m
+[32m+[m[32mExcellence School, Ujjain[m
+[32m+[m
+[32m+[m[32mClass X - Secondary (92.8%)                                                                         2018 – 2019[m
+[32m+[m[32mSant Meera Convent School, Ujjain[m
+[32m+[m[32m[m
+[1mdiff --git a/application-service/resumeUploads/1_8a2c7a45_Suyash_Resume_(2).pdf b/application-service/resumeUploads/1_8a2c7a45_Suyash_Resume_(2).pdf[m
+[1mnew file mode 100644[m
+[1mindex 0000000..527b088[m
+[1m--- /dev/null[m
+[1m+++ b/application-service/resumeUploads/1_8a2c7a45_Suyash_Resume_(2).pdf[m
+[36m@@ -0,0 +1,78 @@[m
+[32m+[m[32m            +91-8305963185           Suyash Neema[m
+[32m+[m
+[32m+[m[32m                                            Software Engineer[m
+[32m+[m
+[32m+[m[32m                                   suyashneema17@gmail.com linkedin.com/in/suyash-neema-961114230/[m
+[32m+[m
+[32m+[m[32mSummary[m
+[32m+[m
+[32m+[m[32mJava Backend Developer skilled in Java, Spring Boot, REST APIs, JDBC, SQL, and multi-threading. Strong[m
+[32m+[m[32mfoundation in backend development, API design, and database operations. Dedicated to writing clean, reliable code[m
+[32m+[m[32mand continuously enhancing technical skills.[m
+[32m+[m
+[32m+[m[32mSkills[m
+[32m+[m
+[32m+[m[32mProgramming & Querying: Java, SQL[m
+[32m+[m[32mWeb Development: J2EE, HTML, CSS, JavaScript[m
+[32m+[m[32mFramework & Library: Spring Boot, jQuery, Hibernate, Bootstrap, React[m
+[32m+[m[32mTools: Maven, Git, Postman[m
+[32m+[m
+[32m+[m[32mAwards & Certifications[m
+[32m+[m
+[32m+[m[32m    • Java – ThinkingMachines (2024): Completed core and advanced Java training, focused on multi-threading and[m
+[32m+[m[32m        JDBC API.[m
+[32m+[m
+[32m+[m[32m     • Machine Learning – IBM (2026): Completed an introductory course focused on the fundamental concepts and[m
+[32m+[m[32m        practical applications of machine learning.[m
+[32m+[m
+[32m+[m[32m     • Artificial Intelligence – Google (2026): Completed an introductory program covering AI foundations and their[m
+[32m+[m[32m        real-world impact.[m
+[32m+[m
+[32m+[m[32mExperience[m
+[32m+[m
+[32m+[m[32mSoftware Developer Intern                                              Aug 2025 – Oct 2025[m
+[32m+[m
+[32m+[m[32mVKTechno Solutions Private Limited (Onsite)                            Tech: Spring Boot, SQL[m
+[32m+[m
+[32m+[m[32m– Developed secure authentication and validation workflows in Spring Boot using JWT, enhancing user[m
+[32m+[m[32m   access reliability.[m
+[32m+[m
+[32m+[m[32m– Implemented RESTful API endpoints integrated with PostgreSQL to streamline backend data operations and improve[m
+[32m+[m[32m   performance.[m
+[32m+[m
+[32m+[m[32m– Collaborated in the software development lifecycle using Git for version control and Postman for API testing and[m
+[32m+[m[32m   verification.[m
+[32m+[m
+[32m+[m[32mProjects[m
+[32m+[m
+[32m+[m[32mStudent Data Management | Java, SQL                                    April 2024 – May 2024[m
+[32m+[m
+[32m+[m[32m– Developed a multi-tier Java Student Management System with separate data, business, and presentation[m
+[32m+[m
+[32m+[m[32mlayers.[m
+[32m+[m
+[32m+[m[32m– Implemented MySQL for efficient data storage, integrated Socket I/O for seamless network communication, and built a[m
+[32m+[m
+[32m+[m[32muser-friendly interface using AWT and Swing.[m
+[32m+[m
+[32m+[m[32mReal-time White Board | Java                                           June 2024 – July 2024[m
+[32m+[m
+[32m+[m[32m– Designed a real-time whiteboard application using Java and AWT.[m
+[32m+[m
+[32m+[m[32m– Established efficient client-server communication using Java sockets to ensure smooth and responsive data transmission.[m
+[32m+[m
+[32m+[m[32m– Built a collaborative whiteboard system with features for drawing, erasing, and clearing the canvas, allowing multiple[m
+[32m+[m
+[32m+[m[32musers to interact simultaneously.[m
+[32m+[m
+[32m+[m[32mEducation[m
+[32m+[m
+[32m+[m[32mB. Tech Computer Science (CGPA: 8.07 / 10)                             Graduated: 2025[m
+[32m+[m[32mMahakal Institute of Technology, Ujjain[m
+[32m+[m
+[32m+[m[32mClass XII - Higher Secondary (92.6%)                                                                2020 – 2021[m
+[32m+[m[32mExcellence School, Ujjain[m
+[32m+[m
+[32m+[m[32mClass X - Secondary (92.8%)                                            

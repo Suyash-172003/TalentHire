@@ -27,5 +27,9 @@ public class CodeExecutionResponse {
     private String runtimeError;
 
     private Long executionTime;
+    
+    private Integer totalMarks;
+
+    private Integer obtainedMarks;
 
 }
