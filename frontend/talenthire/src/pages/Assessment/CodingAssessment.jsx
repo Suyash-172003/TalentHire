@@ -8,6 +8,8 @@ import { getCodingQuestions} from "../../api/axiosService";
 
 import {runCode} from "../../api/axiosService";
 
+import {submitAssessment} from "../../api/axiosService";
+
 function CodingAssessment() {
 
 const { assessmentId } = useParams();
@@ -19,13 +21,27 @@ const [codeMap, setCodeMap] = useState({});
 
     const [language, setLanguage] = useState("java");
 
-    const defaultCode = `public class Main {
-
+    const codeTemplates = {
+    java: `public class Main {
     public static void main(String[] args){
 
     }
 
-}`;
+}`,
+    cpp: `#include <iostream>
+using namespace std;
+
+int main() {
+
+    return 0;
+}`,
+
+    python: `def main():
+    pass
+
+if __name__ == "__main__":
+    main()`
+};
 
     useEffect(() => {
 
@@ -39,15 +55,49 @@ useEffect(() => {
 
 }, [selectedQuestion]);
 
+const handleSubmit = async () => {
+    try {
+        const request = {
+            assessmentId: Number(assessmentId),
+            candidateId: 2,   
+
+            answers: questions.map(question => ({
+                codingQuestionId: question.codingQuestionId,
+                language: language,
+                sourceCode:
+                    codeMap[
+                        `${question.codingQuestionId}-${language}`
+                    ] || codeTemplates[language]
+            }))
+        };
+
+        console.log(request);
+
+        const response = await submitAssessment(request);
+
+       console.log(response);
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("Failed to submit assessment.");
+
+    }
+
+};
+
 const handleRunCode = async () => {
     try{
         const request = {
             language: language,
 
            sourceCode:
-    codeMap[selectedQuestion.codingQuestionId] || defaultCode,
+codeMap[
+    `${selectedQuestion.codingQuestionId}-${language}`
+] || codeTemplates[language],
 
-            testcases: selectedQuestion.sampleTestCases
+        codingQuestionId: selectedQuestion.codingQuestionId
         };
         const response = await runCode(request);
         console.log(response);
@@ -190,13 +240,18 @@ const loadQuestions = async () => {
     height="450px"
     language={language}
     theme="vs"
-    value={codeMap[selectedQuestion?.codingQuestionId] || defaultCode}
-    onChange={(value) =>
-        setCodeMap(prev => ({
-            ...prev,
-            [selectedQuestion.codingQuestionId]: value || ""
-        }))
-    }
+   value={
+    codeMap[
+        `${selectedQuestion?.codingQuestionId}-${language}`
+    ] || codeTemplates[language]
+}
+   onChange={(value) =>
+    setCodeMap(prev => ({
+        ...prev,
+        [`${selectedQuestion.codingQuestionId}-${language}`]:
+            value || ""
+    }))
+}
 />
                 <div className="action-bar">
 
@@ -204,7 +259,7 @@ const loadQuestions = async () => {
         ▶ Run Code
     </button>
 
-    <button className="submit-btn">
+    <button className="submit-btn"  onClick={handleSubmit}>
         ✓ Submit Assessment
     </button>
 

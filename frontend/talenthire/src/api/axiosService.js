@@ -45,3 +45,13 @@ export const runCode = async (request) => {
 
     return response.data;
 };
+
+export const submitAssessment = async (request) => {
+
+    const response = await axios.post(
+        `${baseURLForTesting}/assessment/submit`,
+        request
+    );
+
+    return response.data;
+};
