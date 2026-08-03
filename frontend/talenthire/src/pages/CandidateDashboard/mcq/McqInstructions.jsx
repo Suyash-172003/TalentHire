@@ -115,10 +115,6 @@ const McqInstructions = () => {
                         {assessment.duration} Minutes
                     </p>
 
-                    <p>
-                        <strong>Pass Marks :</strong>{" "}
-                        {assessment.passMarks}
-                    </p>
 
                     <p>
                         <strong>Assessment Type :</strong>{" "}

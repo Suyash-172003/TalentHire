@@ -284,6 +284,13 @@
 
 /* ================= SECTION ================= */
 
+.assessment-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;   /* increase space between buttons */
+    padding: 30px 20px;
+}
+
 .assessment-section-wrapper{
 
     position:relative;

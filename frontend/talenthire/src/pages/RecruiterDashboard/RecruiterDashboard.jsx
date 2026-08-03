@@ -1,306 +1,291 @@
-import "./RecruiterDashboard.css";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getMyJobs } from "./recruiterDashboardService";
+  import "./RecruiterDashboard.css";
+  import { useNavigate } from "react-router-dom";
+  import { useEffect, useState } from "react";
+  import { getMyJobs } from "./recruiterDashboardService";
 
-function RecruiterDashboard() {
+  function RecruiterDashboard() {
 
-  const navigate = useNavigate();
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const totalJobs = jobs.length;
-  const activeJobs = jobs.filter(job => job.status === "OPEN").length;
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+    const navigate = useNavigate();
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const totalJobs = jobs.length;
+    const activeJobs = jobs.filter(job => job.status === "OPEN").length;
+    const user = JSON.parse(localStorage.getItem("user")) || {};
 
-  const logout = () => {
+    const [searchTerm, setSearchTerm] = useState("");
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    const logout = () => {
 
-    navigate("/login");
-  };
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
 
-  useEffect(() => {
-    loadJobs();
-  }, []);
+      navigate("/login");
+    };
 
-  const loadJobs = async () => {
+    useEffect(() => {
+      loadJobs();
+    }, []);
 
-    try {
+    const loadJobs = async () => {
 
-      const response = await getMyJobs();
+      try {
 
-      setJobs(response.data);
+        const response = await getMyJobs();
 
-    } catch (error) {
+        setJobs(response.data);
 
-      console.log(error);
+      } catch (error) {
 
-    } finally {
+        console.log(error);
 
-      setLoading(false);
+      } finally {
 
-    }
+        setLoading(false);
 
-  };
+      }
 
+    };
 
+    const filteredJobs = jobs.filter((job) => {
+      const search = searchTerm.toLowerCase();
 
-  return (
+      return (
+        job.title?.toLowerCase().includes(search) ||
+        job.companyName?.toLowerCase().includes(search) ||
+        job.location?.toLowerCase().includes(search) ||
+        job.status?.toLowerCase().includes(search) ||
+        job.employmentType?.replace("_", " ").toLowerCase().includes(search)
+      );
+    });
 
-    <div className="recruiter-dashboard">
 
-      {/* Sidebar */}
 
-      <aside className="sidebar">
+    return (
 
-        <h2>TalentHire</h2>
+      <div className="recruiter-dashboard">
 
-        <ul>
+        {/* Sidebar */}
 
-          <li className="active">🏠 Dashboard</li>
+        <aside className="sidebar">
 
-          <li>💼 My Jobs</li>
+          <h2>TalentHire</h2>
 
-          <li onClick={() => navigate("/recruiter/create-job")}>➕ Create Job</li>
+          <ul>
 
-          <li>👥 Applicants</li>
+            <li className="active">🏠 Dashboard</li>
 
-          <li>📝 Assessments</li>
+            <li>💼 My Jobs</li>
 
-          <li>📅 Interviews</li>
+            <li onClick={() => navigate("/recruiter/create-job")}>➕ Create Job</li>
 
-          <li>📊 Reports</li>
+            <li>👥 Applicants</li>
 
-          <li>⚙ Settings</li>
+            <li>📝 Assessments</li>
 
-          <li onClick={logout}>🚪 Logout</li>
+            <li>📅 Interviews</li>
 
-        </ul>
+            <li>📊 Reports</li>
 
-      </aside>
+            <li>⚙ Settings</li>
 
+            <li onClick={logout}>🚪 Logout</li>
 
+          </ul>
 
-      {/* Main */}
+        </aside>
 
-      <main className="main">
 
-        {/* Top Bar */}
-        <header className="topbar">
 
-          <div className="profile">
+        {/* Main */}
 
-            <span className="notification">🔔</span>
+        <main className="main">
 
-            <div className="profile-details">
-              <h4>{user.name || "Recruiter"}</h4>
-            </div>
+          {/* Top Bar */}
+          <header className="topbar">
 
-            <button
-              className="logout-btn"
-              onClick={logout}
-            >
-              Logout
-            </button>
+            <div className="profile">
 
-          </div>
+              <span className="notification">🔔</span>
 
-        </header>
-
-
-        {/* Hero Section */}
-
-        <section className="welcome">
-
-          <h1>Welcome Back,</h1>
-
-          <h2>{user.name}</h2>
-
-          <p>
-            Manage your job postings, review applicants,
-            assign assessments and track hiring progress
-            from one place.
-          </p>
-
-          <div className="welcome-actions">
-
-            <button
-              onClick={() => navigate("/recruiter/create-job")}
-            >
-              + Create New Job
-            </button>
-
-            <input
-              className="welcome-search"
-              type="text"
-              placeholder="Search jobs..."
-            />
-
-          </div>
-
-        </section>
-
-
-        {/* Stats */}
-
-        <section className="stats">
-
-
-          <div className="stat-card">
-            <h2>{totalJobs}</h2>
-            <p>Jobs Posted</p>
-          </div>
-
-          <div className="stat-card">
-            <h2>{activeJobs}</h2>
-            <p>Active Jobs</p>
-          </div>
-
-          <div className="stat-card">
-
-            <h2>352</h2>
-
-            <p>Applications</p>
-
-          </div>
-
-          <div className="stat-card">
-
-            <h2>22</h2>
-
-            <p>Candidates Hired</p>
-
-          </div>
-
-        </section>
-
-
-
-        <section className="dashboard-content">
-
-          {/* Left */}
-
-          <div className="left">
-
-            <h2>Recent Job Posts</h2>
-
-            {loading ? (
-
-              <p>Loading jobs...</p>
-
-            ) : jobs.length === 0 ? (
-
-              <div className="job-card">
-
-                <h3>No Jobs Found</h3>
-
-                <p>Create your first job to start hiring candidates.</p>
-
+              <div className="profile-details">
+                <h4>{user.name || "Recruiter"}</h4>
               </div>
 
-            ) : (
+              <button
+                className="logout-btn"
+                onClick={logout}
+              >
+                Logout
+              </button>
 
-              jobs.map((job) => (
+            </div>
 
-                <div className="job-card" key={job.jobId}>
-
-                  <div className="job-header">
-
-                    <div>
-                      <h3>{job.title}</h3>
-                      <h4>{job.companyName}</h4>
-                    </div>
-
-                    <div className="job-actions">
+          </header>
 
 
+          {/* Hero Section */}
 
-                      <button
-                        className="view-btn"
-                        onClick={() => navigate(`/recruiter/applicants/${job.jobId}`)}
-                      >
-                        Applicants
-                      </button>
+          <section className="welcome">
 
-                      <button
-                        className="assessment-btn"
-                        onClick={() => navigate(`/recruiter/assessment/${job.jobId}`)}
-                      >
-                        Assessment
-                      </button>
+            <h1>Welcome Back,</h1>
 
-                      <button
-                        className="edit-btn"
-                        onClick={() => navigate(`/recruiter/edit-job/${job.jobId}`)}
-                      >
-                      Edit
-                      </button>
+            <h2>{user.name}</h2>
 
-                    </div>
+            <p>
+              Manage your job postings, review applicants,
+              assign assessments and track hiring progress
+              from one place.
+            </p>
 
-                  </div>
+            <div className="welcome-actions">
 
-                  <div className="job-info">
+              <button
+                onClick={() => navigate("/recruiter/create-job")}
+              >
+                + Create New Job
+              </button>
 
-                    <span>📍 {job.location}</span>
+              <input
+                className="welcome-search"
+                type="text"
+                placeholder="Search jobs..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
 
-                    <span>💼 {job.employmentType.replace("_", " ")}</span>
+            </div>
 
-                    <span className="status">
-                      {job.status}
-                    </span>
+          </section>
 
-                  </div>
+
+          {/* Stats */}
+
+          <section className="stats">
+
+
+            <div className="stat-card">
+              <h2>{totalJobs}</h2>
+              <p>Jobs Posted</p>
+            </div>
+
+            <div className="stat-card">
+              <h2>{activeJobs}</h2>
+              <p>Active Jobs</p>
+            </div>
+
+            <div className="stat-card">
+
+              <h2>352</h2>
+
+              <p>Applications</p>
+
+            </div>
+
+            <div className="stat-card">
+
+              <h2>22</h2>
+
+              <p>Candidates Hired</p>
+
+            </div>
+
+          </section>
+
+
+
+          <section className="dashboard-content">
+
+            {/* Left */}
+
+            <div className="left">
+
+              <h2>Recent Job Posts</h2>
+
+              {loading ? (
+
+                <p>Loading jobs...</p>
+
+              ) : jobs.length === 0 ? (
+
+                <div className="job-card">
+
+                  <h3>No Jobs Found</h3>
+
+                  <p>Create your first job to start hiring candidates.</p>
 
                 </div>
 
-              ))
+              ) : (
 
-            )}
+                filteredJobs.map((job) => (
 
-          </div>
+                  <div className="job-card" key={job.jobId}>
+
+                    <div className="job-header">
+
+                      <div>
+                        <h3>{job.title}</h3>
+                        <h4>{job.companyName}</h4>
+                      </div>
+
+                      <div className="job-actions">
 
 
 
-          {/* Right */}
+                        <button
+                          className="view-btn"
+                          onClick={() => navigate(`/recruiter/applicants/${job.jobId}`)}
+                        >
+                          Applicants
+                        </button>
 
-          <div className="right">
+                        <button
+                          className="assessment-btn"
+                          onClick={() => navigate(`/recruiter/assessment/${job.jobId}`)}
+                        >
+                          Assessment
+                        </button>
 
-            <div className="info-card">
+                        <button
+                          className="edit-btn"
+                          onClick={() => navigate(`/recruiter/edit-job/${job.jobId}`)}
+                        >
+                          Edit
+                        </button>
 
-              <h3>Latest Applicants</h3>
+                      </div>
 
-              <p>👤 Rahul Sharma</p>
+                    </div>
 
-              <p>👤 Sneha Patil</p>
+                    <div className="job-info">
 
-              <p>👤 Aman Singh</p>
+                      <span>📍 {job.location}</span>
+
+                      <span>💼 {job.employmentType.replace("_", " ")}</span>
+
+                      <span className="status">
+                        {job.status}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                ))
+
+              )}
 
             </div>
 
-            <div className="info-card">
 
-              <h3>Quick Actions</h3>
+          </section>
 
-              <button>Create Job</button>
+        </main>
 
-              <button>Assign Assessment</button>
+      </div>
 
-              <button>View Reports</button>
+    );
 
-            </div>
+  }
 
-          </div>
-
-        </section>
-
-      </main>
-
-    </div>
-
-  );
-
-}
-
-export default RecruiterDashboard;
+  export default RecruiterDashboard;

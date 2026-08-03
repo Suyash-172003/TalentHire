@@ -46,6 +46,7 @@ const McqExam = () => {
     const [answers, setAnswers] = useState({});
     const [visited, setVisited] = useState([]);
     const [timeLeft, setTimeLeft] = useState(duration * 60);
+    const [markedForReview, setMarkedForReview] = useState([]);
 
 
     const handleAnswerSelect = (questionId, option) => {
@@ -55,6 +56,10 @@ const McqExam = () => {
             [questionId]: option
         }));
 
+        // Remove from review if answered
+        setMarkedForReview(prev =>
+            prev.filter(id => id !== questionId)
+        );
     };
 
     const handleSubmitExam = async () => {
@@ -211,6 +216,45 @@ const McqExam = () => {
                 <div className="question-palette">
 
                     <h3>Questions</h3>
+                    <div className="question-stats">
+
+                        <div className="stat-box solved">
+
+                            <span>{Object.keys(answers).length}</span>
+
+                            <small>Solved</small>
+
+                        </div>
+
+                        <div className="stat-box review">
+
+                            <span>
+                                {
+                                    markedForReview.filter(id => !answers[id]).length
+                                }
+                            </span>
+
+                            <small>Review</small>
+
+                        </div>
+
+                        <div className="stat-box unsolved">
+
+                            <span>
+                                {
+                                    questions.length -
+                                    Object.keys(answers).length -
+                                    markedForReview.filter(
+                                        id => !answers[id]
+                                    ).length
+                                }
+                            </span>
+
+                            <small>Unsolved</small>
+
+                        </div>
+
+                    </div>
 
                     <div className="palette-grid">
 
@@ -219,13 +263,15 @@ const McqExam = () => {
                             <button
                                 key={q.id}
                                 className={`palette-btn
-                                    ${currentIndex === index
+                                ${currentIndex === index
                                         ? "current"
                                         : answers[q.id]
                                             ? "answered"
-                                            : visited.includes(index)
-                                                ? "visited"
-                                                : ""
+                                            : markedForReview.includes(q.id)
+                                                ? "review"
+                                                : visited.includes(index)
+                                                    ? "visited"
+                                                    : ""
                                     }
                                 `}
                                 onClick={() => {
@@ -361,11 +407,43 @@ const McqExam = () => {
                             Previous
                         </button>
 
+                        <button
+                            className="review-btn"
+                            onClick={() => {
+                                if (!markedForReview.includes(currentQuestion.id)) {
+                                    setMarkedForReview(prev => [...prev, currentQuestion.id]);
+                                }
+
+                                if (currentIndex < questions.length - 1) {
+                                    setCurrentIndex(currentIndex + 1);
+                                }
+                            }}
+                        >
+                            Mark For Review & Next
+                        </button>
+                        <button
+                            className="clear-btn"
+                            onClick={() => {
+                                const updated = { ...answers };
+                                delete updated[currentQuestion.id];
+                                setAnswers(updated);
+                            }}
+                        >
+                            Clear Response
+                        </button>
+
 
                         <button
                             onClick={() => {
 
-                                setVisited((prev) => {
+                                // If this question has an answer, remove it from Review
+                                if (answers[currentQuestion.id]) {
+                                    setMarkedForReview(prev =>
+                                        prev.filter(id => id !== currentQuestion.id)
+                                    );
+                                }
+
+                                setVisited(prev => {
 
                                     if (prev.includes(currentIndex)) {
                                         return prev;

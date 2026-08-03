@@ -69,12 +69,14 @@ export const updateJob = async (jobId, jobData) => {
 export const getApplicantsByJob = async (jobId) => {
 
     const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+  
 
-    return axios.get(
-        `http://localhost:8083/application/job/${jobId}`,
+    return axiosService.get(`/application/job/${jobId}`,
         {
             headers: {
-                "X-User-Id": user.userId
+                "X-User-Id": user.userId,
+                Authorization: `Bearer ${token}`
             }
         }
     );
@@ -82,15 +84,18 @@ export const getApplicantsByJob = async (jobId) => {
 
 
 export const viewResume = (resumeId, candidateId) => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    return axios.get("http://localhost:8083/resume/view", {
+    return axiosService.get("/resume/view", {
 
         params: {
             resumeId: resumeId
         },
 
         headers: {
-            "X-User-Id": candidateId
+            "X-User-Id": candidateId,
+             Authorization: `Bearer ${token}`
         },
 
         responseType: "blob"

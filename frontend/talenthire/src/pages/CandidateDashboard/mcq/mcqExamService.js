@@ -1,53 +1,75 @@
 import axios from "axios";
-
-const BASE_URL = "http://localhost:8084/assessment/mcq";
+import axiosService from "../../../services/axiosService";
 
 /**
  * Start or Resume MCQ Exam
  * POST /assessment/mcq/exam/start
  */
-export const startExam = async (assessmentId, candidateId) => {
+export const startExam = (assessmentId, candidateId) => {
+    const token = localStorage.getItem("token");
 
-    return axios.post(`${BASE_URL}/exam/start`, {
-        assessmentId,
-        candidateId
-    });
-
+    return axiosService.post(
+        "/assessment/mcq/exam/start",
+        {
+            assessmentId,
+            candidateId
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
 };
 
 /**
  * Get all MCQ questions for an assessment
  * GET /assessment/mcq/assessments/{assessmentId}/questions
  */
-export const getQuestions = async (assessmentId) => {
+export const getQuestions = (assessmentId) => {
+    const token = localStorage.getItem("token");
 
-    return axios.get(
-        `${BASE_URL}/assessments/${assessmentId}/questions`
+    return axiosService.get(
+        `/assessment/mcq/assessments/${assessmentId}/questions`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
     );
-
 };
 
 /**
  * Submit Exam
  * POST /assessment/mcq/exam/{attemptId}/submit
  */
-export const submitExam = async (attemptId, payload) => {
+export const submitExam = (attemptId, payload) => {
+    const token = localStorage.getItem("token");
 
-    return axios.post(
-        `${BASE_URL}/exam/${attemptId}/submit`,
-        payload
+    return axiosService.post(
+        `/assessment/mcq/exam/${attemptId}/submit`,
+        payload,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
     );
-
 };
 
 /**
  * Get Result
  * GET /assessment/mcq/exam/{attemptId}/result
  */
-export const getResult = async (attemptId) => {
+export const getResult = (attemptId) => {
+    const token = localStorage.getItem("token");
 
-    return axios.get(
-        `${BASE_URL}/exam/${attemptId}/result`
+    return axiosService.get(
+        `/assessment/mcq/exam/${attemptId}/result`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
     );
-
 };

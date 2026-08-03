@@ -1,77 +1,63 @@
 import axios from "axios";
 import axiosService from "../../services/axiosService";
 
-// Get All Jobs
+/// Get All Jobs
 export const getAllJobs = async () => {
-
     const token = localStorage.getItem("token");
 
-    return axiosService.get(
-        `/job/getAll`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+    return axiosService.get("/job/getAll", {
+        headers: {
+            Authorization: `Bearer ${token}`
         }
-    );
-
+    });
 };
 
-// Apply Job (directly to Application Service)
+// Apply Job
 export const applyJob = async (jobId, resumeFile) => {
-
     const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
 
     const formData = new FormData();
-
     formData.append("resumeFile", resumeFile);
 
-
-    return axios.post(
-        `http://localhost:8083/application/jobs/${jobId}/apply`,
+    return axiosService.post(
+        `/application/jobs/${jobId}/apply`,
         formData,
         {
-            headers:{
+            headers: {
                 "X-User-Id": user.userId,
-                "Content-Type":"multipart/form-data"
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
             }
         }
     );
-
 };
 
 // Upload Resume
 export const uploadResume = async (file) => {
-
     const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
 
     const formData = new FormData();
-
     formData.append("file", file);
 
-    return axios.post(
-        "http://localhost:8083/resume/upload",
-        formData,
-        {
-            headers: {
-                "X-User-Id": user.userId
-            }
+    return axiosService.post("/resume/upload", formData, {
+        headers: {
+            "X-User-Id": user.userId,
+            Authorization: `Bearer ${token}`
         }
-    );
+    });
 };
 
 // Get My Applications
 export const getMyApplications = async () => {
-
     const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
 
-    return axios.get(
-        "http://localhost:8083/application/my",
-        {
-            headers: {
-                "X-User-Id": user.userId
-            }
+    return axiosService.get("/application/my", {
+        headers: {
+            "X-User-Id": user.userId,
+            Authorization: `Bearer ${token}`
         }
-    );
+    });
 };
-

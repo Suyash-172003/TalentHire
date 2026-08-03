@@ -89,30 +89,50 @@ function RecruiterAssessmentPage() {
 
     };
 
-    const handleSubmit = async (e) => {
+    // const handleSubmit = async (e) => {
 
+    //     e.preventDefault();
+
+    //     try {
+
+    //         const response = await createAssessment(formData);
+
+    //         console.log("Create Response:", response);
+
+    //         setAssessment(response.data);
+
+    //         alert("Assessment Created Successfully");
+
+    //     } catch (error) {
+
+    //         console.log("Error:", error);
+    //         console.log("Response:", error.response);
+    //         console.log("Data:", error.response?.data);
+
+    //         alert("Failed to Create Assessment");
+
+    //     }
+
+    // };
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-
             const response = await createAssessment(formData);
 
-            console.log("Create Response:", response);
-
-            setAssessment(response.data);
+            console.log("Status:", response.status);
+            console.log("Data:", response.data);
 
             alert("Assessment Created Successfully");
 
+            setAssessment(response.data);
         } catch (error) {
-
-            console.log("Error:", error);
-            console.log("Response:", error.response);
-            console.log("Data:", error.response?.data);
+            console.log("ERROR:", error);
+            console.log("MESSAGE:", error.message);
+            console.log("RESPONSE:", error.response);
 
             alert("Failed to Create Assessment");
-
         }
-
     };
 
     const handleMcqUpload = async () => {
@@ -273,13 +293,14 @@ function RecruiterAssessmentPage() {
 
             <div className="assessment-header">
 
-                <button
-                    className="assessment-back-btn"
-                    onClick={() => navigate(-1)}
-                >
-                    ← Back
-                </button>
+
                 <div className="assessment-actions">
+                    <button
+                        className="assessment-back-btn"
+                        onClick={() => navigate(-1)}
+                    >
+                        ← Back
+                    </button>
 
                     <button
                         type="button"

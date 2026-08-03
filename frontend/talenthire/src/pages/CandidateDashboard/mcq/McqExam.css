@@ -297,6 +297,76 @@ body{
 
 }
 
+.palette-btn.review{
+
+    background:#9333ea;
+
+    color:white;
+
+}
+
+.question-stats{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+    margin:20px 0;
+
+}
+
+.stat-box{
+
+    flex:1;
+
+    text-align:center;
+
+    border-radius:10px;
+
+    padding:15px 10px;
+
+    color:#fff;
+
+}
+
+.stat-box span{
+
+    display:block;
+
+    font-size:24px;
+
+    font-weight:700;
+
+}
+
+.stat-box small{
+
+    font-size:13px;
+
+    letter-spacing:.5px;
+
+}
+
+.stat-box.solved{
+
+    background:#16a34a;
+
+}
+
+.stat-box.review{
+
+    background:#9333ea;
+
+}
+
+.stat-box.unsolved{
+
+    background:#f59e0b;
+
+}
+
 .palette-btn.current{
 
     background:#2563eb;
@@ -406,30 +476,27 @@ body{
 }
 
 .navigation-buttons{
-
     margin-top:40px;
-
-    display:flex;
-
-    justify-content:space-between;
-
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
 }
 
 .navigation-buttons button{
 
-    padding:12px 30px;
+    height:48px;
 
     border:none;
 
     border-radius:8px;
 
-    background:#2563eb;
-
-    color:white;
-
     cursor:pointer;
 
-    font-size:16px;
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
 
 }
 
@@ -438,6 +505,72 @@ body{
     background:#bdbdbd;
 
     cursor:not-allowed;
+
+}
+
+.navigation-buttons button:first-child{
+
+    background:#64748b;
+
+    color:white;
+
+}
+
+.navigation-buttons button:first-child:hover{
+
+    background:#475569;
+
+}
+.navigation-buttons button:last-child{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.navigation-buttons button:last-child:hover{
+
+    background:#1d4ed8;
+
+}
+.review-btn{
+
+    background:#9333ea !important;
+
+    color:white;
+
+}
+
+.review-btn:hover{
+
+    background:#7e22ce !important;
+
+}
+.review-btn{
+
+    background:#9333ea !important;
+
+    color:white;
+
+}
+
+.review-btn:hover{
+
+    background:#7e22ce !important;
+
+}
+.review-btn{
+
+    background:#9333ea !important;
+
+    color:white;
+
+}
+
+.review-btn:hover{
+
+    background:#7e22ce !important;
 
 }
 

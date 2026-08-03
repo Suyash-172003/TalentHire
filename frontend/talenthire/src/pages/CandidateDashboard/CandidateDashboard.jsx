@@ -34,6 +34,7 @@ function CandidateDashboard() {
 
     const [appliedJobIds, setAppliedJobIds] = useState([]);
 
+    const [searchTerm, setSearchTerm] = useState("");
 
 
     useEffect(() => {
@@ -118,6 +119,9 @@ function CandidateDashboard() {
 
             await applyJob(selectedJobId, resumeFile);
 
+            setAppliedJobIds((prev) => [...prev, selectedJobId]);
+            setAppliedJobsCount((prev) => prev + 1);
+
             await loadAppliedJobsCount();
 
             alert("Application Submitted Successfully");
@@ -138,6 +142,19 @@ function CandidateDashboard() {
 
         }
     };
+
+    const filteredJobs = jobs.filter((job) => {
+        const search = searchTerm.toLowerCase();
+
+        return (
+            job.title?.toLowerCase().includes(search) ||
+            job.companyName?.toLowerCase().includes(search) ||
+            job.location?.toLowerCase().includes(search) ||
+            job.employmentType?.toLowerCase().includes(search) ||
+            job.workMode?.toLowerCase().includes(search) ||
+            job.skills?.join(" ").toLowerCase().includes(search)
+        );
+    });
 
 
 
@@ -225,6 +242,8 @@ function CandidateDashboard() {
                             className="welcome-search"
                             type="text"
                             placeholder="Search jobs..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
 
                     </div>
@@ -271,13 +290,13 @@ function CandidateDashboard() {
 
                             <p>Loading jobs...</p>
 
-                        ) : jobs.length === 0 ? (
+                        ) : filteredJobs.length === 0 ? (
 
-                            <p>No jobs available.</p>
+                            <p>No matching jobs found.</p>
 
                         ) : (
 
-                            jobs.map((job) => (
+                            filteredJobs.map((job) => (
 
                                 <div className="job" key={job.jobId}>
 
@@ -346,48 +365,6 @@ function CandidateDashboard() {
                             ))
 
                         )}
-
-                    </div>
-
-                    {/* Right */}
-
-                    <div className="right">
-
-                        <div className="box">
-
-                            <h3>Application Status</h3>
-
-                            <p>✔ Applied</p>
-
-                            <p>✔ Resume Submitted</p>
-
-                            <p>🟡 Review Pending</p>
-
-                            <p>○ Assessment</p>
-
-                        </div>
-
-                        <div className="box">
-
-                            <h3>Upcoming Test</h3>
-
-                            <p>Capgemini MCQ Exam</p>
-
-                            <h2>02:15:30</h2>
-
-                            <button>
-                                Start
-                            </button>
-
-                        </div>
-
-                        <div className="box">
-
-                            <h3>Profile Completion</h3>
-
-                            <h2>85%</h2>
-
-                        </div>
 
                     </div>
 

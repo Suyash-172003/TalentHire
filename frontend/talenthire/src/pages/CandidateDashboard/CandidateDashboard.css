@@ -380,26 +380,11 @@
 /* ================= CONTENT ================= */
 
 .content {
-
-    display:flex;
-
-    gap:30px;
-
-    margin-top:50px;
-
+    margin-top: 50px;
 }
-
 
 .left {
-
-    flex:2;
-
-}
-
-.right {
-
-    flex:1;
-
+    width: 100%;
 }
 
 .content h2 {

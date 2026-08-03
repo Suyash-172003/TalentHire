@@ -1,70 +1,47 @@
 import axiosService from "../../services/axiosService";
-import axios from "axios";
 
+// Create Assessment
 export const createAssessment = (data) => {
-    return axios.post("http://localhost:8084/assessment", data);
-};
-
-
-export const getAssessmentById = (id) => {
-    return axios.get(`http://localhost:8084/assessment/${id}`);
-};
-
-export const getAssessmentByJobId = (jobId) => {
-    return axios.get(`http://localhost:8084/assessment/job/${jobId}`);
-};
-
-
-export const uploadMcqExcel = (assessmentId, file) => {
-
-    const formData = new FormData();
-
-    formData.append("file", file);
-
-    return axios.post(
-        `http://localhost:8084/assessment/mcq/upload/${assessmentId}`,
-        formData,
-        {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        }
-    );
-
-};
-
-export const downloadMCQTemplate = () => {
-    return axios.get(
-        "http://localhost:8084/assessment/mcq/template",
-        {
-            responseType: "blob"
-        }
-    );
-};
-
-
-export const getJobById = async (jobId) => {
-
     const token = localStorage.getItem("token");
 
-    return axiosService.get(`/job/${jobId}`, {
+    return axiosService.post("/assessment", data, {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-
 };
 
-export const uploadCodingExcel = async (assessmentId, file) => {
+// Get Assessment By Id
+export const getAssessmentById = (id) => {
+    const token = localStorage.getItem("token");
 
+    return axiosService.get(`/assessment/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+};
+
+// Get Assessment By Job Id
+export const getAssessmentByJobId = (jobId) => {
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(`/assessment/job/${jobId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+};
+
+// Upload MCQ Excel
+export const uploadMcqExcel = (assessmentId, file) => {
     const token = localStorage.getItem("token");
 
     const formData = new FormData();
-
     formData.append("file", file);
 
-    return axios.post(
-        `http://localhost:8084/assessment/${assessmentId}/coding/upload`,
+    return axiosService.post(
+        `/assessment/mcq/upload/${assessmentId}`,
         formData,
         {
             headers: {
@@ -73,34 +50,69 @@ export const uploadCodingExcel = async (assessmentId, file) => {
             }
         }
     );
-
 };
 
-export const downloadCodingTemplate = async () => {
-
+// Download MCQ Template
+export const downloadMCQTemplate = () => {
     const token = localStorage.getItem("token");
 
-    return axios.get(
-        "http://localhost:8084/assessment/coding/template",
-        {
-            responseType: "blob",
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-    );
-
-};
-
-export const deleteAssessment = async (assessmentId) => {
-
-    const token = localStorage.getItem("token");
-
-    return axios.delete(`http://localhost:8084/assessment/${assessmentId}`, {
+    return axiosService.get("/assessment/mcq/template", {
+        responseType: "blob",
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-
 };
 
+// Get Job By Id
+export const getJobById = (jobId) => {
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(`/job/${jobId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+};
+
+// Upload Coding Excel
+export const uploadCodingExcel = (assessmentId, file) => {
+    const token = localStorage.getItem("token");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return axiosService.post(
+        `/assessment/${assessmentId}/coding/upload`,
+        formData,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
+            }
+        }
+    );
+};
+
+// Download Coding Template
+export const downloadCodingTemplate = () => {
+    const token = localStorage.getItem("token");
+
+    return axiosService.get("/assessment/coding/template", {
+        responseType: "blob",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+};
+
+// Delete Assessment
+export const deleteAssessment = (assessmentId) => {
+    const token = localStorage.getItem("token");
+
+    return axiosService.delete(`/assessment/${assessmentId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+};
