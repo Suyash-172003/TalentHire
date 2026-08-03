@@ -27,8 +27,15 @@ function RecruiterAssessmentPage() {
         jobId: Number(jobId),
         title: "",
         assessmentType: "MCQ",
+
+        // MCQ
         duration: "",
         passMarks: "",
+
+        // Coding
+        codingDuration: "",
+        codingPassMarks: "",
+
         startTime: "",
         endTime: "",
         createdBy: user.userId
@@ -89,31 +96,7 @@ function RecruiterAssessmentPage() {
 
     };
 
-    // const handleSubmit = async (e) => {
 
-    //     e.preventDefault();
-
-    //     try {
-
-    //         const response = await createAssessment(formData);
-
-    //         console.log("Create Response:", response);
-
-    //         setAssessment(response.data);
-
-    //         alert("Assessment Created Successfully");
-
-    //     } catch (error) {
-
-    //         console.log("Error:", error);
-    //         console.log("Response:", error.response);
-    //         console.log("Data:", error.response?.data);
-
-    //         alert("Failed to Create Assessment");
-
-    //     }
-
-    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -376,7 +359,7 @@ function RecruiterAssessmentPage() {
 
                                 <div className="assessment-form-group">
 
-                                    <label>Duration (Minutes)</label>
+                                    <label>MCQ Duration (Minutes)</label>
 
                                     <input
                                         type="number"
@@ -390,7 +373,20 @@ function RecruiterAssessmentPage() {
 
                                 <div className="assessment-form-group">
 
-                                    <label>Pass Marks</label>
+                                    <label>Coding Duration (Minutes)</label>
+
+                                    <input
+                                        type="number"
+                                        name="codingDuration"
+                                        value={formData.codingDuration}
+                                        onChange={handleChange}
+                                    />
+
+                                </div>
+
+                                <div className="assessment-form-group">
+
+                                    <label>MCQ Pass Marks</label>
 
                                     <input
                                         type="number"
@@ -398,6 +394,18 @@ function RecruiterAssessmentPage() {
                                         value={formData.passMarks}
                                         onChange={handleChange}
                                         required
+                                    />
+
+                                </div>
+                                <div className="assessment-form-group">
+
+                                    <label>Coding Pass Marks</label>
+
+                                    <input
+                                        type="number"
+                                        name="codingPassMarks"
+                                        value={formData.codingPassMarks}
+                                        onChange={handleChange}
                                     />
 
                                 </div>
@@ -436,7 +444,7 @@ function RecruiterAssessmentPage() {
 
                                 <button
                                     type="submit"
-                                    className="assessment-primary-btn"
+                                    className="primary-btn"
                                 >
                                     Create Assessment
                                 </button>
@@ -455,24 +463,48 @@ function RecruiterAssessmentPage() {
 
                         <div className="assessment-grid">
 
-                            <div className="assessment-grid-item">
-                                <h4>Title</h4>
-                                <p>{assessment.title}</p>
-                            </div>
+                            <div className="assessment-grid">
 
-                            <div className="assessment-grid-item">
-                                <h4>Type</h4>
-                                <p>{assessment.assessmentType}</p>
-                            </div>
+                                <div className="assessment-grid-item">
+                                    <h4>Title</h4>
+                                    <p>{assessment.title}</p>
+                                </div>
 
-                            <div className="assessment-grid-item">
-                                <h4>Duration</h4>
-                                <p>{assessment.duration} Minutes</p>
-                            </div>
+                                <div className="assessment-grid-item">
+                                    <h4>Type</h4>
+                                    <p>{assessment.assessmentType}</p>
+                                </div>
 
-                            <div className="assessment-grid-item">
-                                <h4>Pass Marks</h4>
-                                <p>{assessment.passMarks}</p>
+                                <div className="assessment-grid-item">
+                                    <h4>MCQ Duration</h4>
+                                    <p>{assessment.duration} Minutes</p>
+                                </div>
+
+                                <div className="assessment-grid-item">
+                                    <h4>MCQ Pass Marks</h4>
+                                    <p>{assessment.passMarks}</p>
+                                </div>
+
+                                <div className="assessment-grid-item">
+                                    <h4>Coding Duration</h4>
+                                    <p>{assessment.codingDuration} Minutes</p>
+                                </div>
+
+                                <div className="assessment-grid-item">
+                                    <h4>Coding Pass Marks</h4>
+                                    <p>{assessment.codingPassMarks}</p>
+                                </div>
+
+                                <div className="assessment-grid-item">
+                                    <h4>Start Time</h4>
+                                    <p>{new Date(assessment.startTime).toLocaleString()}</p>
+                                </div>
+
+                                <div className="assessment-grid-item">
+                                    <h4>End Time</h4>
+                                    <p>{new Date(assessment.endTime).toLocaleString()}</p>
+                                </div>
+
                             </div>
 
                         </div>

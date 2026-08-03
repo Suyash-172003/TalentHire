@@ -79,7 +79,7 @@ function App() {
 
         <Route
           path="/assessment/:assessmentId"
-          element={
+          element={ 
             <ProtectedRoute>
               <CodingAssessment />
             </ProtectedRoute>

@@ -4,11 +4,11 @@ import "./CodingAssessment.css";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { getCodingQuestions} from "../../api/axiosService";
+import { getCodingQuestions} from "./CodingAssessmentService";
 
-import {runCode} from "../../api/axiosService";
+import {runCode} from "./CodingAssessmentService";
 
-import {submitAssessment} from "../../api/axiosService";
+import {submitAssessment} from "./CodingAssessmentService";
 
 function CodingAssessment() {
 

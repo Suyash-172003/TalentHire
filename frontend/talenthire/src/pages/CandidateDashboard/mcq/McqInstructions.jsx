@@ -98,82 +98,82 @@ const McqInstructions = () => {
 
     }
 
-    return (
+        return (
 
-        <div className="mcq-instruction-container">
+            <div className="mcq-instruction-container">
 
-            <div className="mcq-instruction-card">
+                <div className="mcq-instruction-card">
 
-                <h2>{assessment.title}</h2>
+                    <h2>{assessment.title}</h2>
 
-                <hr />
+                    <hr />
 
-                <div className="instruction-info">
+                    <div className="instruction-info">
 
-                    <p>
-                        <strong>Duration :</strong>{" "}
-                        {assessment.duration} Minutes
-                    </p>
+                        <p>
+                            <strong>Duration :</strong>{" "}
+                            {assessment.duration} Minutes
+                        </p>
 
 
-                    <p>
-                        <strong>Assessment Type :</strong>{" "}
-                        {assessment.assessmentType}
-                    </p>
+                        <p>
+                            <strong>Assessment Type :</strong>{" "}
+                            {assessment.assessmentType}
+                        </p>
+
+                    </div>
+
+                    <hr />
+
+                    <h3>Instructions</h3>
+
+                    <ul>
+
+                        <li>
+                            Read every question carefully before answering.
+                        </li>
+
+                        <li>
+                            Timer starts immediately after clicking Start Exam.
+                        </li>
+
+                        <li>
+                            Do not refresh or close the browser during the exam.
+                        </li>
+
+                        <li>
+                            Each question has only one correct answer.
+                        </li>
+
+                        <li>
+                            You can navigate between questions anytime.
+                        </li>
+
+                        <li>
+                            Click Submit once you complete the assessment.
+                        </li>
+
+                        <li>
+                            The exam will auto-submit when the timer ends.
+                        </li>
+
+                    </ul>
+
+                    <button
+                        className="start-exam-btn"
+                        onClick={handleStartExam}
+                        disabled={starting}
+                    >
+
+                        {starting ? "Starting..." : "Start Exam"}
+
+                    </button>
 
                 </div>
 
-                <hr />
-
-                <h3>Instructions</h3>
-
-                <ul>
-
-                    <li>
-                        Read every question carefully before answering.
-                    </li>
-
-                    <li>
-                        Timer starts immediately after clicking Start Exam.
-                    </li>
-
-                    <li>
-                        Do not refresh or close the browser during the exam.
-                    </li>
-
-                    <li>
-                        Each question has only one correct answer.
-                    </li>
-
-                    <li>
-                        You can navigate between questions anytime.
-                    </li>
-
-                    <li>
-                        Click Submit once you complete the assessment.
-                    </li>
-
-                    <li>
-                        The exam will auto-submit when the timer ends.
-                    </li>
-
-                </ul>
-
-                <button
-                    className="start-exam-btn"
-                    onClick={handleStartExam}
-                    disabled={starting}
-                >
-
-                    {starting ? "Starting..." : "Start Exam"}
-
-                </button>
-
             </div>
 
-        </div>
-
-    );
+        );
 
 };
 

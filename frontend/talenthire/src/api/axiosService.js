@@ -9,7 +9,7 @@ export const registerUser = async (user) => {
 
     const response = await axios.post(
         baseURL + "/auth/register",
-        user
+        user,
     );
 
     return response.data;
@@ -26,32 +26,3 @@ export const loginUser = async (user) => {
 };
 
 
-
-export const getCodingQuestions = async (assessmentId) => {
-
-    const response = await axios.get(
-        `${baseURLForTesting}/assessment/${assessmentId}/coding-questions`
-    );
-
-    return response.data;
-};
-
-export const runCode = async (request) => {
-
-    const response = await axios.post(
-        `${baseURLForTesting}/assessment/run`,
-        request
-    );
-
-    return response.data;
-};
-
-export const submitAssessment = async (request) => {
-
-    const response = await axios.post(
-        `${baseURLForTesting}/assessment/submit`,
-        request
-    );
-
-    return response.data;
-};

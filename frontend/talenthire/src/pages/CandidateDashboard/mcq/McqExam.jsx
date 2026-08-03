@@ -91,7 +91,20 @@ const McqExam = () => {
             console.log("Payload:");
             console.log(JSON.stringify(payload, null, 2));
 
-            setResult(response.data);
+            if (assessmentType === "BOTH") {
+
+                navigate(`/candidate/coding/${assessmentId}`, {
+                    state: {
+                        assessmentId,
+                        attemptId
+                    }
+                });
+
+            } else {
+
+                navigate("/candidate/dashboard");
+
+            }
 
         }
 
