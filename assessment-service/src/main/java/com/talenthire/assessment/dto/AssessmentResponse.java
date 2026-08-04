@@ -16,17 +16,25 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AssessmentResponse {
 
-	private Integer id;
+    private Integer id;
 
     private Integer jobId;
 
     private String title;
 
+    private String description;
+
     private AssessmentType assessmentType;
 
+    // MCQ
     private Integer duration;
-
+    private Integer totalMarks;
     private Integer passMarks;
+
+    // Coding
+    private Integer codingDuration;
+    private Integer codingTotalMarks;
+    private Integer codingPassMarks;
 
     private LocalDateTime startTime;
 
@@ -37,5 +45,4 @@ public class AssessmentResponse {
     private Integer createdBy;
 
     private LocalDateTime createdAt;
-
 }

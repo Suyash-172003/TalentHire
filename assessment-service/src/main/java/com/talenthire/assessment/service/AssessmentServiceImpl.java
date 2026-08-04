@@ -395,6 +395,7 @@ public class AssessmentServiceImpl implements AssessmentService {
                 .collect(Collectors.toList());
     }
 
+   
     @Override
     public AssessmentResponse updateAssessment(Integer id, AssessmentRequest request) {
 
@@ -403,11 +404,23 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         assessment.setJobId(request.getJobId());
         assessment.setTitle(request.getTitle());
+        assessment.setDescription(request.getDescription());
+
         assessment.setAssessmentType(request.getAssessmentType());
+
+        // MCQ
         assessment.setDuration(request.getDuration());
+        assessment.setTotalMarks(request.getTotalMarks());
         assessment.setPassMarks(request.getPassMarks());
+
+        // Coding
+        assessment.setCodingDuration(request.getCodingDuration());
+        assessment.setCodingTotalMarks(request.getCodingTotalMarks());
+        assessment.setCodingPassMarks(request.getCodingPassMarks());
+
         assessment.setStartTime(request.getStartTime());
         assessment.setEndTime(request.getEndTime());
+
         assessment.setCreatedBy(request.getCreatedBy());
         assessment.setUpdatedAt(LocalDateTime.now());
 

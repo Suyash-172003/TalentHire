@@ -59,6 +59,9 @@ public class Assessment {
 
 	    @Column(name = "coding_pass_marks")
 	    private Integer codingPassMarks = 0;
+	    
+	    @Column(name = "coding_duration")
+	    private Integer codingDuration = 0;
 
 	    
 	    @Column(name = "end_time", nullable = true)

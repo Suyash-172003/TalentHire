@@ -41,8 +41,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/assessment")
 
-@CrossOrigin(origins = "http://localhost:5173/")
-
 public class AssessmentController {
 
 	

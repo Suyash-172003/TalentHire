@@ -91,8 +91,13 @@ public class CodingQuestionImportService {
 	        for (CodingQuestion question : questions) {
 	            total += question.getMarks();
 	        }
+	        
+	        System.out.print(total);
 
 	        assessment.setCodingTotalMarks(total);
+	        
+	        assessmentRepository.save(assessment);
+	        
 	     
 
 	        workbook.close();

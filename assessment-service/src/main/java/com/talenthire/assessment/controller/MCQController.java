@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/assessment/mcq")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173/")
 public class MCQController {
 
     private final MCQService mcqService;
