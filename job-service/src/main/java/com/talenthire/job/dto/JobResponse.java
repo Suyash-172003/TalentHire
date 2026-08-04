@@ -1,6 +1,7 @@
 package com.talenthire.job.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.talenthire.job.entity.EmploymentType;
@@ -38,9 +39,12 @@ public class JobResponse {
 	    
 	    private EmploymentType employmentType;
 
+	    
 	    private WorkMode workMode;
 	    
 	    private Integer shortlistScore;
+	    
+	    private LocalDateTime createdAt;
 
 
 	    private List<String> skills;

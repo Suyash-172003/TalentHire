@@ -19,8 +19,10 @@ import com.talenthire.application.dto.ScreenApplicationResponse;
 import com.talenthire.application.dto.UploadResumeResponse;
 import com.talenthire.application.dto.VerifyJobResponse;
 import com.talenthire.application.entity.Application;
+import com.talenthire.application.entity.ApplicationScreening;
 import com.talenthire.application.entity.Resume;
 import com.talenthire.application.repository.ApplicationRepository;
+import com.talenthire.application.repository.ApplicationScreeningRepository;
 import com.talenthire.application.repository.ResumeRepository;
 import com.talenthire.application.util.ResumeTextExtractor;
 
@@ -40,6 +42,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private final ApplicationRepository applicationRepository;
 	private final ResumeTextExtractor resumeTextExtractor;
 	private final OllamaService ollamaService;
+	private final ApplicationScreeningRepository applicationScreeningRepository;
 
 	@Override
 	public ApplyJobResponse applyJob(
@@ -180,6 +183,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 		        response.setResumeId(
 		                application.getResume().getResumeId());
+		        
+		        ApplicationScreening screening =
+		                applicationScreeningRepository
+		                        .findByApplicationApplicationId(application.getApplicationId())
+		                        .orElse(null);
+
+		        if (screening != null) {
+		            response.setScreeningStatus(
+		                    screening.getScreeningStatus().name());
+		        }
 
 		        responses.add(response);
 		    }

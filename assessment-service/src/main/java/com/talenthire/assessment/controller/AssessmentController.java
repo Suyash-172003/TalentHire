@@ -25,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
+import com.talenthire.assessment.dto.AssignAssessmentRequest;
+import com.talenthire.assessment.dto.AssignAssessmentResponse;
+import com.talenthire.assessment.dto.CandidateAssessmentResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateAssessmentRequest;
@@ -179,6 +182,25 @@ public class AssessmentController {
 	                        "attachment; filename=Coding_Template.xlsx")
 	                .contentType(MediaType.APPLICATION_OCTET_STREAM)
 	                .body(resource);
+	    }
+	    
+	    
+	    @PostMapping("/assign")
+	    public ResponseEntity<AssignAssessmentResponse> assignAssessment(
+	            @RequestBody AssignAssessmentRequest request) {
+
+	        return ResponseEntity.ok(
+	                assessmentService.assignAssessment(request));
+	    }
+	    
+	    
+	    @GetMapping("/assignment/candidate/{candidateId}")
+	    public ResponseEntity<List<CandidateAssessmentResponse>>
+	    getCandidateAssessments(@PathVariable Integer candidateId) {
+
+	        return ResponseEntity.ok(
+	                assessmentService.getCandidateAssessments(candidateId)
+	        );
 	    }
 	
 	

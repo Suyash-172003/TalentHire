@@ -22,5 +22,7 @@ public class JobApplicationResponse {
 	    private Integer resumeId;
 
 	    private String applicationStatus;
+	    
+	    private String screeningStatus;
 
 }

@@ -46,7 +46,7 @@ public class AssessmentMapper {
 	public AssessmentResponse toResponse(Assessment assessment) {
 
 	    return AssessmentResponse.builder()
-	            .id(assessment.getAssessmentId())
+	            .assessmentId(assessment.getAssessmentId())
 	            .jobId(assessment.getJobId())
 	            .title(assessment.getTitle())
 	            .description(assessment.getDescription())

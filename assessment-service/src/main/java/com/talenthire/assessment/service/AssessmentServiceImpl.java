@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
+import com.talenthire.assessment.dto.AssignAssessmentRequest;
+import com.talenthire.assessment.dto.AssignAssessmentResponse;
+import com.talenthire.assessment.dto.CandidateAssessmentResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodeExecutionResponse;
 import com.talenthire.assessment.dto.CodingQuestionResponse;
@@ -29,11 +32,14 @@ import com.talenthire.assessment.dto.SubmitAssessmentResponse;
 import com.talenthire.assessment.dto.TestCaseResultDto;
 import com.talenthire.assessment.dto.VerifyJobResponse;
 import com.talenthire.assessment.entity.Assessment;
+import com.talenthire.assessment.entity.AssessmentAssignment;
 import com.talenthire.assessment.entity.AssessmentSubmission;
+import com.talenthire.assessment.entity.AssignmentStatus;
 import com.talenthire.assessment.entity.CodingQuestion;
 import com.talenthire.assessment.entity.CodingTestCase;
 import com.talenthire.assessment.entity.SubmissionStatus;
 import com.talenthire.assessment.mapper.AssessmentMapper;
+import com.talenthire.assessment.repository.AssessmentAssignmentRepository;
 import com.talenthire.assessment.repository.AssessmentRepository;
 import com.talenthire.assessment.repository.AssessmentSubmissionRepository;
 import com.talenthire.assessment.repository.CodingQuestionRepository;
@@ -55,6 +61,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 	private final CodingTestCaseRepository codingTestCaseRepository;
 	private final AssessmentMapper assessmentMapper;
 	private final AssessmentSubmissionRepository assessmentSubmissionRepository;
+	private final AssessmentAssignmentRepository assignmentRepository;
 
 	@Override
 	public CodeExecutionResponse execute(CodeExecutionRequest request) {
@@ -397,9 +404,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
    
     @Override
-    public AssessmentResponse updateAssessment(Integer id, AssessmentRequest request) {
+    public AssessmentResponse updateAssessment(Integer assessmentId, AssessmentRequest request) {
 
-        Assessment assessment = assessmentRepository.findById(id)
+        Assessment assessment = assessmentRepository.findById(assessmentId)
                 .orElseThrow(() -> new RuntimeException("Assessment not found"));
 
         assessment.setJobId(request.getJobId());
@@ -503,6 +510,98 @@ submission.setCandidateId(request.getCandidateId());
 	            submission.getStatus().name());
 
 	    return result;
+	}
+	
+	
+	@Override
+	public AssignAssessmentResponse assignAssessment(
+	        AssignAssessmentRequest request) {
+
+	    if (assignmentRepository.existsByApplicationId(
+	            request.getApplicationId())) {
+
+	        throw new RuntimeException(
+	                "Assessment already assigned.");
+	    }
+
+	    Assessment assessment =
+	            assessmentRepository
+	            .findFirstByJobId(request.getJobId())
+	            .orElseThrow(() ->
+	                    new RuntimeException("Assessment not found"));
+
+	    AssessmentAssignment assignment =
+	            new AssessmentAssignment();
+
+	    assignment.setAssessmentId(
+	            assessment.getAssessmentId());
+
+	    assignment.setApplicationId(
+	            request.getApplicationId());
+
+	    assignment.setCandidateId(
+	            request.getCandidateId());
+
+	    assignment.setAssignmentStatus(
+	            AssignmentStatus.ASSIGNED);
+
+	    AssessmentAssignment saved =
+	            assignmentRepository.save(assignment);
+
+	    AssignAssessmentResponse response =
+	            new AssignAssessmentResponse();
+
+	    response.setAssignmentId(
+	            saved.getAssignmentId());
+
+	    response.setAssessmentId(
+	            assessment.getAssessmentId());
+
+	    response.setMessage(
+	            "Assessment Assigned Successfully");
+
+	    return response;
+	}
+	
+	
+	@Override
+	public List<CandidateAssessmentResponse> getCandidateAssessments(Integer candidateId) {
+
+	    List<AssessmentAssignment> assignments =
+	    		assignmentRepository.findByCandidateId(candidateId);
+
+	    List<CandidateAssessmentResponse> responseList = new ArrayList<>();
+
+	    for (AssessmentAssignment assignment : assignments) {
+
+	        Assessment assessment = assessmentRepository
+	                .findById(assignment.getAssessmentId())
+	                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+
+	        CandidateAssessmentResponse response =
+	                new CandidateAssessmentResponse();
+
+	        response.setAssignmentId(assignment.getAssignmentId());
+	        response.setAssessmentId(assessment.getAssessmentId());
+
+	        response.setTitle(assessment.getTitle());
+	        response.setAssessmentType(assessment.getAssessmentType());
+
+	        response.setDuration(assessment.getDuration());
+	        response.setPassMarks(assessment.getPassMarks());
+
+	        response.setCodingDuration(assessment.getCodingDuration());
+	        response.setCodingPassMarks(assessment.getCodingPassMarks());
+
+	        response.setStartTime(assessment.getStartTime());
+	        response.setEndTime(assessment.getEndTime());
+
+	        response.setAssignmentStatus(assignment.getAssignmentStatus());
+
+	        responseList.add(response);
+	    }
+
+	    return responseList;
 	}
 
 	

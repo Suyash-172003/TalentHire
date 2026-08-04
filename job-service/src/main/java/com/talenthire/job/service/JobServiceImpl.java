@@ -95,6 +95,7 @@ public class JobServiceImpl implements JobService {
 	    response.setEmploymentType(job.getEmploymentType());
 	    response.setWorkMode(job.getWorkMode());
 	    response.setStatus(job.getStatus());
+	    response.setCreatedAt(job.getCreatedAt());
 
 	    response.setSkills(
 	    	    job.getJobSkills()

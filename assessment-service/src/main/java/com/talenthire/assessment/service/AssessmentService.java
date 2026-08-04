@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
-
+import com.talenthire.assessment.dto.AssignAssessmentRequest;
+import com.talenthire.assessment.dto.AssignAssessmentResponse;
+import com.talenthire.assessment.dto.CandidateAssessmentResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodeExecutionResponse;
 import com.talenthire.assessment.dto.CodingQuestionResponse;
@@ -30,19 +32,23 @@ public interface AssessmentService {
 
 	 AssessmentResponse createAssessment(AssessmentRequest request);
 
-	    AssessmentResponse getAssessmentById(Integer id);
+	AssessmentResponse getAssessmentById(Integer id);
 
-	    List<AssessmentResponse> getAllAssessments();
+	List<AssessmentResponse> getAllAssessments();
 
-	    AssessmentResponse updateAssessment(Integer id, AssessmentRequest request);
+	AssessmentResponse updateAssessment(Integer id, AssessmentRequest request);
 
-	    void deleteAssessment(Integer id);
+	void deleteAssessment(Integer id);
 
 	public List<CodingQuestionResponse> getCodingQuestions(Integer assessmentId);
 	
 	AssessmentResponse getAssessmentByJobId(Integer jobId);
 
 	public SubmitAssessmentResponse submitAssessment(SubmitAssessmentRequest request);
+	
+	AssignAssessmentResponse assignAssessment(AssignAssessmentRequest request);
+	
+	List<CandidateAssessmentResponse> getCandidateAssessments(Integer candidateId);
 
 	
 
