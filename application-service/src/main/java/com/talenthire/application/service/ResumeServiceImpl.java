@@ -36,7 +36,7 @@ public class ResumeServiceImpl implements ResumeService {
 	
 	private final ResumeRepository resumeRepository;
 	
-	private final OllamaService ollamaService;
+	
 	private final JobClient jobClient;
 	private final ResumeTextExtractor resumeTextExtractor;
 	
@@ -175,6 +175,24 @@ public class ResumeServiceImpl implements ResumeService {
 
 	    return response;
 		
+	}
+
+	@Override
+	public Resource recruiterViewResume(Integer resumeId) {
+	    Resume resume = resumeRepository.findById(resumeId)
+	            .orElseThrow(() ->
+	                    new RuntimeException("Resume not found."));
+
+	    Path path = Paths.get(resume.getFileUrl());
+
+	    Resource resource = new FileSystemResource(path);
+
+	    if (!resource.exists()) {
+	        throw new RuntimeException("Resume file not found.");
+	    }
+
+	    return resource;
+
 	}
 
 }

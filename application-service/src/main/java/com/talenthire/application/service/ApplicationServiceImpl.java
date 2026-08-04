@@ -41,8 +41,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private final AuthClient authClient;
 	private final ApplicationRepository applicationRepository;
 	private final ResumeTextExtractor resumeTextExtractor;
+
 	private final OllamaService ollamaService;
 	private final ApplicationScreeningRepository applicationScreeningRepository;
+
 
 	@Override
 	public ApplyJobResponse applyJob(

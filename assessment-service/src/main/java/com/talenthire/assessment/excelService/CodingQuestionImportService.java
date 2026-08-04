@@ -96,10 +96,10 @@ public class CodingQuestionImportService {
 
 	        assessment.setCodingTotalMarks(total);
 	        
+
 	        assessmentRepository.save(assessment);
 	        
 	     
-
 	        workbook.close();
 
 }

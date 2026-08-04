@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.talenthire.auth.dto.CandidateDetailsRequest;
+import com.talenthire.auth.dto.ForgotPasswordRequest;
 import com.talenthire.auth.dto.LoginRequest;
 import com.talenthire.auth.dto.RegisterRequest;
+import com.talenthire.auth.dto.ResetPasswordRequest;
+import com.talenthire.auth.dto.VerifyOtpRequest;
 import com.talenthire.auth.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -23,6 +26,33 @@ public class AuthController {
 	public AuthController(AuthService authService)
 	{
 		this.authService=authService;
+	}
+	
+	@PostMapping("/verify-otp")
+	public ResponseEntity<String> verifyOtp(
+	        @RequestBody VerifyOtpRequest request) {
+
+	    authService.verifyOtp(request);
+
+	    return ResponseEntity.ok("OTP verified successfully.");
+	}
+	
+	@PostMapping("/forgot-password")
+	public ResponseEntity<String> forgotPassword(
+	       @RequestBody ForgotPasswordRequest request) {
+
+	    authService.forgotPassword(request);
+
+	    return ResponseEntity.ok("OTP sent successfully.");
+	}
+	
+	@PostMapping("/reset-password")
+	public ResponseEntity<String> resetPassword(
+	        @RequestBody ResetPasswordRequest request) {
+
+	    authService.resetPassword(request);
+
+	    return ResponseEntity.ok("Password changed successfully.");
 	}
 	
 	

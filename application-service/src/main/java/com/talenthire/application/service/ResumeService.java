@@ -16,4 +16,6 @@ public interface ResumeService {
 
 	 List<ResumeResponse> getMyResumes(Integer candidateId);
 
+	 Resource recruiterViewResume(Integer resumeId);
+
 }

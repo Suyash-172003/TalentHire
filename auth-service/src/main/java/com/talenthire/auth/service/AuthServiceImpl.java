@@ -1,7 +1,9 @@
 package com.talenthire.auth.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,12 +14,17 @@ import org.springframework.stereotype.Service;
 import com.talenthire.auth.dto.AuthResponse;
 import com.talenthire.auth.dto.CandidateDetailsRequest;
 import com.talenthire.auth.dto.CandidateDetailsResponse;
+import com.talenthire.auth.dto.ForgotPasswordRequest;
 import com.talenthire.auth.dto.LoginRequest;
 import com.talenthire.auth.dto.RegisterRequest;
 import com.talenthire.auth.dto.RegisterResponse;
+import com.talenthire.auth.dto.ResetPasswordRequest;
+import com.talenthire.auth.dto.VerifyOtpRequest;
+import com.talenthire.auth.entity.PasswordResetOtp;
 import com.talenthire.auth.entity.User;
 import com.talenthire.auth.entity.UserRole;
 import com.talenthire.auth.exception.UserAlreadyExistsException;
+import com.talenthire.auth.repository.PasswordResetOtpRepository;
 import com.talenthire.auth.repository.UserRepository;
 import com.talenthire.auth.security.CustomUserDetailsImpl;
 import com.talenthire.auth.utils.JwtUtils;
@@ -34,6 +41,8 @@ public class AuthServiceImpl  implements AuthService{
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtils jwtUtils;
+	private final EmailService emailService;
+	private final PasswordResetOtpRepository passwordResetOtpRepository;
 	
 	
 	
@@ -115,6 +124,65 @@ if(isUserExists)
 		    }
 
 		    return responses;
+	}
+
+
+	@Override
+	public void forgotPassword(ForgotPasswordRequest request) {
+		 User user = userRepository.findByEmail(request.getEmail())
+		            .orElseThrow(() ->
+		                    new RuntimeException("User not found"));
+
+		    String otp = String.valueOf(
+		            100000 + new Random().nextInt(900000));
+
+		    PasswordResetOtp entity =
+		    		passwordResetOtpRepository.findByEmail(request.getEmail())
+		                    .orElse(new PasswordResetOtp());
+
+		    entity.setEmail(request.getEmail());
+		    entity.setOtp(otp);
+		    entity.setExpiryTime(
+		            LocalDateTime.now().plusMinutes(5));
+
+		    passwordResetOtpRepository.save(entity);
+
+		    emailService.sendOtp(request.getEmail(), otp);
+		
+	}
+
+
+	@Override
+	public void verifyOtp(VerifyOtpRequest request) {
+		 PasswordResetOtp entity =
+				 passwordResetOtpRepository.findByEmail(request.getEmail())
+		                    .orElseThrow(() ->
+		                            new RuntimeException("OTP not found"));
+
+		    if (LocalDateTime.now().isAfter(entity.getExpiryTime())) {
+		        throw new RuntimeException("OTP expired");
+		    }
+
+		    if (!entity.getOtp().equals(request.getOtp())) {
+		        throw new RuntimeException("Invalid OTP");
+		    }
+		
+	}
+
+
+	@Override
+	public void resetPassword(ResetPasswordRequest request) {
+		User user = userRepository.findByEmail(request.getEmail())
+	            .orElseThrow(() ->
+	                    new RuntimeException("User not found"));
+
+	    user.setPassword(
+	            passwordEncoder.encode(request.getNewPassword()));
+
+	    userRepository.save(user);
+
+	    passwordResetOtpRepository.deleteByEmail(request.getEmail());
+		
 	}
 
 	
