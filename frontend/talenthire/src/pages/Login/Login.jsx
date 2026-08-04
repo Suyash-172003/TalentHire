@@ -155,7 +155,7 @@ function Login() {
                                 </div>
 
                                 <Link
-                                    to="/"
+                                    to="/forgot-password"
                                     className="text-decoration-none fw-semibold"
                                 >
                                     Forgot Password?

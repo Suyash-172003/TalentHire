@@ -13,6 +13,9 @@ import RecruiterAssessmentPage from "./pages/RecruiterDashboard/RecruiterAssessm
 import McqInstructions from "./pages/CandidateDashboard/mcq/McqInstructions";
 import McqExam from "./pages/CandidateDashboard/mcq/McqExam";
 import ProtectedRoute from "./pages/ProtectedRoute/ProtectedRoute";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import VerifyOtp from "./pages/Login/VerifyOtp";
+import ResetPassword from "./pages/Login/ResetPassword";
 
 function App() {
 
@@ -112,6 +115,24 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+
+        <Route
+    path="/forgot-password"
+    element={<ForgotPassword />}
+/>
+
+
+        <Route
+    path="/verify-otp"
+    element={<VerifyOtp />}
+/>
+
+
+        <Route
+    path="/reset-password"
+    element={<ResetPassword/>}
+/>
 
       </Routes>
 

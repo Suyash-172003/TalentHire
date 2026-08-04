@@ -26,3 +26,40 @@ export const loginUser = async (user) => {
 };
 
 
+export const forgotPassword = async (email) => {
+
+    const response = await axios.post(
+        baseURL + "/auth/forgot-password",
+        { email }
+    );
+
+    return response.data;
+};
+
+
+export const verifyOtp = async (request) => {
+
+    const response = await axios.post(
+
+        baseURL + "/auth/verify-otp",
+
+        request
+
+    );
+    return response.data;
+};
+
+export const resetPassword = async (request) => {
+
+    const response = await axios.post(
+
+        baseURL + "/auth/reset-password",
+
+        request
+
+    );
+
+    return response.data;
+
+};
+
