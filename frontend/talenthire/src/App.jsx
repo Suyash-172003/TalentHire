@@ -16,6 +16,8 @@ import ProtectedRoute from "./pages/ProtectedRoute/ProtectedRoute";
 import ForgotPassword from "./pages/Login/ForgotPassword";
 import VerifyOtp from "./pages/Login/VerifyOtp";
 import ResetPassword from "./pages/Login/ResetPassword";
+import CandidateAssessment from "./pages/Assessment/CandidateAssessments";
+
 
 function App() {
 
@@ -82,7 +84,7 @@ function App() {
 
         <Route
           path="/assessment/:assessmentId"
-          element={ 
+          element={
             <ProtectedRoute>
               <CodingAssessment />
             </ProtectedRoute>
@@ -117,6 +119,7 @@ function App() {
         />
 
 
+
         <Route
     path="/forgot-password"
     element={<ForgotPassword />}
@@ -133,6 +136,12 @@ function App() {
     path="/reset-password"
     element={<ResetPassword/>}
 />
+
+        <Route
+          path="/candidate/assessments"
+          element={<CandidateAssessment />}
+        />
+
 
       </Routes>
 

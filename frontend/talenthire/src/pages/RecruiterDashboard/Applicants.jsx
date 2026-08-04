@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getApplicantsByJob, getJobById, viewResume } from "./recruiterDashboardService";
+import { getApplicantsByJob, getJobById, viewResume, assignAssessment } from "./recruiterDashboardService";
 import "./Applicants.css";
 
 
@@ -63,6 +63,31 @@ function Applicants() {
 
             console.error(error);
             alert("Unable to open resume.");
+
+        }
+
+    };
+    const handleAssignAssessment = async (app) => {
+
+        try {
+
+            await assignAssessment({
+
+                applicationId: app.applicationId,
+
+                candidateId: app.candidateId,
+
+                jobId: job.jobId
+
+            });
+
+            alert("Assessment Assigned Successfully");
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Unable to assign assessment.");
 
         }
 
@@ -162,8 +187,7 @@ function Applicants() {
                         <div className="table-card">
 
 
-                            <table>
-
+                            <table className="table responsive">
 
                                 <thead>
                                     <tr>
@@ -171,10 +195,13 @@ function Applicants() {
                                         <th>Application ID</th>
                                         <th>Candidate Name</th>
                                         <th>Email</th>
-                                        <th>Status</th>
+                                        <th>Application</th>
+                                        <th>Screening</th>
                                         <th>Resume</th>
+                                        <th>Assessment</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
 
                                     {applicants.map((app, index) => (
@@ -196,14 +223,41 @@ function Applicants() {
                                             </td>
 
                                             <td>
+                                                <span
+                                                    className={
+                                                        app.screeningStatus === "SHORTLISTED"
+                                                            ? "screening shortlisted"
+                                                            : "screening rejected"
+                                                    }
+                                                >
+                                                    {app.screeningStatus}
+                                                </span>
+                                            </td>
 
+                                            <td>
                                                 <button
                                                     className="resume-btn"
-                                                    onClick={() => openResume(app.resumeId, app.candidateId)}
+                                                    onClick={() =>
+                                                        openResume(app.resumeId, app.candidateId)
+                                                    }
                                                 >
                                                     Open Resume
                                                 </button>
+                                            </td>
 
+                                            <td>
+                                                {app.screeningStatus === "SHORTLISTED" ? (
+                                                    <button
+                                                        className="assessment-btn"
+                                                        onClick={() => handleAssignAssessment(app)}
+                                                    >
+                                                        Assign Assessment
+                                                    </button>
+                                                ) : (
+                                                    <span className="disabled-text">
+                                                        Not Eligible
+                                                    </span>
+                                                )}
                                             </td>
 
                                         </tr>
@@ -213,6 +267,8 @@ function Applicants() {
                                 </tbody>
 
                             </table>
+
+
 
 
                         </div>

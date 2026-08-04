@@ -61,19 +61,16 @@ const McqInstructions = () => {
                 user.userId
             );
 
-            navigate(
-                `/candidate/mcq/exam/${response.data.attemptId}`,
-                {
-                    state: {
-                        assessmentId: Number(assessmentId),
-                        attemptId: response.data.attemptId,
-                        duration: response.data.duration,
-                        totalQuestions: response.data.totalQuestions,
-                        totalMarks: response.data.totalMarks,
-                        startTime: response.data.startTime
-                    }
+            navigate(`/candidate/mcq/exam/${response.data.attemptId}`, {
+                state: {
+                    assessmentId: Number(assessmentId),
+                    attemptId: response.data.attemptId,
+                    duration: response.data.duration,
+                    totalQuestions: response.data.totalQuestions,
+                    totalMarks: response.data.totalMarks,
+                    assessmentType: assessment.assessmentType   // add this
                 }
-            );
+            });
 
         } catch (error) {
 
@@ -98,82 +95,104 @@ const McqInstructions = () => {
 
     }
 
-        return (
+    return (
 
-            <div className="mcq-instruction-container">
+        <div className="mcq-instruction-container">
 
-                <div className="mcq-instruction-card">
+            <div className="mcq-instruction-card">
 
-                    <h2>{assessment.title}</h2>
+                <h2>{assessment.title}</h2>
 
-                    <hr />
+                <hr />
 
-                    <div className="instruction-info">
+                <div className="instruction-info">
 
-                        <p>
-                            <strong>Duration :</strong>{" "}
-                            {assessment.duration} Minutes
-                        </p>
+                  
+                    <p>
+                        <strong>Assessment Type :</strong>{" "}
+                        {assessment.assessmentType}
+                    </p>
+
+                    <p>
+                        <strong>MCQ Duration :</strong>{" "}
+                        {assessment.duration} Minutes
+                    </p>
+
+                    
+                    <p>
+                        <strong>Coding Duration :</strong>{" "}
+                        {assessment.codingDuration} Minutes
+                    </p>
 
 
-                        <p>
-                            <strong>Assessment Type :</strong>{" "}
-                            {assessment.assessmentType}
-                        </p>
+                    <p>
+                        <strong>Assessment Start :</strong>{" "}
+                        {new Date(assessment.startTime).toLocaleString()}
+                    </p>
 
-                    </div>
+                    <p>
+                        <strong>Assessment End :</strong>{" "}
+                        {new Date(assessment.endTime).toLocaleString()}
+                    </p>
 
-                    <hr />
+                    <p>
+                        <strong>Total Duration :</strong>{" "}
+                        {assessment.duration + assessment.codingDuration} Minutes
+                    </p>
 
-                    <h3>Instructions</h3>
+                </div>  
 
-                    <ul>
+                <hr />
 
-                        <li>
-                            Read every question carefully before answering.
-                        </li>
+                <h3>Instructions</h3>
 
-                        <li>
-                            Timer starts immediately after clicking Start Exam.
-                        </li>
+                <ul>
 
-                        <li>
-                            Do not refresh or close the browser during the exam.
-                        </li>
+                    <li>
+                        Read every question carefully before answering.
+                    </li>
 
-                        <li>
-                            Each question has only one correct answer.
-                        </li>
+                    <li>
+                        Timer starts immediately after clicking Start Exam.
+                    </li>
 
-                        <li>
-                            You can navigate between questions anytime.
-                        </li>
+                    <li>
+                        Do not refresh or close the browser during the exam.
+                    </li>
 
-                        <li>
-                            Click Submit once you complete the assessment.
-                        </li>
+                    <li>
+                        Each question has only one correct answer.
+                    </li>
 
-                        <li>
-                            The exam will auto-submit when the timer ends.
-                        </li>
+                    <li>
+                        You can navigate between questions anytime.
+                    </li>
 
-                    </ul>
+                    <li>
+                        Click Submit once you complete the assessment.
+                    </li>
 
-                    <button
-                        className="start-exam-btn"
-                        onClick={handleStartExam}
-                        disabled={starting}
-                    >
+                    <li>
+                        The exam will auto-submit when the timer ends.
+                    </li>
 
-                        {starting ? "Starting..." : "Start Exam"}
+                </ul>
 
-                    </button>
+                <button
+                    className="start-exam-btn"
+                    onClick={handleStartExam}
+                    disabled={starting}
+                >
 
-                </div>
+                    {starting ? "Starting..." : "Start Exam"}
+
+                </button>
 
             </div>
 
-        );
+        </div>
+
+    );
 
 };
 

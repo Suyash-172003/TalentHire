@@ -558,6 +558,20 @@ body {
     }
 }
 
+.sort-select {
+    width: 180px;
+    height: 56px;
+    border: none;
+    outline: none;
+    border-radius: 14px;
+    padding: 0 18px;
+    font-size: 15px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,.06);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 
 
 /* Responsive */

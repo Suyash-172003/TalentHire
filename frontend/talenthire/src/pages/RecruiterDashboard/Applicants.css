@@ -315,6 +315,28 @@ tbody tr:hover{
 
 }
 
+
+.assessment-btn{
+    background:#7C6BFF;
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.assessment-btn:hover{
+    background:#6755f5;
+}
+
+.disabled-text{
+    color:#999;
+    font-size:14px;
+    font-weight:600;
+}
+
 /* Responsive */
 
 @media(max-width:900px){

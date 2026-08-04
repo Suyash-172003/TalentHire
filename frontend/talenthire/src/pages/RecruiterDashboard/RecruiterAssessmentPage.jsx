@@ -22,6 +22,7 @@ function RecruiterAssessmentPage() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const [assessment, setAssessment] = useState(null);
+    
 
     const [formData, setFormData] = useState({
         jobId: Number(jobId),
@@ -126,7 +127,7 @@ function RecruiterAssessmentPage() {
         }
 
         try {
-            await uploadMcqExcel(assessment.id, mcqFile);
+            await uploadMcqExcel(assessment.assessmentId, mcqFile);
             alert("MCQ uploaded successfully.");
         }
         catch (error) {
@@ -183,7 +184,7 @@ function RecruiterAssessmentPage() {
         try {
 
             const response = await uploadCodingExcel(
-                assessment.id,
+                assessment.assessmentId,
                 codingFile
             );
 
@@ -242,7 +243,7 @@ function RecruiterAssessmentPage() {
 
         try {
 
-            await deleteAssessment(assessment.id);
+            await deleteAssessment(assessment.assessmentId);
 
             alert("Assessment deleted successfully.");
 

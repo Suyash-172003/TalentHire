@@ -120,3 +120,18 @@ export const closeJob = async (jobId) => {
         }
     );
 };
+
+export const assignAssessment = (data) => {
+
+    const token = localStorage.getItem("token");
+
+    return axiosService.post(
+        "/assessment/assign",
+        data,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+};

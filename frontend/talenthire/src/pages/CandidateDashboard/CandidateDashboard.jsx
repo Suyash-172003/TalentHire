@@ -6,12 +6,15 @@ import {
     applyJob,
     uploadResume, getMyApplications
 } from "./candidateDashboardService";
+import { getMyAssessments } from "../Assessment/candidateAssessmentService"
 
 function CandidateDashboard() {
 
     useEffect(() => {
         loadJobs();
         loadAppliedJobs();
+        loadAppliedJobsCount();
+        loadAssessmentCount();
     }, []);
 
 
@@ -36,11 +39,11 @@ function CandidateDashboard() {
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [sortBy, setSortBy] = useState("newest");
 
-    useEffect(() => {
-        loadAppliedJobsCount();
-    }, []);
+    const [assessmentCount, setAssessmentCount] = useState(0);
 
+   
 
     const loadAppliedJobsCount = async () => {
         try {
@@ -61,6 +64,21 @@ function CandidateDashboard() {
             );
 
             setAppliedJobIds(ids);
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    };
+    const loadAssessmentCount = async () => {
+
+        try {
+
+            const response = await getMyAssessments();
+
+            setAssessmentCount(response.data.length);
 
         } catch (error) {
 
@@ -156,6 +174,16 @@ function CandidateDashboard() {
         );
     });
 
+    const sortedJobs = [...filteredJobs].sort((a, b) => {
+
+        if (sortBy === "newest") {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+
+        return new Date(a.createdAt) - new Date(b.createdAt);
+
+    });
+
 
 
     return (
@@ -174,9 +202,9 @@ function CandidateDashboard() {
 
                     <li>💼 Browse Jobs</li>
 
-                    <li>📄 Applications</li>
-
-                    <li>📝 Assessments</li>
+                    <li onClick={() => navigate("/candidate/assessments")}>
+                        📝 Assessments
+                    </li>
 
                     <li>📅 Interviews</li>
 
@@ -246,6 +274,15 @@ function CandidateDashboard() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
 
+                        <select
+                            className="sort-select"
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
+
                     </div>
 
                 </section>
@@ -264,10 +301,10 @@ function CandidateDashboard() {
                         <p>Shortlisted</p>
                     </div>
 
-                    <div>
-                        <h2>2</h2>
+                    <div className="dashboard-card">
+                        <h2>{assessmentCount}</h2>
                         <p>Assessments</p>
-                    </div>
+                    </div>  
 
                     <div>
                         <h2>1</h2>
@@ -296,7 +333,7 @@ function CandidateDashboard() {
 
                         ) : (
 
-                            filteredJobs.map((job) => (
+                            sortedJobs.map((job) => (
 
                                 <div className="job" key={job.jobId}>
 

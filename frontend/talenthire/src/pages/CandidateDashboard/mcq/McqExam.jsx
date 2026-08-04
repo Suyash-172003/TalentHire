@@ -9,7 +9,6 @@ const McqExam = () => {
 
     const location = useLocation();
 
-    const [result, setResult] = useState(null);
 
     const [submitting, setSubmitting] = useState(false);
 
@@ -37,7 +36,8 @@ const McqExam = () => {
         attemptId,
         duration,
         totalQuestions,
-        totalMarks
+        totalMarks,
+        assessmentType
     } = location.state;
 
     const [questions, setQuestions] = useState([]);
@@ -93,7 +93,7 @@ const McqExam = () => {
 
             if (assessmentType === "BOTH") {
 
-                navigate(`/candidate/coding/${assessmentId}`, {
+                navigate(`/assessment/${assessmentId}`, {
                     state: {
                         assessmentId,
                         attemptId
@@ -480,72 +480,7 @@ const McqExam = () => {
                 </div>
 
             </div>
-            {
-                result && (
-
-                    <div className="result-overlay">
-
-                        <div className="result-modal">
-
-                            <h2>Assessment Result</h2>
-
-                            <hr />
-
-                            <p>
-
-                                <strong>Total Questions :</strong>
-
-                                {result.totalQuestions}
-
-                            </p>
-
-                            <p>
-
-                                <strong>Total Marks :</strong>
-
-                                {result.totalMarks}
-
-                            </p>
-
-                            <p>
-
-                                <strong>Obtained Marks :</strong>
-
-                                {result.obtainedMarks}
-
-                            </p>
-
-                            <p>
-
-                                <p>
-                                    <strong>Percentage :</strong>{" "}
-                                    {Number(result.percentage).toFixed(2)}%
-                                </p>
-
-                            </p>
-
-                            <h3>
-
-                                {result.result}
-
-                            </h3>
-
-                            <button
-
-                                onClick={() => navigate("/candidate/dashboard")}
-
-                            >
-
-                                Back To Dashboard
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                )
-            }
+            
         </div>
 
     );
