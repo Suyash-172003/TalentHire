@@ -16,6 +16,8 @@ public interface AuthClient {
 	    List<CandidateDetailsResponse> getCandidateDetails(
 	            @RequestBody CandidateDetailsRequest request);
 
-
-
 }
+
+
+
+
