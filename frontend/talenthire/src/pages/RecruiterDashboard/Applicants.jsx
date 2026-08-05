@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getApplicantsByJob, getJobById, viewResume, assignAssessment } from "./recruiterDashboardService";
+import { getApplicantsByJob, getJobById, viewResume, assignAssessment, getAssessmentResults, getAssessmentByJobId } from "./recruiterDashboardService";
 import "./Applicants.css";
 
 
@@ -13,6 +13,8 @@ function Applicants() {
     const [job, setJob] = useState({});
     const [applicants, setApplicants] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [results, setResults] = useState([]);
+    const [expandedResult, setExpandedResult] = useState(null);
 
 
     useEffect(() => {
@@ -93,6 +95,45 @@ function Applicants() {
 
     };
 
+    const viewAssessmentResult = async () => {
+
+        try {
+
+            // get assessment using job id
+            const assessmentResponse =
+                await getAssessmentByJobId(jobId);
+
+
+            const assessmentId =
+                assessmentResponse.data.assessmentId;
+
+
+            // get final results
+            const resultResponse =
+                await getAssessmentResults(assessmentId);
+
+
+            setResults(resultResponse.data);
+
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Unable to load results");
+
+        }
+
+    };
+
+    const getCandidateResult = (candidateId) => {
+
+        return results.find(
+            r => r.candidateId === candidateId
+        );
+
+    };
+
     return (
 
         <div className="applicants-page">
@@ -158,6 +199,13 @@ function Applicants() {
 
                     </div>
 
+                    <button
+                        className="assessment-btn"
+                        onClick={viewAssessmentResult}
+                    >
+                        View Assessment Results
+                    </button>
+
 
                 </div>
 
@@ -199,72 +247,312 @@ function Applicants() {
                                         <th>Screening</th>
                                         <th>Resume</th>
                                         <th>Assessment</th>
+                                        <th>Result</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
 
-                                    {applicants.map((app, index) => (
+                                    {
+                                        applicants.map((app, index) => {
 
-                                        <tr key={app.applicationId}>
+                                            const result = getCandidateResult(app.candidateId);
 
-                                            <td>{index + 1}</td>
 
-                                            <td>{app.applicationId}</td>
+                                            return (
 
-                                            <td>{app.candidateName}</td>
+                                                <React.Fragment key={app.applicationId}>
 
-                                            <td>{app.candidateEmail}</td>
 
-                                            <td>
-                                                <span className="status">
-                                                    {app.applicationStatus}
-                                                </span>
-                                            </td>
+                                                    <tr>
 
-                                            <td>
-                                                <span
-                                                    className={
-                                                        app.screeningStatus === "SHORTLISTED"
-                                                            ? "screening shortlisted"
-                                                            : "screening rejected"
+
+                                                        <td>{index + 1}</td>
+
+
+                                                        <td>
+                                                            {app.applicationId}
+                                                        </td>
+
+
+                                                        <td>
+                                                            {app.candidateName}
+                                                        </td>
+
+
+                                                        <td>
+                                                            {app.candidateEmail}
+                                                        </td>
+
+
+                                                        <td>
+                                                            <span className="status">
+                                                                {app.applicationStatus}
+                                                            </span>
+                                                        </td>
+
+
+                                                        <td>
+
+                                                            <span
+                                                                className={
+                                                                    app.screeningStatus === "SHORTLISTED"
+                                                                        ?
+                                                                        "screening shortlisted"
+                                                                        :
+                                                                        "screening rejected"
+                                                                }
+                                                            >
+
+                                                                {app.screeningStatus}
+
+                                                            </span>
+
+                                                        </td>
+
+
+
+                                                        <td>
+
+                                                            <button
+                                                                className="resume-btn"
+                                                                onClick={() =>
+                                                                    openResume(
+                                                                        app.resumeId,
+                                                                        app.candidateId
+                                                                    )
+                                                                }
+                                                            >
+
+                                                                Open Resume
+
+                                                            </button>
+
+                                                        </td>
+
+
+
+                                                        <td>
+
+                                                            {
+                                                                app.screeningStatus === "SHORTLISTED"
+
+                                                                    ?
+
+                                                                    <button
+                                                                        className="assessment-btn"
+                                                                        onClick={() => handleAssignAssessment(app)}
+                                                                    >
+                                                                        Assign Assessment
+                                                                    </button>
+
+                                                                    :
+
+                                                                    <span className="disabled-text">
+                                                                        Not Eligible
+                                                                    </span>
+
+                                                            }
+
+                                                        </td>
+
+
+
+
+                                                        <td>
+
+
+                                                            {
+
+                                                                result &&
+
+                                                                <div className="result-action">
+
+
+                                                                    <span
+                                                                        className={
+                                                                            result.finalResult === "PASS"
+                                                                                ?
+                                                                                "screening shortlisted"
+                                                                                :
+                                                                                "screening rejected"
+                                                                        }
+                                                                    >
+
+                                                                        {result.finalResult }{"   "}
+
+                                                                    </span>
+
+
+
+                                                                    <button
+
+                                                                        className="expand-btn"
+
+                                                                        onClick={() =>
+
+
+                                                                            setExpandedResult(
+                                                                                expandedResult === app.candidateId
+                                                                                    ?
+                                                                                    null
+                                                                                    :
+                                                                                    app.candidateId
+                                                                            )
+
+                                                                        }
+
+                                                                    >
+
+                                                                        {
+
+                                                                            expandedResult === app.candidateId
+                                                                                ?
+                                                                                "−"
+                                                                                :
+                                                                                "+"
+
+                                                                        }
+
+                                                                    </button>
+
+
+                                                                </div>
+
+
+                                                            }
+
+
+
+                                                        </td>
+
+
+
+                                                    </tr>
+
+
+
+                                                    {
+
+                                                        expandedResult === app.candidateId && result &&
+
+
+                                                        <tr>
+
+                                                            <td colSpan="9">
+
+
+                                                                <div className="result-details">
+
+
+                                                                    <div>
+
+                                                                        <b>
+                                                                            MCQ Marks
+                                                                        </b>
+
+                                                                        <br />
+
+                                                                        {result.mcqMarks}
+
+                                                                    </div>
+
+
+
+                                                                    <div>
+
+                                                                        <b>
+                                                                            MCQ Result
+                                                                        </b>
+
+                                                                        <br />
+
+                                                                        {result.mcqResult}
+
+                                                                    </div>
+
+
+
+                                                                    <div>
+
+                                                                        <b>
+                                                                            Coding Marks
+                                                                        </b>
+
+                                                                        <br />
+
+                                                                        {result.codingMarks}
+
+                                                                    </div>
+
+
+
+                                                                    <div>
+
+                                                                        <b>
+                                                                            Coding Result
+                                                                        </b>
+
+                                                                        <br />
+
+                                                                        {result.codingResult}
+
+                                                                    </div>
+
+
+
+                                                                    <div>
+
+                                                                        <b>
+                                                                            Final Result
+                                                                        </b>
+
+                                                                        <br />
+
+                                                                        <span
+                                                                            className={
+                                                                                result.finalResult === "PASS"
+                                                                                    ?
+                                                                                    "screening shortlisted"
+                                                                                    :
+                                                                                    "screening rejected"
+                                                                            }
+                                                                        >
+
+                                                                            {result.finalResult}
+
+                                                                        </span>
+
+
+                                                                    </div>
+
+
+
+                                                                </div>
+
+
+                                                            </td>
+
+
+                                                        </tr>
+
+
                                                     }
-                                                >
-                                                    {app.screeningStatus}
-                                                </span>
-                                            </td>
 
-                                            <td>
-                                                <button
-                                                    className="resume-btn"
-                                                    onClick={() =>
-                                                        openResume(app.resumeId, app.candidateId)
-                                                    }
-                                                >
-                                                    Open Resume
-                                                </button>
-                                            </td>
 
-                                            <td>
-                                                {app.screeningStatus === "SHORTLISTED" ? (
-                                                    <button
-                                                        className="assessment-btn"
-                                                        onClick={() => handleAssignAssessment(app)}
-                                                    >
-                                                        Assign Assessment
-                                                    </button>
-                                                ) : (
-                                                    <span className="disabled-text">
-                                                        Not Eligible
-                                                    </span>
-                                                )}
-                                            </td>
 
-                                        </tr>
+                                                </React.Fragment>
 
-                                    ))}
 
-                                </tbody>
+                                            )
+
+                                        })
+
+                                    }
+
+
+                                </tbody>    
+
+
 
                             </table>
 
@@ -276,6 +564,10 @@ function Applicants() {
 
                     )
                 }
+
+
+
+
 
 
 

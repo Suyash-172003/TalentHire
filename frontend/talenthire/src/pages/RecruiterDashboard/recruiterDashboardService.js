@@ -83,18 +83,14 @@ export const getApplicantsByJob = async (jobId) => {
 };
 
 
-export const viewResume = (resumeId, candidateId) => {
+export const viewResume = (resumeId) => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
 
-    return axiosService.get("/resume/view", {
+    return axiosService.get(`/resume/recruiter/view/${resumeId}`, {
 
-        params: {
-            resumeId: resumeId
-        },
 
         headers: {
-            "X-User-Id": candidateId,
              Authorization: `Bearer ${token}`
         },
 
@@ -131,6 +127,36 @@ export const assignAssessment = (data) => {
         {
             headers: {
                 Authorization: `Bearer ${token}`
+            }
+        }
+    );
+};
+
+
+export const getAssessmentResults = async (assessmentId) => {
+
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(
+        `/assessment/${assessmentId}/results`,
+        {
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        }
+    );
+};
+
+
+export const getAssessmentByJobId = async (jobId) => {
+
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(
+        `/assessment/job/${jobId}`,
+        {
+            headers:{
+                Authorization:`Bearer ${token}`
             }
         }
     );

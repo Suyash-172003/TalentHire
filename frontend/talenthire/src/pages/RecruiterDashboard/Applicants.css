@@ -337,6 +337,41 @@ tbody tr:hover{
     font-weight:600;
 }
 
+
+.expand-btn{
+
+width:35px;
+height:35px;
+border:none;
+border-radius:50%;
+background:#8577ff;
+color:white;
+font-size:22px;
+cursor:pointer;
+
+}
+
+
+
+.result-details{
+
+display:flex;
+gap:40px;
+padding:20px;
+background:#f8f5ef;
+border-radius:12px;
+font-size:16px;
+
+}
+
+
+.result-details div{
+
+display:flex;
+flex-direction:column;
+
+}
+
 /* Responsive */
 
 @media(max-width:900px){
