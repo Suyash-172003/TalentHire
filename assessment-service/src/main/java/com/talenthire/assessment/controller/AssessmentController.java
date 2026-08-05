@@ -33,6 +33,7 @@ import com.talenthire.assessment.dto.CodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateAssessmentRequest;
 import com.talenthire.assessment.dto.CreateCodingQuestionRequest;
 import com.talenthire.assessment.dto.CreateTestCaseRequest;
+import com.talenthire.assessment.dto.FinalAssessmentResultResponse;
 import com.talenthire.assessment.dto.SubmitAssessmentRequest;
 import com.talenthire.assessment.dto.SubmitAssessmentResponse;
 import com.talenthire.assessment.excelService.CodingQuestionImportService;
@@ -200,6 +201,16 @@ public class AssessmentController {
 
 	        return ResponseEntity.ok(
 	                assessmentService.getCandidateAssessments(candidateId)
+	        );
+	    }
+	    
+	    
+	    @GetMapping("/{assessmentId}/results")
+	    public ResponseEntity<List<FinalAssessmentResultResponse>> getFinalAssessmentResults(
+	            @PathVariable Integer assessmentId) {
+
+	        return ResponseEntity.ok(
+	                assessmentService.getFinalAssessmentResults(assessmentId)
 	        );
 	    }
 	

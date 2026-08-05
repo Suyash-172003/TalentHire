@@ -21,4 +21,6 @@ public interface MCQExamAttemptRepository extends JpaRepository<MCQExamAttempt, 
     List<MCQExamAttempt> findByAssessment_AssessmentId(Integer assessmentId);
 
     List<MCQExamAttempt> findByStatus(ExamStatus status);
+    
+    
 }

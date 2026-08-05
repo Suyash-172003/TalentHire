@@ -16,6 +16,7 @@ import com.talenthire.assessment.dto.CreateAssessmentResponse;
 import com.talenthire.assessment.dto.CreateCodingQuestionRequest;
 import com.talenthire.assessment.dto.CreateCodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateTestCaseRequest;
+import com.talenthire.assessment.dto.FinalAssessmentResultResponse;
 import com.talenthire.assessment.dto.SubmitAssessmentRequest;
 import com.talenthire.assessment.dto.SubmitAssessmentResponse;
 
@@ -49,6 +50,8 @@ public interface AssessmentService {
 	AssignAssessmentResponse assignAssessment(AssignAssessmentRequest request);
 	
 	List<CandidateAssessmentResponse> getCandidateAssessments(Integer candidateId);
+	
+	List<FinalAssessmentResultResponse> getFinalAssessmentResults(Integer assessmentId);
 
 	
 

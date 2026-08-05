@@ -46,6 +46,9 @@ public class MCQExamAttempt {
 
     
     private Integer obtainedMarks;
+    
+    @Column(name = "result")
+    private String result;
 
     
     @Enumerated(EnumType.STRING)

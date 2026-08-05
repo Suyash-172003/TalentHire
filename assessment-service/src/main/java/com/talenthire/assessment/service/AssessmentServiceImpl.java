@@ -6,10 +6,14 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
@@ -25,6 +29,7 @@ import com.talenthire.assessment.dto.CreateCodingQuestionRequest;
 import com.talenthire.assessment.dto.CreateCodingQuestionResponse;
 import com.talenthire.assessment.dto.CreateTestCaseRequest;
 import com.talenthire.assessment.dto.ExecutionStatus;
+import com.talenthire.assessment.dto.FinalAssessmentResultResponse;
 import com.talenthire.assessment.dto.RunResult;
 import com.talenthire.assessment.dto.SampleTestCaseResponse;
 import com.talenthire.assessment.dto.SubmitAssessmentRequest;
@@ -37,6 +42,7 @@ import com.talenthire.assessment.entity.AssessmentSubmission;
 import com.talenthire.assessment.entity.AssignmentStatus;
 import com.talenthire.assessment.entity.CodingQuestion;
 import com.talenthire.assessment.entity.CodingTestCase;
+import com.talenthire.assessment.entity.MCQExamAttempt;
 import com.talenthire.assessment.entity.SubmissionStatus;
 import com.talenthire.assessment.mapper.AssessmentMapper;
 import com.talenthire.assessment.repository.AssessmentAssignmentRepository;
@@ -44,6 +50,7 @@ import com.talenthire.assessment.repository.AssessmentRepository;
 import com.talenthire.assessment.repository.AssessmentSubmissionRepository;
 import com.talenthire.assessment.repository.CodingQuestionRepository;
 import com.talenthire.assessment.repository.CodingTestCaseRepository;
+import com.talenthire.assessment.repository.MCQExamAttemptRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,6 +69,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 	private final AssessmentMapper assessmentMapper;
 	private final AssessmentSubmissionRepository assessmentSubmissionRepository;
 	private final AssessmentAssignmentRepository assignmentRepository;
+	private final MCQExamAttemptRepository mcqExamAttemptRepository;
 
 	@Override
 	public CodeExecutionResponse execute(CodeExecutionRequest request) {
@@ -584,7 +592,7 @@ submission.setCandidateId(request.getCandidateId());
 	        response.setAssignmentId(assignment.getAssignmentId());
 	        response.setAssessmentId(assessment.getAssessmentId());
 
-	        response.setTitle(assessment.getTitle());
+	        response.setTitle(assessment.getTitle());	
 	        response.setAssessmentType(assessment.getAssessmentType());
 
 	        response.setDuration(assessment.getDuration());
@@ -604,6 +612,72 @@ submission.setCandidateId(request.getCandidateId());
 	    return responseList;
 	}
 
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<FinalAssessmentResultResponse> getFinalAssessmentResults(Integer assessmentId) {
+
+	    List<MCQExamAttempt> mcqAttempts =
+	            mcqExamAttemptRepository.findByAssessment_AssessmentId(assessmentId);
+
+	    List<AssessmentSubmission> codingSubmissions =
+	            assessmentSubmissionRepository.findByAssessment_AssessmentId(assessmentId);
+
+	    Map<Integer, MCQExamAttempt> mcqMap = mcqAttempts.stream()
+	            .collect(Collectors.toMap(
+	                    MCQExamAttempt::getCandidateId,
+	                    attempt -> attempt,
+	                    (oldValue, newValue) -> newValue
+	            ));
+
+	    Map<Integer, AssessmentSubmission> codingMap = codingSubmissions.stream()
+	            .collect(Collectors.toMap(
+	                    AssessmentSubmission::getCandidateId,
+	                    submission -> submission,
+	                    (oldValue, newValue) -> newValue
+	            ));
+
+	    Set<Integer> candidateIds = new HashSet<>();
+	    candidateIds.addAll(mcqMap.keySet());
+	    candidateIds.addAll(codingMap.keySet());
+
+	    List<FinalAssessmentResultResponse> results = new ArrayList<>();
+
+	    for (Integer candidateId : candidateIds) {
+
+	        MCQExamAttempt mcq = mcqMap.get(candidateId);
+	        AssessmentSubmission coding = codingMap.get(candidateId);
+
+	        String mcqResult = mcq != null ? mcq.getResult() : "PENDING";
+	        String codingResult = coding != null ? coding.getStatus().name() : "PENDING";
+
+	        Integer mcqMarks = mcq != null ? mcq.getObtainedMarks() : 0;
+	        Integer codingMarks = coding != null ? coding.getObtainedMarks() : 0;
+
+	        String finalResult;
+
+	        if ("PENDING".equals(mcqResult) || "PENDING".equals(codingResult)) {
+	            finalResult = "PENDING";
+	        } else if ("PASS".equals(mcqResult) && "PASS".equals(codingResult)) {
+	            finalResult = "PASS";
+	        } else {
+	            finalResult = "FAIL";
+	        }
+
+	        results.add(
+	                FinalAssessmentResultResponse.builder()
+	                        .candidateId(candidateId)
+	                        .mcqMarks(mcqMarks)
+	                        .codingMarks(codingMarks)
+	                        .mcqResult(mcqResult)
+	                        .codingResult(codingResult)
+	                        .finalResult(finalResult)
+	                        .build()
+	        );
+	    }
+
+	    return results;
+	}
 	
 
 	
