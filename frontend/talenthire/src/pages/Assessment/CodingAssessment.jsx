@@ -6,6 +6,10 @@ import { useParams } from "react-router-dom";
 import { getCodingQuestions, runCode, submitAssessment } from "./CodingAssessmentService";
 import { useNavigate } from "react-router-dom";
 
+import { getAssessmentById } from "../RecruiterDashboard/RecruiterAssessmentService";
+
+
+
 
 function CodingAssessment() {
 
@@ -18,6 +22,26 @@ function CodingAssessment() {
     const [codeMap, setCodeMap] = useState({});
     const user = JSON.parse(localStorage.getItem("user"));
     const [language, setLanguage] = useState("java");
+
+    const [timeLeft, setTimeLeft] = useState(0);
+    const [assessment, setAssessment] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const loadAssessment = async () => {
+        try {
+
+            const response = await getAssessmentById(assessmentId);
+
+            setAssessment(response.data);
+
+            setTimeLeft(response.data.codingDuration * 60);
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+    };
 
     const codeTemplates = {
         java: `public class Main {
@@ -44,8 +68,41 @@ if __name__ == "__main__":
     useEffect(() => {
 
         loadQuestions();
+        loadAssessment();
 
     }, []);
+    useEffect(() => {
+
+        if (!assessment) return;
+
+        if (timeLeft <= 0) {
+
+            if (!submitting) {
+                handleSubmit();
+            }
+
+            return;
+        }
+
+        const timer = setInterval(() => {
+
+            setTimeLeft(prev => prev - 1);
+
+        }, 1000);
+
+        return () => clearInterval(timer);
+
+    }, [timeLeft, assessment]);
+
+    const formatTime = () => {
+
+        const minutes = Math.floor(timeLeft / 60);
+
+        const seconds = timeLeft % 60;
+
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    };
 
     useEffect(() => {
 
@@ -54,36 +111,54 @@ if __name__ == "__main__":
     }, [selectedQuestion]);
 
     const handleSubmit = async () => {
+
+        if (submitting) return;
+
         try {
+
+            setSubmitting(true);
+
             const request = {
+
                 assessmentId: Number(assessmentId),
+
                 candidateId: user.userId,
 
                 answers: questions.map(question => ({
+
                     codingQuestionId: question.codingQuestionId,
-                    language: language,
+
+                    language,
+
                     sourceCode:
+
                         codeMap[
                         `${question.codingQuestionId}-${language}`
                         ] || codeTemplates[language]
+
                 }))
+
             };
 
-            console.log(request);
+            await submitAssessment(request);
 
-            const response = await submitAssessment(request);
+            setShowSuccessModal(true);
 
-            console.log(response);
+            setTimeout(() => {
 
-            alert("Assessment submitted successfully.");
+                navigate("/candidate/dashboard");
 
-            navigate("/candidate/dashboard");
+            }, 3000);
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.log(error);
 
             alert("Failed to submit assessment.");
+
+            setSubmitting(false);
 
         }
 
@@ -188,14 +263,33 @@ if __name__ == "__main__":
 
                     <h2>TalentHire Coding Assessment</h2>
 
-                    <select
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
-                    >
-                        <option value="java">Java</option>
-                        <option value="cpp">C++</option>
-                        <option value="python">Python</option>
-                    </select>
+                    <div className="top-right">
+
+                        <div className={`coding-timer ${timeLeft <= 300 ? "danger" : ""}`}>
+
+                            ⏱ {formatTime()}
+
+                        </div>
+
+                        <select
+
+                            value={language}
+
+                            onChange={(e) => setLanguage(e.target.value)}
+
+                            disabled={submitting}
+
+                        >
+
+                            <option value="java">Java</option>
+
+                            <option value="cpp">C++</option>
+
+                            <option value="python">Python</option>
+
+                        </select>
+
+                    </div>
 
                 </div>
 
@@ -257,14 +351,20 @@ if __name__ == "__main__":
                 />
                 <div className="action-bar">
 
-                    <button className="run-btn" onClick={handleRunCode}>
-                        ▶ Run Code
-                    </button>
+                   
+                    <button
+                        className="run-btn"
+                        onClick={handleRunCode}
+                        disabled={submitting}
+                    >  ▶ Run Code</button>
+                    <button
+                        className="submit-btn"
+                        onClick={handleSubmit}
+                        disabled={submitting}
+                    >
+                    {submitting ? "Submitting..." : "✓ Submit Assessment"}
 
-                    <button className="submit-btn" onClick={handleSubmit}>
-                        ✓ Submit Assessment
                     </button>
-
                 </div>
 
                 <div className="console">
@@ -276,6 +376,65 @@ if __name__ == "__main__":
                 </div>
 
             </div>
+            {
+                submitting &&
+                !showSuccessModal &&
+
+                <div className="modal-overlay">
+
+                    <div className="success-modal">
+
+                        <div className="loader"></div>
+
+                        <h2>Submitting Assessment...</h2>
+
+                        <p>
+
+                            Please wait while we evaluate and save your answers.
+
+                        </p>
+
+                    </div>
+
+                </div>
+            }
+            {
+                showSuccessModal &&
+
+                <div className="modal-overlay">
+
+                    <div className="success-modal">
+
+                        <div className="success-icon">
+
+                            ✓
+
+                        </div>
+
+                        <h2>
+
+                            Assessment Submitted Successfully
+
+                        </h2>
+
+                        <p>
+
+                            Your coding assessment has been submitted.
+
+                        </p>
+
+                        <div className="loader"></div>
+
+                        <small>
+
+                            Redirecting to Dashboard...
+
+                        </small>
+
+                    </div>
+
+                </div>
+            }   
 
         </div>
 

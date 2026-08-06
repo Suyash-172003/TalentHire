@@ -60,11 +60,26 @@ function CreateJob() {
     };
 
     return (
+
+
+
         <div className="create-job">
+
 
             <div className="create-job-card">
 
-                <h1>Create New Job</h1>
+                <div className="edit-job-header">
+
+                    <h1>Create New Job</h1>
+
+                    <button
+                        className="assessment-back-btn"
+                        onClick={() => navigate(-1)}
+                    >
+                        ← Back
+                    </button>
+                </div>
+
 
                 <form onSubmit={handleSubmit}>
 

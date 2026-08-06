@@ -9,7 +9,7 @@ import {
     getJobById,
     uploadCodingExcel,
     downloadCodingTemplate,
-    deleteAssessment
+    updateAssessment
 } from "./recruiterAssessmentService";
 
 function RecruiterAssessmentPage() {
@@ -22,7 +22,7 @@ function RecruiterAssessmentPage() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     const [assessment, setAssessment] = useState(null);
-    
+
 
     const [formData, setFormData] = useState({
         jobId: Number(jobId),
@@ -231,41 +231,61 @@ function RecruiterAssessmentPage() {
 
     };
 
-    const handleDeleteAssessment = async () => {
+  
 
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this assessment?"
-        );
+    const [isEditing, setIsEditing] = useState(false);
+    const handleEdit = () => {
 
-        if (!confirmDelete) {
-            return;
-        }
+        setFormData({
+
+            jobId: assessment.jobId,
+            title: assessment.title,
+            description: assessment.description || "",
+
+            assessmentType: assessment.assessmentType,
+
+            duration: assessment.duration,
+            totalMarks: assessment.totalMarks || "",
+
+            passMarks: assessment.passMarks,
+
+            codingDuration: assessment.codingDuration || "",
+            codingTotalMarks: assessment.codingTotalMarks || "",
+            codingPassMarks: assessment.codingPassMarks || "",
+
+            startTime: assessment.startTime.slice(0, 16),
+            endTime: assessment.endTime.slice(0, 16),
+
+            createdBy: assessment.createdBy
+
+        });
+
+        setIsEditing(true);
+    };
+
+    const handleUpdate = async (e) => {
+
+        e.preventDefault();
 
         try {
 
-            await deleteAssessment(assessment.assessmentId);
+            const response = await updateAssessment(
+                assessment.assessmentId,
+                formData
+            );
 
-            alert("Assessment deleted successfully.");
+            alert("Assessment Updated Successfully");
 
-            // Reset page
-            setAssessment(null);
+            setAssessment(response.data);
 
-            setFormData({
-                jobId: Number(jobId),
-                title: "",
-                assessmentType: "MCQ",
-                duration: "",
-                passMarks: "",
-                startTime: "",
-                endTime: "",
-                createdBy: user.userId
-            });
+            setIsEditing(false);
 
-        } catch (error) {
+        }
+        catch (error) {
 
             console.log(error);
 
-            alert("Failed to delete assessment.");
+            alert("Failed to Update Assessment");
 
         }
 
@@ -286,13 +306,17 @@ function RecruiterAssessmentPage() {
                         ← Back
                     </button>
 
+                   
+
                     <button
-                        type="button"
-                        className="assessment-delete-btn"
-                        onClick={handleDeleteAssessment}
+                        style={{ color: "yellow" }}
+                        className="assessment-back-btn"
+                        onClick={handleEdit}
                     >
-                        🗑 Delete Assessment
+                        ✏ Edit Assessment
                     </button>
+
+
 
                 </div>
 
@@ -318,13 +342,13 @@ function RecruiterAssessmentPage() {
             </div>
 
             {
-                assessment == null ? (
+                assessment == null || isEditing ? (
 
                     <div className="assessment-card">
 
                         <h2>Create Assessment</h2>
 
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={isEditing ? handleUpdate : handleSubmit}>
 
                             <div className="assessment-form-grid">
 
@@ -447,10 +471,22 @@ function RecruiterAssessmentPage() {
                                     type="submit"
                                     className="primary-btn"
                                 >
-                                    Create Assessment
+                                    {isEditing ? "Update Assessment" : "Create Assessment"}
                                 </button>
+                                {
+                                    isEditing &&
+
+                                    <button
+                                        type="button"
+                                        className="secondary-btn"
+                                        onClick={() => setIsEditing(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                }
 
                             </div>
+
 
                         </form>
 
@@ -606,27 +642,7 @@ function RecruiterAssessmentPage() {
 
             </div>
 
-            {/* Results */}
-
-            <div className="assessment-result-card">
-
-                <h2>Assessment Results</h2>
-
-                <p>
-                    {assessment
-                        ? "Candidates can attempt this assessment after it is published."
-                        : "Create an assessment first to enable results."
-                    }
-                </p>
-
-                <button
-                    type="button"
-                    disabled={!assessment}
-                >
-                    📊 View Results
-                </button>
-
-            </div>
+           
 
         </div>
 

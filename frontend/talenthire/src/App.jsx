@@ -10,7 +10,7 @@ import EditJob from "./pages/RecruiterDashboard/EditJob";
 import Applicants from "./pages/RecruiterDashboard/Applicants";
 import CodingAssessment from "./pages/Assessment/CodingAssessment";
 import RecruiterAssessmentPage from "./pages/RecruiterDashboard/RecruiterAssessmentPage";
-import McqInstructions from "./pages/CandidateDashboard/mcq/McqInstructions";
+import ExamInstructions from "./pages/CandidateDashboard/mcq/ExamInstructions";
 import McqExam from "./pages/CandidateDashboard/mcq/McqExam";
 import ProtectedRoute from "./pages/ProtectedRoute/ProtectedRoute";
 import ForgotPassword from "./pages/Login/ForgotPassword";
@@ -104,7 +104,7 @@ function App() {
           path="/candidate/mcq/:assessmentId"
           element={
             <ProtectedRoute>
-              <McqInstructions />
+              <ExamInstructions />
             </ProtectedRoute>
           }
         />

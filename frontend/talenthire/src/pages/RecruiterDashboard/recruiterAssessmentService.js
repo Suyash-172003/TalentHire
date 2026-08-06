@@ -106,13 +106,21 @@ export const downloadCodingTemplate = () => {
     });
 };
 
-// Delete Assessment
-export const deleteAssessment = (assessmentId) => {
+
+
+
+
+// Update Assessment
+export const updateAssessment = (assessmentId, data) => {
     const token = localStorage.getItem("token");
 
-    return axiosService.delete(`/assessment/${assessmentId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
+    return axiosService.put(
+        `/assessment/${assessmentId}`,
+        data,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
-    });
+    );
 };

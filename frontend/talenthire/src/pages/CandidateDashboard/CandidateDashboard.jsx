@@ -43,7 +43,7 @@ function CandidateDashboard() {
 
     const [assessmentCount, setAssessmentCount] = useState(0);
 
-   
+
 
     const loadAppliedJobsCount = async () => {
         try {
@@ -200,7 +200,15 @@ function CandidateDashboard() {
 
                     <li className="active">🏠 Dashboard</li>
 
-                    <li>💼 Browse Jobs</li>
+                    <li
+                        onClick={() =>
+                            document
+                                .getElementById("all-jobs")
+                                ?.scrollIntoView({ behavior: "smooth" })
+                        }
+                    >
+                        💼 Browse Jobs
+                    </li>
 
                     <li onClick={() => navigate("/candidate/assessments")}>
                         📝 Assessments
@@ -208,11 +216,8 @@ function CandidateDashboard() {
 
                     <li>📅 Interviews</li>
 
-                    <li>👤 Profile</li>
 
-                    <li>📄 Resume</li>
 
-                    <li>⚙ Settings</li>
 
                     <li onClick={logout}>🚪 Logout</li>
 
@@ -262,8 +267,14 @@ function CandidateDashboard() {
 
                     <div className="welcome-actions">
 
-                        <button>
+                        <button
+                            onClick={() =>
+                                document
+                                    .getElementById("all-jobs")
+                                    ?.scrollIntoView({ behavior: "smooth" })
+                            }   >
                             Browse Jobs
+
                         </button>
 
                         <input
@@ -296,15 +307,17 @@ function CandidateDashboard() {
                         <p>Applied Jobs</p>
                     </div>
 
+                    <div className="dashboard-card">
+                        <h2>{assessmentCount}</h2>
+                        <p>Assessments</p>
+                    </div>
+
                     <div>
                         <h2>4</h2>
                         <p>Shortlisted</p>
                     </div>
 
-                    <div className="dashboard-card">
-                        <h2>{assessmentCount}</h2>
-                        <p>Assessments</p>
-                    </div>  
+
 
                     <div>
                         <h2>1</h2>
@@ -315,7 +328,7 @@ function CandidateDashboard() {
 
                 {/* Content */}
 
-                <section className="content">
+                <section id="all-jobs" className="content">
 
                     {/* Left */}
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getMyJobs } from "./recruiterDashboardService";
 
+
 function RecruiterDashboard() {
 
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ function RecruiterDashboard() {
 
     navigate("/login");
   };
+  const newestJob = [...jobs].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  )[0];
 
   useEffect(() => {
     loadJobs();
@@ -69,6 +73,11 @@ function RecruiterDashboard() {
 
   });
 
+  const totalVacancies = jobs.reduce(
+    (sum, job) => sum + (job.vacancies || 0),
+    0
+  );
+
 
 
 
@@ -87,19 +96,21 @@ function RecruiterDashboard() {
 
           <li className="active">🏠 Dashboard</li>
 
-          <li>💼 My Jobs</li>
+          <li
+            onClick={() =>
+              document
+                .getElementById("my-jobs")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            💼 My Jobs
+          </li>
 
           <li onClick={() => navigate("/recruiter/create-job")}>➕ Create Job</li>
 
-          <li>👥 Applicants</li>
-
-          <li>📝 Assessments</li>
 
           <li>📅 Interviews</li>
 
-          <li>📊 Reports</li>
-
-          <li>⚙ Settings</li>
 
           <li onClick={logout}>🚪 Logout</li>
 
@@ -198,26 +209,32 @@ function RecruiterDashboard() {
           </div>
 
           <div className="stat-card">
-
-            <h2>352</h2>
-
-            <p>Applications</p>
-
+            <h2>{totalVacancies}</h2>
+            <p>Total Vacancies</p>
           </div>
 
-          <div className="stat-card">
+          <div className="stat-card latest-job-card">
 
-            <h2>22</h2>
+            <span className="latest-label">
+              Latest Job
+            </span>
 
-            <p>Candidates Hired</p>
+            <h3>{newestJob?.title || "No Jobs"}</h3>
+
+            <p>{newestJob?.companyName}</p>
+
+            <small>
+              {newestJob
+                ? new Date(newestJob.createdAt).toLocaleDateString()
+                : ""}
+            </small>
 
           </div>
-
         </section>
 
 
 
-        <section className="dashboard-content">
+        <section id="my-jobs" className="dashboard-content">
 
           {/* Left */}
 

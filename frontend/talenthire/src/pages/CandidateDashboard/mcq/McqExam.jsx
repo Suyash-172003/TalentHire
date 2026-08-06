@@ -11,6 +11,7 @@ const McqExam = () => {
 
 
     const [submitting, setSubmitting] = useState(false);
+    const [showCodingModal, setShowCodingModal] = useState(false);
 
     // Prevent crash on refresh/direct URL
     if (!location.state) {
@@ -93,12 +94,18 @@ const McqExam = () => {
 
             if (assessmentType === "BOTH") {
 
-                navigate(`/assessment/${assessmentId}`, {
-                    state: {
-                        assessmentId,
-                        attemptId
-                    }
-                });
+                setShowCodingModal(true);
+
+                setTimeout(() => {
+
+                    navigate(`/assessment/${assessmentId}`, {
+                        state: {
+                            assessmentId,
+                            attemptId
+                        }
+                    });
+
+                }, 5000);
 
             } else {
 
@@ -154,7 +161,7 @@ const McqExam = () => {
 
     useEffect(() => {
 
-        if (timeLeft <= 0 && !submitting && !result) {
+        if (timeLeft <= 0 && !submitting) {
 
             handleSubmitExam();
             return;
@@ -480,7 +487,40 @@ const McqExam = () => {
                 </div>
 
             </div>
-            
+            {
+                showCodingModal && (
+
+                    <div className="modal-overlay">
+
+                        <div className="success-modal">
+
+                            <div className="success-icon">
+                                ✓
+                            </div>
+
+                            <h2>MCQ Assessment Completed</h2>
+
+                            <p>
+                                Your MCQ responses have been submitted successfully.
+                            </p>
+
+                            <p>
+                                The Coding Assessment will begin shortly.
+                            </p>
+
+                            <div className="loader"></div>
+
+                            <small>
+                                Redirecting in a few seconds...
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                )
+            }   
+
         </div>
 
     );
