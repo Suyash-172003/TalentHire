@@ -18,5 +18,7 @@ public class VerifyJobResponse {
     private String status;
 
     private Integer recruiterId;
+    
+    private String description;
 
 }

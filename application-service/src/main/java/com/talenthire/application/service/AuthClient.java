@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.talenthire.application.dto.CandidateDetailsRequest;
 import com.talenthire.application.dto.CandidateDetailsResponse;
 
-@FeignClient(name="auth-service",url="${feign.client.auth-service.url}")
+@FeignClient(name="auth-service")
 public interface AuthClient {
 	
 	  @PostMapping("/auth/users/details")

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.talenthire.application.dto.ApplicationAppliedEvent;
 import com.talenthire.application.dto.ApplyJobResponse;
 import com.talenthire.application.dto.CandidateDetailsRequest;
 import com.talenthire.application.dto.CandidateDetailsResponse;
@@ -39,6 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	private final ResumeService resumeService;
 	private final JobClient jobClient;
 	private final AuthClient authClient;
+	private final KafkaProducerService kafkaProducerService;
 	private final ApplicationRepository applicationRepository;
 	private final ResumeTextExtractor resumeTextExtractor;
 
@@ -83,6 +85,30 @@ public class ApplicationServiceImpl implements ApplicationService {
 	    application.setResume(resume);
 
 	    Application saved = applicationRepository.save(application);
+	    
+	    List<Integer> candidateIds = new ArrayList<>();
+	    candidateIds.add(candidateId);
+	    
+	    CandidateDetailsRequest request =
+	            new CandidateDetailsRequest();
+
+	    request.setUserIds(candidateIds);
+	    
+	    List<CandidateDetailsResponse> candidates =
+	            authClient.getCandidateDetails(request);
+	    
+	    CandidateDetailsResponse candidate =
+                candidates.get(0);
+	    
+	    
+	    
+	    ApplicationAppliedEvent event = new ApplicationAppliedEvent();
+
+	    event.setCandidateName(candidate.getName());
+	    event.setCandidateEmail(candidate.getEmail());
+	    event.setJobTitle(job.getDescription());
+	    
+	    kafkaProducerService.send(event);
 
 	    ScreenApplicationResponse screenResponse=screeningService.screenApplication(saved.getApplicationId(),resumeText);
 

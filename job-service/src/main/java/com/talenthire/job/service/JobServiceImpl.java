@@ -216,6 +216,7 @@ return response;
 	    response.setJobId(job.getJobId());
 	    response.setStatus(job.getStatus().name());
 	    response.setRecruiterId(job.getRecruiterID());
+	    response.setDescription(job.getDescription());
 
 	    return response;
 		

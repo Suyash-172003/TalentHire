@@ -1,6 +1,5 @@
 package com.talenthire.application.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OllamaRequest {
+public class ApplicationAppliedEvent {
 
-    private String model;
+    private String candidateName;
 
-    private String prompt;
+    private String candidateEmail;
 
-    private boolean stream;
+    private String jobTitle;
 
 }

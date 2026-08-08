@@ -8,7 +8,7 @@ import com.talenthire.application.dto.JobResponse;
 import com.talenthire.application.dto.JobSkillResponse;
 import com.talenthire.application.dto.VerifyJobResponse;
 
-@FeignClient(name="job-service",url="${feign.client.job-service.url}")
+@FeignClient(name="job-service")
 public interface JobClient {
 	
 @GetMapping("/job/verify/{jobId}") 

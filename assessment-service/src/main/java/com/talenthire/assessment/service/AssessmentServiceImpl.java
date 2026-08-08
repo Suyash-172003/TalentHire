@@ -15,11 +15,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.talenthire.assessment.dto.AssessmentAssignedEvent;
 import com.talenthire.assessment.dto.AssessmentRequest;
 import com.talenthire.assessment.dto.AssessmentResponse;
 import com.talenthire.assessment.dto.AssignAssessmentRequest;
 import com.talenthire.assessment.dto.AssignAssessmentResponse;
 import com.talenthire.assessment.dto.CandidateAssessmentResponse;
+import com.talenthire.assessment.dto.CandidateDetailsRequest;
+import com.talenthire.assessment.dto.CandidateDetailsResponse;
 import com.talenthire.assessment.dto.CodeExecutionRequest;
 import com.talenthire.assessment.dto.CodeExecutionResponse;
 import com.talenthire.assessment.dto.CodingQuestionResponse;
@@ -64,6 +67,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 	private final CodeExecutorFactory executorFactory;
 	private final AssessmentRepository assessmentRepository;
 	private final JobClient jobClient;
+	private final AuthClient authClient;
+	private final KafkaProducerService kafkaProducerService;
 	private final CodingQuestionRepository codingQuestionRepository;
 	private final CodingTestCaseRepository codingTestCaseRepository;
 	private final AssessmentMapper assessmentMapper;
@@ -555,6 +560,28 @@ submission.setCandidateId(request.getCandidateId());
 
 	    AssessmentAssignment saved =
 	            assignmentRepository.save(assignment);
+	    
+	    List<Integer> candidateIds = new ArrayList<>();
+	    candidateIds.add(request.getCandidateId());
+
+	    CandidateDetailsRequest candidateRequest =
+	            new CandidateDetailsRequest();
+
+	    candidateRequest.setUserIds(candidateIds);
+
+	    List<CandidateDetailsResponse> candidates =
+	            authClient.getCandidateDetails(candidateRequest);
+
+	    CandidateDetailsResponse candidate = candidates.get(0);
+	    
+	    AssessmentAssignedEvent event =
+	            new AssessmentAssignedEvent();
+
+	    event.setCandidateName(candidate.getName());
+	    event.setCandidateEmail(candidate.getEmail());
+	    event.setAssessmentTitle(assessment.getTitle());
+
+	    kafkaProducerService.send(event);
 
 	    AssignAssessmentResponse response =
 	            new AssignAssessmentResponse();
