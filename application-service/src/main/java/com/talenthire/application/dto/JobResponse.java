@@ -19,6 +19,8 @@ public class JobResponse {
 	    private String title;
 
 	    private String description;
+	    
+	    private String companyName;
 
 	    private String location;
 

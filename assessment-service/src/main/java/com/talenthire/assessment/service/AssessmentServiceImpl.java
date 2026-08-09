@@ -706,6 +706,19 @@ submission.setCandidateId(request.getCandidateId());
 	    return results;
 	}
 	
+	
+	@Override
+	public List<Integer> getAssignedCandidateIds(Integer assessmentId) {
+
+	    List<AssessmentAssignment> assignments =
+	            assignmentRepository.findByAssessmentId(assessmentId);
+
+	    return assignments.stream()
+	            .filter(a -> a.getAssignmentStatus() == AssignmentStatus.ASSIGNED)
+	            .map(AssessmentAssignment::getCandidateId)
+	            .toList();
+	}
+	
 
 	
 	

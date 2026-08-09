@@ -213,6 +213,15 @@ public class AssessmentController {
 	                assessmentService.getFinalAssessmentResults(assessmentId)
 	        );
 	    }
+	    
+	    @GetMapping("/{assessmentId}/assigned-candidates")
+	    public ResponseEntity<List<Integer>> getAssignedCandidateIds(
+	            @PathVariable Integer assessmentId) {
+
+	        return ResponseEntity.ok(
+	                assessmentService.getAssignedCandidateIds(assessmentId)
+	        );
+	    }
 	
 	
 	

@@ -52,6 +52,8 @@ public interface AssessmentService {
 	List<CandidateAssessmentResponse> getCandidateAssessments(Integer candidateId);
 	
 	List<FinalAssessmentResultResponse> getFinalAssessmentResults(Integer assessmentId);
+	
+	List<Integer> getAssignedCandidateIds(Integer assessmentId);
 
 	
 

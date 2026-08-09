@@ -12,5 +12,7 @@ public interface AssessmentAssignmentRepository
     List<AssessmentAssignment> findByCandidateId(Integer candidateId);
 
     boolean existsByApplicationId(Integer applicationId);
+    
+    List<AssessmentAssignment> findByAssessmentId(Integer assessmentId);
 
 }
