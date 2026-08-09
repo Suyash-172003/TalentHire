@@ -9,6 +9,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.models.chat.completions.ChatCompletion;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
 import com.talenthire.application.dto.AtsScoreResponse;
+import com.talenthire.application.exception.ExternalServiceException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -65,7 +66,8 @@ public class GroqService {
                 .get(0)
                 .message()
                 .content()
-                .orElseThrow(() -> new RuntimeException("No response from Groq"));
+                .orElseThrow(() ->
+                new ExternalServiceException("No response from AI service"));
         
         System.out.println(json);
 
@@ -73,7 +75,8 @@ public class GroqService {
             return objectMapper.readValue(json, AtsScoreResponse.class);
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse AI response", e);
+        	 throw new ExternalServiceException(
+        	            "Failed to process AI response", e);
         }
     }
 }

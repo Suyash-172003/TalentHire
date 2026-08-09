@@ -5,11 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -17,14 +14,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.talenthire.application.dto.JobResponse;
 import com.talenthire.application.dto.ResumeResponse;
 import com.talenthire.application.dto.UploadResumeResponse;
-import com.talenthire.application.entity.ApplicationScreening;
 import com.talenthire.application.entity.Resume;
-import com.talenthire.application.entity.ResumeSkill;
-import com.talenthire.application.entity.ScreeningStatus;
-import com.talenthire.application.repository.ApplicationScreeningRepository;
+import com.talenthire.application.exception.AccessDeniedException;
+import com.talenthire.application.exception.InvalidRequestException;
+import com.talenthire.application.exception.ResourceNotFoundException;
 import com.talenthire.application.repository.ResumeRepository;
 import com.talenthire.application.util.ResumeTextExtractor;
 
@@ -122,7 +117,7 @@ public class ResumeServiceImpl implements ResumeService {
 	private void validateFile(MultipartFile file) {
 		if(file==null || file.isEmpty())
 		{
-			 throw new RuntimeException("Resume file is required.");
+			 throw new InvalidRequestException("Resume file is required.");
 		}
 		
 		String fileName=file.getOriginalFilename();
@@ -130,7 +125,8 @@ public class ResumeServiceImpl implements ResumeService {
                 || fileName.endsWith(".doc")
                 || fileName.endsWith(".docx")))
 				{
-			throw new RuntimeException("Only PDF, DOC and DOCX files are allowed.");
+			 throw new InvalidRequestException(
+			            "Only PDF, DOC and DOCX files are allowed.");
 				}
 		
 	}
@@ -139,20 +135,21 @@ public class ResumeServiceImpl implements ResumeService {
 	public Resource viewResume(Integer resumeId, Integer candidateId) {
 
 	    Resume resume = resumeRepository.findById(resumeId)
-	            .orElseThrow(() -> new RuntimeException("Resume not found"));
+	    		.orElseThrow(() ->
+                new ResourceNotFoundException("Resume not found"));
 
 	    if (!resume.getCandidateId().equals(candidateId)) {
-	        throw new RuntimeException("You are not authorized to view this resume.");
+	        throw new AccessDeniedException(
+	                "You are not authorized to view this resume.");
 	    }
 
 	    Path path = Paths.get(resume.getFileUrl());
 
 	    Resource resource = new FileSystemResource(path);
-
 	    if (!resource.exists()) {
-	        throw new RuntimeException("Resume file not found.");
+	        throw new ResourceNotFoundException(
+	                "Resume file not found.");
 	    }
-
 	    return resource;
 	}
 
@@ -179,16 +176,18 @@ public class ResumeServiceImpl implements ResumeService {
 
 	@Override
 	public Resource recruiterViewResume(Integer resumeId) {
-	    Resume resume = resumeRepository.findById(resumeId)
+	    		Resume resume = resumeRepository.findById(resumeId)
 	            .orElseThrow(() ->
-	                    new RuntimeException("Resume not found."));
+	                    new ResourceNotFoundException(
+	                            "Resume not found."));
 
 	    Path path = Paths.get(resume.getFileUrl());
 
 	    Resource resource = new FileSystemResource(path);
 
 	    if (!resource.exists()) {
-	        throw new RuntimeException("Resume file not found.");
+	    	 throw new ResourceNotFoundException(
+		                "Resume file not found.");
 	    }
 
 	    return resource;

@@ -13,6 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.talenthire.notification.dto.ApplicationAppliedEvent;
+import com.talenthire.notification.dto.InterviewScheduledEvent;
 
 @Configuration
 public class KafkaConsumerConfig {
@@ -59,6 +60,50 @@ public class KafkaConsumerConfig {
 	            deserializer
 	    );
 	}
+	
+	@Bean
+	public ConsumerFactory<String, InterviewScheduledEvent>
+	        interviewConsumerFactory() {
+
+	    Map<String, Object> props = new HashMap<>();
+
+	    props.put(
+	            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+	            "localhost:9092"
+	    );
+
+	    props.put(
+	            ConsumerConfig.GROUP_ID_CONFIG,
+	            "notification-interview-group"
+	    );
+
+	    props.put(
+	            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+	            StringDeserializer.class
+	    );
+
+	    props.put(
+	            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+	            JsonDeserializer.class
+	    );
+
+	    JsonDeserializer<InterviewScheduledEvent> deserializer =
+	            new JsonDeserializer<>(
+	                    InterviewScheduledEvent.class
+	            );
+
+	    deserializer.addTrustedPackages(
+	            "com.talenthire.notification.dto"
+	    );
+
+	    deserializer.setUseTypeHeaders(false);
+
+	    return new DefaultKafkaConsumerFactory<>(
+	            props,
+	            new StringDeserializer(),
+	            deserializer
+	    );
+	}
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ApplicationAppliedEvent>
     kafkaListenerContainerFactory() {
@@ -68,6 +113,21 @@ public class KafkaConsumerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
+
+        return factory;
+    }
+    
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, InterviewScheduledEvent>
+            interviewKafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, InterviewScheduledEvent>
+                factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+
+        factory.setConsumerFactory(
+                interviewConsumerFactory()
+        );
 
         return factory;
     }

@@ -22,6 +22,9 @@ import com.talenthire.application.dto.VerifyJobResponse;
 import com.talenthire.application.entity.Application;
 import com.talenthire.application.entity.ApplicationScreening;
 import com.talenthire.application.entity.Resume;
+import com.talenthire.application.exception.AccessDeniedException;
+import com.talenthire.application.exception.InvalidRequestException;
+import com.talenthire.application.exception.ResourceNotFoundException;
 import com.talenthire.application.repository.ApplicationRepository;
 import com.talenthire.application.repository.ApplicationScreeningRepository;
 import com.talenthire.application.repository.ResumeRepository;
@@ -57,11 +60,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 	    VerifyJobResponse job = jobClient.getJobById(jobId);
 
 	    if (!job.getStatus().equals("OPEN")) {
-	        throw new RuntimeException("Job is not accepting applications.");
+	        throw new InvalidRequestException(
+	                "Job is not accepting applications.");
 	    }
+	    
+	    if (applicationRepository.existsByJobIdAndCandidateId(
+	            jobId, candidateId)) {
 
-	    if (applicationRepository.existsByJobIdAndCandidateId(jobId, candidateId)) {
-	        throw new RuntimeException("You have already applied.");
+	        throw new InvalidRequestException(
+	                "You have already applied.");
 	    }
 	    
 	    String resumeText="";
@@ -75,8 +82,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 	    UploadResumeResponse uploadedResume =
 	            resumeService.uploadResume(resumeFile, candidateId);
 
-	    Resume resume = resumeRepository.findById(uploadedResume.getResumeId())
-	            .orElseThrow(() -> new RuntimeException("Resume not found"));
+	    Resume resume = resumeRepository
+	            .findById(uploadedResume.getResumeId())
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException("Resume not found"));
 
 	    Application application = new Application();
 
@@ -154,9 +163,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public List<JobApplicationResponse> getApplicationsByJob(Integer jobId, Integer recruiterId) {
 		VerifyJobResponse job=jobClient.getJobById(jobId);
 
-		    if (!job.getRecruiterId().equals(recruiterId)) {
-		        throw new RuntimeException("You are not authorized to view these applications.");
-		    }
+		if (!job.getRecruiterId().equals(recruiterId)) {
+
+		    throw new AccessDeniedException(
+		            "You are not authorized to view these applications.");
+		}
 
 		    List<Application> applications =
 		            applicationRepository.findByJobId(jobId);

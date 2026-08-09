@@ -14,6 +14,8 @@ import com.talenthire.job.entity.Job;
 import com.talenthire.job.entity.JobSkill;
 import com.talenthire.job.entity.JobStatus;
 import com.talenthire.job.entity.WorkMode;
+import com.talenthire.job.exception.AccessDeniedException;
+import com.talenthire.job.exception.ResourceNotFoundException;
 import com.talenthire.job.repository.JobRepository;
 
 import jakarta.transaction.Transactional;
@@ -111,7 +113,8 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public JobResponse getJobById(Integer jobId) {
-		Job job=jobRepository.findById(jobId).orElseThrow(()-> new RuntimeException("Job not found"));
+		Job job=jobRepository.findById(jobId).orElseThrow(() ->
+        new ResourceNotFoundException("Job not found"));
 		
 		
 		return convertToResponse(job);
@@ -130,12 +133,14 @@ List<Job> jobs= jobRepository.findByRecruiterID(recruiterId);
 
 	@Override
 	public CreateJobResponse updateJob(Integer jobId, Integer recruiterId, CreateJobRequest request) {
-		Job existingJob=jobRepository.findById(jobId).orElseThrow(()-> new RuntimeException("Job not found"));	
-		
+		Job existingJob = jobRepository.findById(jobId)
+		        .orElseThrow(() ->
+		                new ResourceNotFoundException("Job not found"));
 
-if (!existingJob.getRecruiterID().equals(recruiterId)) {
-    throw new RuntimeException("You cannot update this job");
-}
+		if (!existingJob.getRecruiterID().equals(recruiterId)) {
+		    throw new AccessDeniedException(
+		            "You cannot update this job");
+		}
 
 existingJob.setCompanyName(request.getCompanyName());
 existingJob.setVacancies(request.getVacancies());
@@ -185,11 +190,11 @@ return response;
 	@Override
 	public CreateJobResponse closeJob(Integer jobId, Integer recruiterId) {
 		Job job = jobRepository.findById(jobId)
-	            .orElseThrow(() -> new RuntimeException("Job not found"));
+		        .orElseThrow(() -> new RuntimeException("Job not found"));
 
-	    if (!job.getRecruiterID().equals(recruiterId)) {
-	        throw new RuntimeException("You cannot close this job");
-	    }
+		if (!job.getRecruiterID().equals(recruiterId)) {
+		    throw new RuntimeException("You cannot close this job");
+		}
 
 	    job.setStatus(JobStatus.CLOSED);
 
@@ -208,8 +213,9 @@ return response;
 
 	
 	public VerifyJobResponse verifyJob(Integer jobId) {
-		Job job = jobRepository.findById(jobId)
-	            .orElseThrow(() -> new RuntimeException("Job not found"));
+				Job job = jobRepository.findById(jobId)
+		        .orElseThrow(() ->
+		                new ResourceNotFoundException("Job not found"));
 
 	    VerifyJobResponse response = new VerifyJobResponse();
 

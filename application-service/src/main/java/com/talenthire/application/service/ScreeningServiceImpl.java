@@ -11,6 +11,7 @@ import com.talenthire.application.entity.Application;
 import com.talenthire.application.entity.ApplicationScreening;
 import com.talenthire.application.entity.Resume;
 import com.talenthire.application.entity.ScreeningStatus;
+import com.talenthire.application.exception.ResourceNotFoundException;
 import com.talenthire.application.repository.ApplicationRepository;
 import com.talenthire.application.repository.ApplicationScreeningRepository;
 import com.talenthire.application.util.ResumeTextExtractor;
@@ -32,9 +33,10 @@ public class ScreeningServiceImpl implements ScreeningService{
 	
 	@Override
 	public ScreenApplicationResponse screenApplication(Integer applicationId,String resumeText) {
-		 Application application =
-	                applicationRepository.findById(applicationId)
-	                .orElseThrow(() -> new RuntimeException("Application not found"));
+		Application application =
+		        applicationRepository.findById(applicationId)
+		        .orElseThrow(() ->
+		                new ResourceNotFoundException("Application not found"));
 
 	        Resume resume = application.getResume();
 

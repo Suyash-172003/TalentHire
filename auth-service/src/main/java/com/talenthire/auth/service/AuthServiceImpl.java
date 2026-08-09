@@ -23,6 +23,8 @@ import com.talenthire.auth.dto.VerifyOtpRequest;
 import com.talenthire.auth.entity.PasswordResetOtp;
 import com.talenthire.auth.entity.User;
 import com.talenthire.auth.entity.UserRole;
+import com.talenthire.auth.exception.InvalidRequestException;
+import com.talenthire.auth.exception.ResourceNotFoundException;
 import com.talenthire.auth.exception.UserAlreadyExistsException;
 import com.talenthire.auth.repository.PasswordResetOtpRepository;
 import com.talenthire.auth.repository.UserRepository;
@@ -130,8 +132,8 @@ if(isUserExists)
 	@Override
 	public void forgotPassword(ForgotPasswordRequest request) {
 		 User user = userRepository.findByEmail(request.getEmail())
-		            .orElseThrow(() ->
-		                    new RuntimeException("User not found"));
+				 .orElseThrow(() ->
+			        new ResourceNotFoundException("User not found"));
 
 		    String otp = String.valueOf(
 		            100000 + new Random().nextInt(900000));
@@ -156,16 +158,16 @@ if(isUserExists)
 	public void verifyOtp(VerifyOtpRequest request) {
 		 PasswordResetOtp entity =
 				 passwordResetOtpRepository.findByEmail(request.getEmail())
-		                    .orElseThrow(() ->
-		                            new RuntimeException("OTP not found"));
+				 .orElseThrow(() ->
+			        new ResourceNotFoundException("OTP not found"));
+		 
+		 if (LocalDateTime.now().isAfter(entity.getExpiryTime())) {
+			    throw new InvalidRequestException("OTP expired");
+			}
 
-		    if (LocalDateTime.now().isAfter(entity.getExpiryTime())) {
-		        throw new RuntimeException("OTP expired");
-		    }
-
-		    if (!entity.getOtp().equals(request.getOtp())) {
-		        throw new RuntimeException("Invalid OTP");
-		    }
+			if (!entity.getOtp().equals(request.getOtp())) {
+			    throw new InvalidRequestException("Invalid OTP");
+			}
 		
 	}
 
@@ -173,8 +175,8 @@ if(isUserExists)
 	@Override
 	public void resetPassword(ResetPasswordRequest request) {
 		User user = userRepository.findByEmail(request.getEmail())
-	            .orElseThrow(() ->
-	                    new RuntimeException("User not found"));
+				.orElseThrow(() ->
+		        new ResourceNotFoundException("User not found"));
 
 	    user.setPassword(
 	            passwordEncoder.encode(request.getNewPassword()));

@@ -22,14 +22,23 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(UserAlreadyExistsException.class)
 	public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException ex)
 	{
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Failed",ex.getMessage()));
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse("Failed",ex.getMessage()));
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex)
 	{
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Failed",ex.getMessage()));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Failed",ex.getMessage()));
 	}
+	
+	 @ExceptionHandler(InvalidRequestException.class)
+	    public ResponseEntity<String> handleInvalidRequest(
+	            InvalidRequestException ex) {
+
+	        return ResponseEntity
+	                .status(HttpStatus.BAD_REQUEST)
+	                .body(ex.getMessage());
+	    }
 	
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<?> handleBadCredentials(BadCredentialsException ex) {

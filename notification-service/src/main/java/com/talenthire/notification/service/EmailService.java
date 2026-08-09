@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.talenthire.notification.dto.ApplicationAppliedEvent;
 import com.talenthire.notification.dto.AssessmentAssignedEvent;
+import com.talenthire.notification.dto.InterviewScheduledEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,4 +61,37 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+
+
+	    public void sendInterviewScheduled(
+	            InterviewScheduledEvent event) {
+
+	        SimpleMailMessage message =
+	                new SimpleMailMessage();
+	        message.setTo(event.getCandidateEmail());
+	        message.setSubject(
+	                "Interview Scheduled - " +
+	                event.getJobTitle());
+	        message.setText(
+	                "Hello " + event.getCandidateName() + ",\n\n" +
+
+	                "Your interview has been scheduled.\n\n" +
+
+	                "Job: " + event.getJobTitle() + "\n" +
+
+	                "Interview Date: " +
+	                event.getInterviewDate() + "\n\n" +
+
+	                "Meeting Link: " +
+	                event.getMeetingLink() + "\n\n" +
+
+	                "Please join the interview at the scheduled time.\n\n" +
+	                "Best regards,\n" +
+	                "TalentHire"
+	        );
+
+	        mailSender.send(message);
+		
+	}
 }

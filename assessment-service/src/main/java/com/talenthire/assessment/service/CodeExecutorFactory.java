@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.talenthire.assessment.exception.InvalidRequestException;
+
 @Component
 public class CodeExecutorFactory {
 
@@ -23,7 +25,7 @@ public class CodeExecutorFactory {
 	        CodeExecutor executor = executors.get(language.toLowerCase());
 
 	        if (executor == null) {
-	            throw new IllegalArgumentException(
+	            throw new InvalidRequestException(
 	                    "Language not supported: " + language);
 	        }
 

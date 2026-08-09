@@ -47,6 +47,10 @@ import com.talenthire.assessment.entity.CodingQuestion;
 import com.talenthire.assessment.entity.CodingTestCase;
 import com.talenthire.assessment.entity.MCQExamAttempt;
 import com.talenthire.assessment.entity.SubmissionStatus;
+import com.talenthire.assessment.exception.AccessDeniedException;
+import com.talenthire.assessment.exception.ExternalServiceException;
+import com.talenthire.assessment.exception.InvalidRequestException;
+import com.talenthire.assessment.exception.ResourceNotFoundException;
 import com.talenthire.assessment.mapper.AssessmentMapper;
 import com.talenthire.assessment.repository.AssessmentAssignmentRepository;
 import com.talenthire.assessment.repository.AssessmentRepository;
@@ -205,7 +209,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 			CodingQuestion question =
 			        codingQuestionRepository
 			        .findById(request.getCodingQuestionId())
-			        .orElseThrow(() -> new RuntimeException("Question not found"));
+			        .orElseThrow(() ->
+			        new ResourceNotFoundException("Question not found"));
 
 			int totalMarks = question.getMarks();
 
@@ -234,7 +239,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 			
 			
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to create workspace.", e);
+			  throw new ExternalServiceException(
+			            "Failed to create workspace.", e);
 
 		}
 		
@@ -255,7 +261,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 	            jobClient.getJobById(request.getJobId());
 
 	    if (!job.getRecruiterId().equals(recruiterId)) {
-	        throw new RuntimeException("You are not authorized.");
+	        throw new AccessDeniedException(
+	                "You are not authorized.");
 	    }
 
 	    Assessment assessment = new Assessment();
@@ -283,14 +290,15 @@ public class AssessmentServiceImpl implements AssessmentService {
 	public CreateCodingQuestionResponse addCodingQuestion(Integer assessmentId, Integer recruiterId,
 			CreateCodingQuestionRequest request) {
 		 Assessment assessment = assessmentRepository.findById(assessmentId)
-		            .orElseThrow(() ->
-		                    new RuntimeException("Assessment not found"));
+				 .orElseThrow(() ->
+			        new ResourceNotFoundException(
+			                "Assessment not found"));
 
 		    VerifyJobResponse job =
 		            jobClient.getJobById(assessment.getJobId());
 
 		    if (!job.getRecruiterId().equals(recruiterId)) {
-		        throw new RuntimeException("Unauthorized.");
+		        throw new AccessDeniedException("Unauthorized.");
 		    }
 
 		    CodingQuestion question = new CodingQuestion();
@@ -323,14 +331,15 @@ public class AssessmentServiceImpl implements AssessmentService {
 		 CodingQuestion question =
 		            codingQuestionRepository.findById(codingQuestionId)
 		            .orElseThrow(() ->
-		                    new RuntimeException("Coding Question not found"));
+		            new ResourceNotFoundException(
+		                    "Coding Question not found"));
 
 		    VerifyJobResponse job =
 		            jobClient.getJobById(
 		                    question.getAssessment().getJobId());
 
 		    if (!job.getRecruiterId().equals(recruiterId)) {
-		        throw new RuntimeException("Unauthorized.");
+		        throw new AccessDeniedException("Unauthorized.");
 		    }
 
 		    CodingTestCase testCase = new CodingTestCase();
@@ -400,7 +409,9 @@ public class AssessmentServiceImpl implements AssessmentService {
     public AssessmentResponse getAssessmentById(Integer id) {
 
         Assessment assessment = assessmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+        		.orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Assessment not found"));
 
         return assessmentMapper.toResponse(assessment);
     }
@@ -420,7 +431,9 @@ public class AssessmentServiceImpl implements AssessmentService {
     public AssessmentResponse updateAssessment(Integer assessmentId, AssessmentRequest request) {
 
         Assessment assessment = assessmentRepository.findById(assessmentId)
-                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+        		.orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Assessment not found"));
 
         assessment.setJobId(request.getJobId());
         assessment.setTitle(request.getTitle());
@@ -453,7 +466,9 @@ public class AssessmentServiceImpl implements AssessmentService {
     public void deleteAssessment(Integer id) {
 
         Assessment assessment = assessmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+        		.orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Assessment not found"));
 
         assessmentRepository.delete(assessment);
     }
@@ -463,7 +478,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         Assessment assessment = assessmentRepository
                 .findFirstByJobId(jobId)
-                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+                .orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Assessment not found"));
 
         return assessmentMapper.toResponse(assessment);
     }
@@ -483,7 +500,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 	            assessmentRepository.findById(
 	                    request.getAssessmentId())
 	            .orElseThrow(() ->
-	                    new RuntimeException("Assessment not found"));
+	            new ResourceNotFoundException(
+	                    "Assessment not found"));
 
 	    AssessmentSubmission submission =
 	            new AssessmentSubmission();
@@ -530,18 +548,19 @@ submission.setCandidateId(request.getCandidateId());
 	public AssignAssessmentResponse assignAssessment(
 	        AssignAssessmentRequest request) {
 
-	    if (assignmentRepository.existsByApplicationId(
-	            request.getApplicationId())) {
+		if (assignmentRepository.existsByApplicationId(
+		        request.getApplicationId())) {
 
-	        throw new RuntimeException(
-	                "Assessment already assigned.");
-	    }
+		    throw new InvalidRequestException(
+		            "Assessment already assigned.");
+		}
 
 	    Assessment assessment =
 	            assessmentRepository
 	            .findFirstByJobId(request.getJobId())
 	            .orElseThrow(() ->
-	                    new RuntimeException("Assessment not found"));
+	            new ResourceNotFoundException(
+	                    "Assessment not found"));
 
 	    AssessmentAssignment assignment =
 	            new AssessmentAssignment();
@@ -611,7 +630,9 @@ submission.setCandidateId(request.getCandidateId());
 
 	        Assessment assessment = assessmentRepository
 	                .findById(assignment.getAssessmentId())
-	                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+	                .orElseThrow(() ->
+	                new ResourceNotFoundException(
+	                        "Assessment not found"));
 
 	        CandidateAssessmentResponse response =
 	                new CandidateAssessmentResponse();
