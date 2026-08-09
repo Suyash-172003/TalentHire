@@ -109,8 +109,6 @@ function RecruiterDashboard() {
           <li onClick={() => navigate("/recruiter/create-job")}>➕ Create Job</li>
 
 
-          <li>📅 Interviews</li>
-
 
           <li onClick={logout}>🚪 Logout</li>
 

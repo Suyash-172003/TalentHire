@@ -227,15 +227,12 @@ function CandidateInterviews() {
 
                                     <button
                                         className="join-interview-btn"
-                                        onClick={() =>
-                                            window.open(
-                                                interview.meetingLink,
-                                                "_blank"
-                                            )
-                                        }
-                                        disabled={
-                                            !interview.meetingLink
-                                        }
+                                        onClick={() => {
+                                            if (interview.meetingLink) {
+                                                window.location.href = interview.meetingLink;
+                                            }
+                                        }}
+                                        disabled={!interview.meetingLink}
                                     >
                                         Join Interview →
                                     </button>

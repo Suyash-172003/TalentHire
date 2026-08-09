@@ -9,7 +9,8 @@ import {
     getJobById,
     uploadCodingExcel,
     downloadCodingTemplate,
-    updateAssessment
+    updateAssessment,
+    deleteAssessment
 } from "./recruiterAssessmentService";
 
 function RecruiterAssessmentPage() {
@@ -231,7 +232,7 @@ function RecruiterAssessmentPage() {
 
     };
 
-  
+
 
     const [isEditing, setIsEditing] = useState(false);
     const handleEdit = () => {
@@ -290,6 +291,55 @@ function RecruiterAssessmentPage() {
         }
 
     };
+    const handleDelete = async () => {
+
+        if (!assessment) {
+            return;
+        }
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this assessment?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            await deleteAssessment(assessment.assessmentId);
+
+            alert("Assessment deleted successfully.");
+
+            setAssessment(null);
+
+            // Reset form
+            setFormData({
+                jobId: Number(jobId),
+                title: "",
+                assessmentType: "MCQ",
+                duration: "",
+                passMarks: "",
+                codingDuration: "",
+                codingPassMarks: "",
+                startTime: "",
+                endTime: "",
+                createdBy: user.userId
+            });
+
+            setIsEditing(false);
+
+        } catch (error) {
+
+            console.log("Delete Assessment Error:", error);
+            console.log("Response:", error.response);
+
+            alert(
+                error.response?.data ||
+                "Failed to delete assessment."
+            );
+        }
+    };
 
     return (
 
@@ -306,7 +356,7 @@ function RecruiterAssessmentPage() {
                         ← Back
                     </button>
 
-                   
+
 
                     <button
                         style={{ color: "yellow" }}
@@ -316,6 +366,13 @@ function RecruiterAssessmentPage() {
                         ✏ Edit Assessment
                     </button>
 
+                    <button
+                        style={{ color: "#ff4d4d" }}
+                        className="assessment-back-btn"
+                        onClick={handleDelete}
+                    >
+                        🗑 Delete Assessment
+                    </button>
 
 
                 </div>
@@ -585,12 +642,7 @@ function RecruiterAssessmentPage() {
                             ⬆ Upload MCQ Excel
                         </button>
 
-                        <button
-                            type="button"
-                            disabled={!assessment}
-                        >
-                            📋 View MCQ Questions
-                        </button>
+                        
 
                     </div>
 
@@ -629,12 +681,7 @@ function RecruiterAssessmentPage() {
                             ⬆ Upload Coding Excel
                         </button>
 
-                        <button
-                            type="button"
-                            disabled={!assessment}
-                        >
-                            👨‍💻 View Coding Questions
-                        </button>
+                       
 
                     </div>
 
@@ -642,7 +689,7 @@ function RecruiterAssessmentPage() {
 
             </div>
 
-           
+
 
         </div>
 

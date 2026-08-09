@@ -159,6 +159,9 @@ const McqExam = () => {
 
     };
 
+   
+    
+
     useEffect(() => {
 
         if (timeLeft <= 0 && !submitting) {
@@ -519,7 +522,7 @@ const McqExam = () => {
                     </div>
 
                 )
-            }   
+            }
 
         </div>
 

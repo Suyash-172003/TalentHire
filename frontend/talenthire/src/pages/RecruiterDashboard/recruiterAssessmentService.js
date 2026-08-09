@@ -124,3 +124,18 @@ export const updateAssessment = (assessmentId, data) => {
         }
     );
 };
+
+
+// Delete Assessment
+export const deleteAssessment = (assessmentId) => {
+    const token = localStorage.getItem("token");
+
+    return axiosService.delete(
+        `/assessment/${assessmentId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+};

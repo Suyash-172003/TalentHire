@@ -164,6 +164,7 @@ if __name__ == "__main__":
 
     };
 
+
     const handleRunCode = async () => {
         try {
             const request = {
@@ -351,7 +352,7 @@ if __name__ == "__main__":
                 />
                 <div className="action-bar">
 
-                   
+
                     <button
                         className="run-btn"
                         onClick={handleRunCode}
@@ -362,7 +363,7 @@ if __name__ == "__main__":
                         onClick={handleSubmit}
                         disabled={submitting}
                     >
-                    {submitting ? "Submitting..." : "✓ Submit Assessment"}
+                        {submitting ? "Submitting..." : "✓ Submit Assessment"}
 
                     </button>
                 </div>
@@ -434,7 +435,7 @@ if __name__ == "__main__":
                     </div>
 
                 </div>
-            }   
+            }
 
         </div>
 
