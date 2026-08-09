@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
     getAllJobs,
     applyJob,
-    uploadResume, getMyApplications
+    uploadResume, getMyApplications, getMyInterviews
 } from "./candidateDashboardService";
 import { getMyAssessments } from "../Assessment/candidateAssessmentService"
 
@@ -15,19 +15,25 @@ function CandidateDashboard() {
         loadAppliedJobs();
         loadAppliedJobsCount();
         loadAssessmentCount();
+        loadInterviewCount();
+
     }, []);
 
 
 
     const user = JSON.parse(localStorage.getItem("user"));
+
     const navigate = useNavigate();
 
     const [jobs, setJobs] = useState([]);
+
     const [loading, setLoading] = useState(true);
 
     const [showApplyModal, setShowApplyModal] = useState(false);
 
     const [selectedJobId, setSelectedJobId] = useState(null);
+
+    const [selectedJob, setSelectedJob] = useState(null);
 
     const [resumeFile, setResumeFile] = useState(null);
 
@@ -42,6 +48,11 @@ function CandidateDashboard() {
     const [sortBy, setSortBy] = useState("newest");
 
     const [assessmentCount, setAssessmentCount] = useState(0);
+
+    const [interviewCount, setInterviewCount] = useState(0);
+
+    const [latestApplication, setLatestApplication] = useState(null);
+
 
 
 
@@ -59,11 +70,17 @@ function CandidateDashboard() {
 
             const response = await getMyApplications();
 
-            const ids = response.data.map(
-                app => app.jobId
+            const applications = response.data;
+
+            setAppliedJobIds(
+                applications.map(app => app.jobId)
             );
 
-            setAppliedJobIds(ids);
+            if (applications.length > 0) {
+                setLatestApplication(
+                    applications[applications.length - 1]
+                );
+            }
 
         } catch (error) {
 
@@ -88,9 +105,10 @@ function CandidateDashboard() {
 
     };
 
-    const openApplyModal = (jobId) => {
+    const openApplyModal = (job) => {
 
-        setSelectedJobId(jobId);
+        setSelectedJob(job);
+        setSelectedJobId(job.jobId);
 
         setShowApplyModal(true);
 
@@ -147,6 +165,7 @@ function CandidateDashboard() {
             setShowApplyModal(false);
             setResumeFile(null);
             setSelectedJobId(null);
+            setSelectedJob(null);
 
         } catch (error) {
 
@@ -185,6 +204,27 @@ function CandidateDashboard() {
     });
 
 
+    const loadInterviewCount = async () => {
+
+        try {
+
+            const response = await getMyInterviews();
+
+            setInterviewCount(
+                response.data?.length || 0
+            );
+
+        } catch (error) {
+
+            console.log("Error fetching interviews:", error);
+
+            setInterviewCount(0);
+
+        }
+
+    };
+
+
 
     return (
 
@@ -214,7 +254,11 @@ function CandidateDashboard() {
                         📝 Assessments
                     </li>
 
-                    <li>📅 Interviews</li>
+                    <li
+                        onClick={() => navigate("/candidate/interviews")}
+                    >
+                        📅 Interviews
+                    </li>
 
 
 
@@ -312,16 +356,31 @@ function CandidateDashboard() {
                         <p>Assessments</p>
                     </div>
 
-                    <div>
-                        <h2>4</h2>
-                        <p>Shortlisted</p>
+                    <div className="dashboard-card latest-card">
+
+                        <h3>📄 Latest Application</h3>
+
+                        {
+                            latestApplication ? (
+                                <>
+                                    <h4>{latestApplication.jobTitle}</h4>
+
+                                    <p>📍 {latestApplication.location}</p>
+
+                                    <span className="status-pill">
+                                        {latestApplication.applicationStatus}
+                                    </span>
+                                </>
+                            ) : (
+                                <p>No applications yet.</p>
+                            )
+                        }
+
                     </div>
 
-
-
-                    <div>
-                        <h2>1</h2>
-                        <p>Interview</p>
+                    <div className="dashboard-card">
+                        <h2>{interviewCount}</h2>
+                        <p>Interviews</p>
                     </div>
 
                 </section>
@@ -402,7 +461,7 @@ function CandidateDashboard() {
                                                 :
 
                                                 <button
-                                                    onClick={() => openApplyModal(job.jobId)}
+                                                    onClick={() => openApplyModal(job)}
                                                 >
                                                     Apply
                                                 </button>
@@ -427,40 +486,109 @@ function CandidateDashboard() {
 
                     <div className="apply-modal">
 
-                        <h2>Apply Job</h2>
+                        <h2>Apply for this Job</h2>
 
-                        <p>
-                            <strong>Name : </strong>
-                            {user.name}
-                        </p>
+                        <div className="apply-job-header">
 
-                        <p>
-                            <strong>Email : </strong>
-                            {user.email}
-                        </p>
+                            <h3>{selectedJob?.title}</h3>
 
-                        <div className="resume-upload">
-
-                            <input
-                                type="file"
-                                accept=".pdf,.doc,.docx"
-                                onChange={(e) => setResumeFile(e.target.files[0])}
-                            />
+                            <h4>{selectedJob?.companyName || "Confidential Company"}</h4>
 
                         </div>
-                        {resumeFile && (
-                            <p className="selected-file">
-                                📄 Selected: {resumeFile.name}
-                            </p>
-                        )}
+
+                        <div className="apply-job-details">
+
+                            <span>📍 {selectedJob?.location}</span>
+
+                            <span>
+                                💰 ₹{selectedJob?.salary?.toLocaleString("en-IN")}
+                            </span>
+
+                            <span>
+                                🧑 {selectedJob?.experience} Year(s)
+                            </span>
+
+                            <span>
+                                💼 {selectedJob?.employmentType}
+                            </span>
+
+                            <span>
+                                🏠 {selectedJob?.workMode}
+                            </span>
+
+                            {
+                                selectedJob?.vacancies &&
+                                <span>
+                                    👥 {selectedJob.vacancies} Vacancies
+                                </span>
+                            }
+
+                        </div>
+
+                        <hr />
+
+                        <h4>Job Description</h4>
+
+                        <p className="job-description">
+                            {selectedJob?.description}
+                        </p>
+
+                        <hr />
+
+                        <h4>Required Skills</h4>
+
+                        <div className="job-skills">
+
+                            {selectedJob?.skills?.map((skill, index) => (
+
+                                <span
+                                    key={index}
+                                    className="skill"
+                                >
+                                    {skill}
+                                </span>
+
+                            ))}
+
+                        </div>
+
+                        <hr />
+
+                        <h4>Applying As</h4>
+
+                        <p><strong>Name:</strong> {user.name}</p>
+
+                        <p><strong>Email:</strong> {user.email}</p>
+
+                        <hr />
+
+                        <h4>Upload Resume</h4>
+
+                        <input
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            className="form-control"
+                            onChange={(e) => setResumeFile(e.target.files[0])}
+                        />
+
+                        {
+                            resumeFile && (
+                                <p className="selected-file">
+                                    📄 {resumeFile.name}
+                                </p>
+                            )
+                        }
 
                         <div className="modal-buttons">
 
                             <button
                                 onClick={() => {
+
                                     setShowApplyModal(false);
                                     setResumeFile(null);
+                                    setSelectedJob(null);
                                     setSelectedJobId(null);
+
                                 }}
                             >
                                 Cancel

@@ -17,6 +17,7 @@ import ForgotPassword from "./pages/Login/ForgotPassword";
 import VerifyOtp from "./pages/Login/VerifyOtp";
 import ResetPassword from "./pages/Login/ResetPassword";
 import CandidateAssessment from "./pages/Assessment/CandidateAssessments";
+import CandidateInterviews from "./pages/CandidateDashboard/CandidateInterviews";
 
 
 function App() {
@@ -121,25 +122,31 @@ function App() {
 
 
         <Route
-    path="/forgot-password"
-    element={<ForgotPassword />}
-/>
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
 
 
         <Route
-    path="/verify-otp"
-    element={<VerifyOtp />}
-/>
+          path="/verify-otp"
+          element={<VerifyOtp />}
+        />
 
 
         <Route
-    path="/reset-password"
-    element={<ResetPassword/>}
-/>
+          path="/reset-password"
+          element={<ResetPassword />}
+        />
 
         <Route
           path="/candidate/assessments"
           element={<CandidateAssessment />}
+        />
+
+
+        <Route
+          path="/candidate/interviews"
+          element={<CandidateInterviews />}
         />
 
 

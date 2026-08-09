@@ -161,3 +161,50 @@ export const getAssessmentByJobId = async (jobId) => {
         }
     );
 };
+
+export const getAssignedCandidateIds = async (assessmentId) => {
+
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(
+        `/assessment/${assessmentId}/assigned-candidates`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+};
+
+
+export const scheduleInterview = async (data) => {
+
+    const token = localStorage.getItem("token");
+
+    return axiosService.post(
+        "/application/interview/schedule",
+        data,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+};
+
+
+export const getInterviewByApplication = async (applicationId) => {
+
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(
+        `/application/interview/application/${applicationId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+};

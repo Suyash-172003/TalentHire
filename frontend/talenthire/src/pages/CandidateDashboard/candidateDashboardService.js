@@ -61,3 +61,20 @@ export const getMyApplications = async () => {
         }
     });
 };
+
+export const getMyInterviews = async () => {
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+
+    return axiosService.get(
+        `/application/interview/candidate/${user.userId}`,
+        {
+            headers: {
+                "X-User-Id": user.userId,
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+};
+
