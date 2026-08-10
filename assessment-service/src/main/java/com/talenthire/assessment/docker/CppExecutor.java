@@ -1,9 +1,11 @@
 package com.talenthire.assessment.docker;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Component;
@@ -14,131 +16,339 @@ import com.talenthire.assessment.service.CodeExecutor;
 @Component
 public class CppExecutor implements CodeExecutor {
 
-	 @Override
-	    public String getLanguage() {
-	        return "cpp";
-	    }
+    private static final long COMPILE_TIMEOUT = 60;
+    private static final long RUN_TIMEOUT = 10;
 
-	    @Override
-	    public String compile(Path workspace) {
 
-	        ProcessBuilder builder = new ProcessBuilder(
-	                "docker",
-	                "run",
-	                "--rm",
-	                "-v",
-	                workspace.toAbsolutePath() + ":/workspace",
-	                "-w",
-	                "/workspace",
-	                "talenthire-cpp-runner",
-	                "g++",
-	                "main.cpp",
-	                "-o",
-	                "main"
-	        );
+    @Override
+    public String getLanguage() {
+        return "cpp";
+    }
 
-	        try {
 
-	            Process process = builder.start();
+    @Override
+    public String compile(Path workspace) {
 
-	            int exitCode = process.waitFor();
+        String containerName =
+                "talenthire-cpp-compile-" +
+                UUID.randomUUID().toString().substring(0, 8);
 
-	            if (exitCode != 0) {
 
-	                BufferedReader reader = new BufferedReader(
-	                        new InputStreamReader(process.getErrorStream()));
+        ProcessBuilder builder = new ProcessBuilder(
+                "docker",
+                "run",
+                "--rm",
 
-	                StringBuilder error = new StringBuilder();
+                "--name",
+                containerName,
 
-	                String line;
+                
+                "--cpus=1",
 
-	                while ((line = reader.readLine()) != null) {
-	                    error.append(line).append("\n");
-	                }
+                "--memory=256m",
 
-	                return error.toString();
-	            }
+                "-v",
+                workspace.toAbsolutePath() + ":/workspace",
 
-	        } catch (Exception e) {
-	            throw new RuntimeException(e);
-	        }
+                "-w",
+                "/workspace",
 
-	        return null;
-	    }
+                "talenthire-cpp-runner",
 
-	    @Override
-	    public RunResult run(Path workspace, String input) {
+                "g++",
+                "main.cpp",
+                "-o",
+                "main"
+        );
 
-	        RunResult result = new RunResult();
 
-	        ProcessBuilder builder = new ProcessBuilder(
-	                "docker",
-	                "run",
-	                "--rm",
-	                "-i",
-	                "-v",
-	                workspace.toAbsolutePath() + ":/workspace",
-	                "-w",
-	                "/workspace",
-	                "talenthire-cpp-runner",
-	                "./main"
-	        );
+        try {
 
-	        try {
+            Process process = builder.start();
 
-	            long startTime = System.nanoTime();
 
-	            Process process = builder.start();
+           
+            boolean finished =
+                    process.waitFor(
+                            COMPILE_TIMEOUT,
+                            TimeUnit.SECONDS
+                    );
 
-	            OutputStream os = process.getOutputStream();
 
-	            os.write(input.getBytes());
-	            os.flush();
-	            os.close();
+           
+            if (!finished) {
 
-	            BufferedReader reader = new BufferedReader(
-	                    new InputStreamReader(process.getInputStream()));
+                process.destroyForcibly();
 
-	            StringBuilder output = new StringBuilder();
+                killContainer(containerName);
 
-	            String line;
+                return "Compilation Time Limit Exceeded";
+            }
 
-	            while ((line = reader.readLine()) != null) {
-	                output.append(line).append("\n");
-	            }
 
-	            int exitCode = process.waitFor();
+            int exitCode =
+                    process.exitValue();
 
-	            long endTime = System.nanoTime();
 
-	            result.setExecutionTime(
-	                    TimeUnit.NANOSECONDS.toMillis(endTime - startTime));
+            if (exitCode != 0) {
 
-	            if (exitCode != 0) {
+                BufferedReader reader =
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        process.getErrorStream()
+                                )
+                        );
 
-	                BufferedReader errorReader = new BufferedReader(
-	                        new InputStreamReader(process.getErrorStream()));
+                StringBuilder error =
+                        new StringBuilder();
 
-	                StringBuilder error = new StringBuilder();
+                String line;
 
-	                while ((line = errorReader.readLine()) != null) {
-	                    error.append(line).append("\n");
-	                }
+                while ((line =
+                        reader.readLine()) != null) {
 
-	                result.setRuntimeError(error.toString());
-	                result.setOutput(null);
+                    error.append(line)
+                         .append("\n");
+                }
 
-	            } else {
+                return error.toString();
+            }
 
-	                result.setOutput(output.toString());
-	                result.setRuntimeError(null);
-	            }
 
-	            return result;
+        } catch (IOException e) {
 
-	        } catch (Exception e) {
-	            throw new RuntimeException(e);
-	        }
-	    }
+            return "Compilation failed: "
+                    + e.getMessage();
 
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+
+            return "Compilation interrupted";
+        }
+
+
+        return null;
+    }
+
+
+    @Override
+    public RunResult run(
+            Path workspace,
+            String input) {
+
+        RunResult result =
+                new RunResult();
+
+
+        String containerName =
+                "talenthire-cpp-runner-" +
+                UUID.randomUUID().toString().substring(0, 8);
+
+
+        ProcessBuilder builder = new ProcessBuilder(
+                "docker",
+                "run",
+                "--rm",
+
+                "--name",
+                containerName,
+
+                // CPU limit
+                "--cpus=1",
+
+                // Memory limit
+                "--memory=256m",
+
+                "-i",
+
+                "-v",
+                workspace.toAbsolutePath() + ":/workspace",
+
+                "-w",
+                "/workspace",
+
+                "talenthire-cpp-runner",
+
+                "./main"
+        );
+
+
+        try {
+
+            long startTime =
+                    System.nanoTime();
+
+
+            Process process =
+                    builder.start();
+
+
+           
+
+            OutputStream os =
+                    process.getOutputStream();
+
+            os.write(input.getBytes());
+
+            os.flush();
+            os.close();
+
+
+            
+
+            boolean finished =
+                    process.waitFor(
+                            RUN_TIMEOUT,
+                            TimeUnit.SECONDS
+                    );
+
+
+            long endTime =
+                    System.nanoTime();
+
+
+            result.setExecutionTime(
+                    TimeUnit.NANOSECONDS.toMillis(
+                            endTime - startTime
+                    )
+            );
+
+
+           
+
+            if (!finished) {
+
+                process.destroyForcibly();
+
+                killContainer(containerName);
+
+                result.setRuntimeError(
+                        "Time Limit Exceeded"
+                );
+
+                result.setOutput(null);
+
+                return result;
+            }
+
+
+           
+
+            BufferedReader reader =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    process.getInputStream()
+                            )
+                    );
+
+
+            StringBuilder output =
+                    new StringBuilder();
+
+            String line;
+
+
+            while ((line =
+                    reader.readLine()) != null) {
+
+                output.append(line)
+                     .append("\n");
+            }
+
+
+            
+
+            int exitCode =
+                    process.exitValue();
+
+
+            if (exitCode != 0) {
+
+                BufferedReader errorReader =
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        process.getErrorStream()
+                                )
+                        );
+
+
+                StringBuilder error =
+                        new StringBuilder();
+
+
+                while ((line =
+                        errorReader.readLine()) != null) {
+
+                    error.append(line)
+                         .append("\n");
+                }
+
+
+                result.setRuntimeError(
+                        error.toString()
+                );
+
+                result.setOutput(null);
+
+            } else {
+
+                result.setOutput(
+                        output.toString()
+                );
+
+                result.setRuntimeError(null);
+            }
+
+
+            return result;
+
+
+        } catch (IOException e) {
+
+            result.setRuntimeError(
+                    "Execution failed: "
+                    + e.getMessage()
+            );
+
+            return result;
+
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+
+            result.setRuntimeError(
+                    "Execution interrupted"
+            );
+
+            return result;
+        }
+    }
+
+
+    
+
+    private void killContainer(
+            String containerName) {
+
+        try {
+
+            Process killProcess =
+                    new ProcessBuilder(
+                            "docker",
+                            "kill",
+                            containerName
+                    ).start();
+
+            killProcess.waitFor(
+                    2,
+                    TimeUnit.SECONDS
+            );
+
+        } catch (Exception e) {
+
+            // Container may already be stopped
+        }
+    }
 }

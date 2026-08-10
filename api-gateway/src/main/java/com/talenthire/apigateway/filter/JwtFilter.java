@@ -1,13 +1,16 @@
 package com.talenthire.apigateway.filter;
 
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.Ordered;
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 
 import com.talenthire.apigateway.util.JwtUtil;
 
@@ -16,66 +19,138 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-@Component
-public class JwtFilter implements GlobalFilter,Ordered{
-	
-private final JwtUtil jwtUtil;
-	
+public class JwtFilter implements WebFilter {
 
-	@Override
-	public int getOrder() {
-		return -1;
-	}
+    private final JwtUtil jwtUtil;
 
-	@Override
-	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-		
-		System.out.println("Request coming");
-		  ServerHttpRequest request = exchange.getRequest();
+    @Override
+    public Mono<Void> filter(
+            ServerWebExchange exchange,
+            WebFilterChain chain) {
 
-	        String path = request.getURI().getPath();
+        System.out.println("Request coming");
 
-	        // Skip JWT validation for Auth APIs
-	        if (path.startsWith("/auth")) {
-	            return chain.filter(exchange);
-	        }
+        ServerHttpRequest request =
+                exchange.getRequest();
 
-	        String header = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        String path =
+                request.getURI().getPath();
 
-	        if (header == null || !header.startsWith("Bearer ")) {
 
-	            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 
-	            return exchange.getResponse().setComplete();
-	        }
+        if (path.startsWith("/auth")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")) {
 
-	        String jwt = header.substring(7);
+            return chain.filter(exchange);
+        }
 
-	        try {
 
-	            Claims claims = jwtUtil.validateToken(jwt);
+        
 
-	            Integer userId = claims.get("user_id", Integer.class);
-	            String role = claims.get("user_role", String.class);
-	            
-	            ServerHttpRequest modifiedRequest=request.mutate()
-	            		.header("X-User-Id",String.valueOf(userId))
-	            		.header("X-User-Role", role)
-	            		.build();
-	            		
-	            				
+        String header =
+                request.getHeaders()
+                        .getFirst(HttpHeaders.AUTHORIZATION);
 
-	            // JWT is valid.
-	            // Continue request to the destination service.
 
-	            return chain.filter(exchange.mutate().request(modifiedRequest).build());
+        if (header == null ||
+                !header.startsWith("Bearer ")) {
 
-	        } catch (Exception e) {
+            exchange.getResponse()
+                    .setStatusCode(
+                            HttpStatus.UNAUTHORIZED);
 
-	            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse()
+                    .setComplete();
+        }
 
-	            return exchange.getResponse().setComplete();
-	        }
-	}
 
+        String jwt =
+                header.substring(7);
+
+
+        try {
+
+
+
+            Claims claims =
+                    jwtUtil.validateToken(jwt);
+
+            System.out.println("JWT validated");
+
+
+            Integer userId =
+                    claims.get(
+                            "user_id",
+                            Integer.class);
+
+            String role =
+                    claims.get(
+                            "user_role",
+                            String.class);
+
+
+            System.out.println(
+                    "User ID: " + userId);
+
+            System.out.println(
+                    "Role: " + role);
+
+
+         
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userId,
+                            null,
+                            List.of(
+                                    new SimpleGrantedAuthority(
+                                            "ROLE_" + role)
+                            )
+                    );
+
+
+      
+
+            ServerHttpRequest modifiedRequest =
+                    request.mutate()
+
+                            .header(
+                                    "X-User-Id",
+                                    String.valueOf(userId))
+
+                            .header(
+                                    "X-User-Role",
+                                    role)
+
+                            .build();
+
+
+
+            return chain
+                    .filter(
+                            exchange.mutate()
+                                    .request(
+                                            modifiedRequest)
+                                    .build()
+                    )
+                    .contextWrite(
+                            ReactiveSecurityContextHolder
+                                    .withAuthentication(
+                                            authentication)
+                    );
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            exchange.getResponse()
+                    .setStatusCode(
+                            HttpStatus.UNAUTHORIZED);
+
+            return exchange.getResponse()
+                    .setComplete();
+        }
+    }
 }
