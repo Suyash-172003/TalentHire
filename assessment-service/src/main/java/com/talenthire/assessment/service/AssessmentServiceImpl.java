@@ -249,7 +249,14 @@ public class AssessmentServiceImpl implements AssessmentService {
 
 	private Path createWorkSpace() throws IOException {
 		
-		Path path=Path.of("C:\\Submission");
+		 Path path = Path.of(
+		            System.getenv()
+		                    .getOrDefault(
+		                            "SUBMISSION_PATH",
+		                            "C:\\Submission"
+		                    )
+		    );
+
 		return Files.createTempDirectory(path,"submission-");
 	}
 

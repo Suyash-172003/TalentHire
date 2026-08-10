@@ -1,29 +1,30 @@
 	package com.talenthire.assessment.service;
 	
 	import java.time.LocalDateTime;
-	import java.util.List;
-	import java.util.Optional;
-	
-	import org.springframework.stereotype.Service;
-	import org.springframework.transaction.annotation.Transactional;
-	
-	import com.talenthire.assessment.dto.AssessmentResultResponse;
-	import com.talenthire.assessment.dto.ExamResultResponse;
-	import com.talenthire.assessment.dto.StartExamRequest;
-	import com.talenthire.assessment.dto.StartExamResponse;
-	import com.talenthire.assessment.dto.SubmitAnswerRequest;
-	import com.talenthire.assessment.dto.SubmitExamRequest;
-	import com.talenthire.assessment.entity.Assessment;
-	import com.talenthire.assessment.entity.MCQExamAttempt;
-	import com.talenthire.assessment.entity.MCQQuestion;
-	import com.talenthire.assessment.entity.ExamStatus;
-	import com.talenthire.assessment.repository.AssessmentRepository;
-	import com.talenthire.assessment.repository.MCQExamAttemptRepository;
-	import com.talenthire.assessment.repository.MCQQuestionRepository;
-	
-	import java.util.stream.Collectors;
-	
-	import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.talenthire.assessment.dto.AssessmentResultResponse;
+import com.talenthire.assessment.dto.ExamResultResponse;
+import com.talenthire.assessment.dto.StartExamRequest;
+import com.talenthire.assessment.dto.StartExamResponse;
+import com.talenthire.assessment.dto.SubmitAnswerRequest;
+import com.talenthire.assessment.dto.SubmitExamRequest;
+import com.talenthire.assessment.entity.Assessment;
+import com.talenthire.assessment.entity.ExamStatus;
+import com.talenthire.assessment.entity.MCQExamAttempt;
+import com.talenthire.assessment.entity.MCQQuestion;
+import com.talenthire.assessment.exception.InvalidRequestException;
+import com.talenthire.assessment.exception.ResourceNotFoundException;
+import com.talenthire.assessment.repository.AssessmentRepository;
+import com.talenthire.assessment.repository.MCQExamAttemptRepository;
+import com.talenthire.assessment.repository.MCQQuestionRepository;
+
+import lombok.RequiredArgsConstructor;
 	
 	@Service
 	@RequiredArgsConstructor
@@ -37,9 +38,15 @@
 	    @Override
 	    public StartExamResponse startExam(StartExamRequest request) {
 	
-	        Assessment assessment = assessmentRepository.findById(request.getAssessmentId())
-	                .orElseThrow(() -> new RuntimeException("Assessment not found"));
-	
+	    	 Assessment assessment =
+	                 assessmentRepository
+	                         .findById(request.getAssessmentId())
+	                         .orElseThrow(() ->
+	                                 new ResourceNotFoundException(
+	                                         "Assessment not found with id: "
+	                                         + request.getAssessmentId()
+	                                 )
+	                         );
 	        // Check existing attempt
 	//        attemptRepository.findByAssessment_AssessmentIdAndCandidateId(
 	//                request.getAssessmentId(),
@@ -68,7 +75,9 @@
 	            MCQExamAttempt existing = existingAttempt.get();
 	
 	            if (existing.getStatus() == ExamStatus.COMPLETED) {
-	                throw new RuntimeException("You have already completed this assessment.");
+	            	 throw new InvalidRequestException(
+	                         "You have already completed this assessment."
+	                 );
 	            }
 	
 	            if (existing.getStatus() == ExamStatus.IN_PROGRESS) {
@@ -124,10 +133,14 @@
 		                                         SubmitExamRequest request) {
 		
 		        MCQExamAttempt attempt = attemptRepository.findById(attemptId)
-		                .orElseThrow(() -> new RuntimeException("Attempt not found"));
+		        		 .orElseThrow(() ->
+		                 new ResourceNotFoundException(
+		                         "Exam attempt not found with id: "
+		                         + attemptId));
 		
 		        if (attempt.getSubmitted()) {
-		            throw new RuntimeException("Exam already submitted.");
+		        	  throw new InvalidRequestException(
+		        	            "Exam already submitted.");
 		        }
 		
 		        int obtainedMarks = 0;
@@ -135,7 +148,10 @@
 		        for (SubmitAnswerRequest answer : request.getAnswers()) {
 		
 		            MCQQuestion question = mcqQuestionRepository.findById(answer.getQuestionId())
-		                    .orElseThrow(() -> new RuntimeException("Question not found"));
+		            		 .orElseThrow(() ->
+		                     new ResourceNotFoundException(
+		                             "Question not found with id: "
+		                             + answer.getQuestionId()));
 		
 		            if (question.getCorrectAnswer().equalsIgnoreCase(answer.getSelectedAnswer())) {
 		                obtainedMarks += question.getMarks();
@@ -152,7 +168,9 @@
 		
 		        Assessment assessment = assessmentRepository.findById(
 		                attempt.getAssessment().getAssessmentId())
-		                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+		        		 .orElseThrow(() ->
+		                 new ResourceNotFoundException(
+		                         "Assessment not found"));
 		
 		        double percentage =
 		                ((double) obtainedMarks / attempt.getTotalMarks()) * 100;
@@ -181,11 +199,17 @@
 	    public ExamResultResponse getResult(Integer attemptId) {
 	
 	        MCQExamAttempt attempt = attemptRepository.findById(attemptId)
-	                .orElseThrow(() -> new RuntimeException("Attempt not found"));
+	        		 .orElseThrow(() ->
+	                 new ResourceNotFoundException(
+	                         "Exam attempt not found with id: "
+	                         + attemptId));
+
 	
 	        Assessment assessment = assessmentRepository.findById(
 	                attempt.getAssessment().getAssessmentId())
-	                .orElseThrow(() -> new RuntimeException("Assessment not found"));
+	        		 .orElseThrow(() ->
+	                 new ResourceNotFoundException(
+	                         "Assessment not found"));
 	
 	        double percentage =
 	                ((double) attempt.getObtainedMarks() / attempt.getTotalMarks()) * 100;

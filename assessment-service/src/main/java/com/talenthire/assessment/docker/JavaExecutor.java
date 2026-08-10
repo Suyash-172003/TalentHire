@@ -32,20 +32,16 @@ public class JavaExecutor implements CodeExecutor {
                 "docker",
                 "run",
                 "--rm",
-
                 "--name",
                 containerName,
 
                 "--cpus=1",
 
                 "--memory=256m",
-
                 "-v",
                 workSpace.toAbsolutePath() + ":/workspace",
-
                 "-w",
                 "/workspace",
-
                 "talenthire-java-runner",
 
                 "javac",

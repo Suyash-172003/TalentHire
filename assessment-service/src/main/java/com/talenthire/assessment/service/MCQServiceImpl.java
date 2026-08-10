@@ -10,6 +10,7 @@ import com.talenthire.assessment.dto.MCQQuestionRequest;
 import com.talenthire.assessment.dto.MCQQuestionResponse;
 import com.talenthire.assessment.entity.Assessment;
 import com.talenthire.assessment.entity.MCQQuestion;
+import com.talenthire.assessment.exception.ResourceNotFoundException;
 import com.talenthire.assessment.mapper.MCQMapper;
 import com.talenthire.assessment.repository.AssessmentRepository;
 import com.talenthire.assessment.repository.MCQQuestionRepository;
@@ -42,7 +43,10 @@ public class MCQServiceImpl implements MCQService {
     public MCQQuestionResponse getQuestionById(Integer id) {
 
         MCQQuestion question = questionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Question not found"));
+        		 .orElseThrow(() ->
+                 new ResourceNotFoundException(
+                         "Question not found with id: "
+                         ));
 
         return mapper.toResponse(question);
     }
