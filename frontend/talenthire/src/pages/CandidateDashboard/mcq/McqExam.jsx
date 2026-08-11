@@ -46,8 +46,35 @@ const McqExam = () => {
     const [loading, setLoading] = useState(true);
     const [answers, setAnswers] = useState({});
     const [visited, setVisited] = useState([]);
-    const [timeLeft, setTimeLeft] = useState(duration * 60);
+
     const [markedForReview, setMarkedForReview] = useState([]);
+
+    const storageKey = `mcq_exam_end_${attemptId}`;
+
+    const [timeLeft, setTimeLeft] = useState(() => {
+
+        const savedEndTime = localStorage.getItem(storageKey);
+
+        if (savedEndTime) {
+
+            const remaining = Math.floor(
+                (Number(savedEndTime) - Date.now()) / 1000
+            );
+
+            return Math.max(0, remaining);
+        }
+
+        // First time opening this exam
+        const endTime =
+            Date.now() + duration * 60 * 1000;
+
+        localStorage.setItem(
+            storageKey,
+            endTime.toString()
+        );
+
+        return duration * 60;
+    });
 
 
     const handleAnswerSelect = (questionId, option) => {
@@ -89,6 +116,7 @@ const McqExam = () => {
                 attemptId,
                 payload
             );
+            localStorage.removeItem(storageKey);
             console.log("Payload:");
             console.log(JSON.stringify(payload, null, 2));
 
@@ -159,8 +187,8 @@ const McqExam = () => {
 
     };
 
-   
-    
+
+
 
     useEffect(() => {
 

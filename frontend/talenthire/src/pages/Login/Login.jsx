@@ -145,12 +145,12 @@ function Login() {
                                         id="remember"
                                     />
 
-                                    <label
+                                    {/* <label
                                         className="form-check-label"
                                         htmlFor="remember"
                                     >
                                         Remember Me
-                                    </label>
+                                    </label> */}
 
                                 </div>
 
@@ -172,15 +172,15 @@ function Login() {
                                 Sign In
                             </button>
 
-                            {/* Divider */}
+                           
 
-                            <div className="divider">
+                            {/* <div className="divider">
 
                                 <span>OR</span>
 
                             </div>
 
-                            {/* Google */}
+                          
 
                             <button
                                 type="button"
@@ -191,7 +191,7 @@ function Login() {
 
                                 Continue with Google
 
-                            </button>
+                            </button> */}
 
                         </form>
 

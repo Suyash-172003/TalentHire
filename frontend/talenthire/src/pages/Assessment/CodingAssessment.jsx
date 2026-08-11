@@ -32,9 +32,40 @@ function CodingAssessment() {
 
             const response = await getAssessmentById(assessmentId);
 
-            setAssessment(response.data);
+            const assessmentData = response.data;
 
-            setTimeLeft(response.data.codingDuration * 60);
+            setAssessment(assessmentData);
+
+            const storageKey = `codingExamEndTime_${assessmentId}`;
+
+            const savedEndTime = localStorage.getItem(storageKey);
+
+            let endTime;
+
+            if (savedEndTime) {
+
+                // Continue existing exam timer after refresh
+                endTime = Number(savedEndTime);
+
+            } else {
+
+                // First time opening coding exam
+                endTime =
+                    Date.now() +
+                    assessmentData.codingDuration * 60 * 1000;
+
+                localStorage.setItem(
+                    storageKey,
+                    endTime.toString()
+                );
+            }
+
+            const remainingTime = Math.max(
+                0,
+                Math.floor((endTime - Date.now()) / 1000)
+            );
+
+            setTimeLeft(remainingTime);
 
         } catch (error) {
 
@@ -142,6 +173,10 @@ if __name__ == "__main__":
 
             await submitAssessment(request);
 
+            localStorage.removeItem(
+                `codingExamEndTime_${assessmentId}`
+            );
+
             setShowSuccessModal(true);
 
             setTimeout(() => {
@@ -149,7 +184,6 @@ if __name__ == "__main__":
                 navigate("/candidate/dashboard");
 
             }, 3000);
-
         }
 
         catch (error) {
