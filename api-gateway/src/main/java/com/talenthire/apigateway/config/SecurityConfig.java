@@ -2,6 +2,7 @@ package com.talenthire.apigateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -19,14 +20,10 @@ public class SecurityConfig {
             ServerHttpSecurity http,
             JwtUtil jwtUtil) {
 
-        JwtFilter jwtFilter =
-                new JwtFilter(jwtUtil);
+        JwtFilter jwtFilter = new JwtFilter(jwtUtil);
 
         return http
-
-                .csrf(
-                        ServerHttpSecurity.CsrfSpec::disable
-                )
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
 
                 .addFilterAt(
                         jwtFilter,
@@ -35,7 +32,11 @@ public class SecurityConfig {
 
                 .authorizeExchange(exchange -> exchange
 
+                        // IMPORTANT: Allow browser CORS preflight
+                        .pathMatchers(HttpMethod.OPTIONS, "/**")
+                        .permitAll()
 
+                        // Auth
                         .pathMatchers(
                                 "/auth/**",
                                 "/swagger-ui/**",
@@ -43,6 +44,7 @@ public class SecurityConfig {
                         )
                         .permitAll()
 
+                        // Recruiter
                         .pathMatchers(
                                 "/job/create",
                                 "/job/update/**",
@@ -54,41 +56,30 @@ public class SecurityConfig {
                                 "/assessment/*/coding-question",
                                 "/assessment/coding-question/*/testcase",
                                 "/assessment/assign",
-                                "/assessment/*/results"
-                       
-                                
+                                "/assessment/*/results",
+                                "/resume/recruiter/**"
                         )
                         .hasRole("RECRUITER")
 
-
-   
+                        // Candidate
                         .pathMatchers(
                                 "/application/apply/**",
                                 "/application/my/**",
                                 "/application/interview/candidate/**",
-                                "/resume/**",
-                                "/assessment/create",
-                                "/assessment/*/coding/upload",
-                                "/assessment/*/coding-question",
-                                "/assessment/coding-question/*/testcase",
-                                "/assessment/assign",
-                                "/assessment/*/results"
-                               
+                                "/resume/**"
                         )
                         .hasRole("CANDIDATE")
 
-
+                        // Common job endpoints
                         .pathMatchers(
                                 "/job/**",
-                                "/application/interview/application/**" 
+                                "/application/interview/application/**"
                         )
                         .hasAnyRole(
                                 "CANDIDATE",
                                 "RECRUITER"
                         )
 
-
-                       
                         .anyExchange()
                         .authenticated()
                 )

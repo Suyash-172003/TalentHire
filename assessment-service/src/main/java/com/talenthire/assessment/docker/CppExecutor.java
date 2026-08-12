@@ -19,20 +19,17 @@ public class CppExecutor implements CodeExecutor {
     private static final long COMPILE_TIMEOUT = 60;
     private static final long RUN_TIMEOUT = 10;
 
-
     @Override
     public String getLanguage() {
         return "cpp";
     }
 
-
     @Override
-    public String compile(Path workspace) {
+    public String compile(Path workSpace) {
 
         String containerName =
                 "talenthire-cpp-compile-" +
                 UUID.randomUUID().toString().substring(0, 8);
-
 
         ProcessBuilder builder = new ProcessBuilder(
                 "docker",
@@ -42,13 +39,14 @@ public class CppExecutor implements CodeExecutor {
                 "--name",
                 containerName,
 
-                
                 "--cpus=1",
 
                 "--memory=256m",
 
-                "-v",
-                workspace.toAbsolutePath() + ":/workspace",
+                "--mount",
+                "type=bind,source=" +
+                        getHostWorkspacePath(workSpace) +
+                        ",target=/workspace",
 
                 "-w",
                 "/workspace",
@@ -61,21 +59,16 @@ public class CppExecutor implements CodeExecutor {
                 "main"
         );
 
-
         try {
 
             Process process = builder.start();
 
-
-           
             boolean finished =
                     process.waitFor(
                             COMPILE_TIMEOUT,
                             TimeUnit.SECONDS
                     );
 
-
-           
             if (!finished) {
 
                 process.destroyForcibly();
@@ -85,10 +78,8 @@ public class CppExecutor implements CodeExecutor {
                 return "Compilation Time Limit Exceeded";
             }
 
-
             int exitCode =
                     process.exitValue();
-
 
             if (exitCode != 0) {
 
@@ -104,8 +95,7 @@ public class CppExecutor implements CodeExecutor {
 
                 String line;
 
-                while ((line =
-                        reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null) {
 
                     error.append(line)
                          .append("\n");
@@ -114,11 +104,10 @@ public class CppExecutor implements CodeExecutor {
                 return error.toString();
             }
 
-
         } catch (IOException e) {
 
-            return "Compilation failed: "
-                    + e.getMessage();
+            return "Compilation failed: " +
+                    e.getMessage();
 
         } catch (InterruptedException e) {
 
@@ -127,24 +116,20 @@ public class CppExecutor implements CodeExecutor {
             return "Compilation interrupted";
         }
 
-
         return null;
     }
 
-
     @Override
     public RunResult run(
-            Path workspace,
+            Path workSpace,
             String input) {
 
         RunResult result =
                 new RunResult();
 
-
         String containerName =
                 "talenthire-cpp-runner-" +
                 UUID.randomUUID().toString().substring(0, 8);
-
 
         ProcessBuilder builder = new ProcessBuilder(
                 "docker",
@@ -154,16 +139,16 @@ public class CppExecutor implements CodeExecutor {
                 "--name",
                 containerName,
 
-                // CPU limit
                 "--cpus=1",
 
-                // Memory limit
                 "--memory=256m",
 
                 "-i",
 
-                "-v",
-                workspace.toAbsolutePath() + ":/workspace",
+                "--mount",
+                "type=bind,source=" +
+                        getHostWorkspacePath(workSpace) +
+                        ",target=/workspace",
 
                 "-w",
                 "/workspace",
@@ -173,29 +158,26 @@ public class CppExecutor implements CodeExecutor {
                 "./main"
         );
 
-
         try {
 
             long startTime =
                     System.nanoTime();
 
-
             Process process =
                     builder.start();
 
-
-           
-
-            OutputStream os =
+            OutputStream outputStream =
                     process.getOutputStream();
 
-            os.write(input.getBytes());
+            if (input != null) {
 
-            os.flush();
-            os.close();
+                outputStream.write(
+                        input.getBytes()
+                );
+            }
 
-
-            
+            outputStream.flush();
+            outputStream.close();
 
             boolean finished =
                     process.waitFor(
@@ -203,19 +185,14 @@ public class CppExecutor implements CodeExecutor {
                             TimeUnit.SECONDS
                     );
 
-
             long endTime =
                     System.nanoTime();
-
 
             result.setExecutionTime(
                     TimeUnit.NANOSECONDS.toMillis(
                             endTime - startTime
                     )
             );
-
-
-           
 
             if (!finished) {
 
@@ -232,9 +209,6 @@ public class CppExecutor implements CodeExecutor {
                 return result;
             }
 
-
-           
-
             BufferedReader reader =
                     new BufferedReader(
                             new InputStreamReader(
@@ -242,26 +216,19 @@ public class CppExecutor implements CodeExecutor {
                             )
                     );
 
-
             StringBuilder output =
                     new StringBuilder();
 
             String line;
 
-
-            while ((line =
-                    reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
 
                 output.append(line)
                      .append("\n");
             }
 
-
-            
-
             int exitCode =
                     process.exitValue();
-
 
             if (exitCode != 0) {
 
@@ -272,18 +239,14 @@ public class CppExecutor implements CodeExecutor {
                                 )
                         );
 
-
                 StringBuilder error =
                         new StringBuilder();
 
-
-                while ((line =
-                        errorReader.readLine()) != null) {
+                while ((line = errorReader.readLine()) != null) {
 
                     error.append(line)
                          .append("\n");
                 }
-
 
                 result.setRuntimeError(
                         error.toString()
@@ -300,19 +263,16 @@ public class CppExecutor implements CodeExecutor {
                 result.setRuntimeError(null);
             }
 
-
             return result;
-
 
         } catch (IOException e) {
 
             result.setRuntimeError(
-                    "Execution failed: "
-                    + e.getMessage()
+                    "Execution failed: " +
+                    e.getMessage()
             );
 
             return result;
-
 
         } catch (InterruptedException e) {
 
@@ -326,8 +286,38 @@ public class CppExecutor implements CodeExecutor {
         }
     }
 
+    private String getHostWorkspacePath(Path workSpace) {
 
-    
+        String containerPath =
+                workSpace.toAbsolutePath().toString();
+
+        String submissionPath =
+                "/submissions";
+
+        String hostSubmissionPath =
+                System.getenv("HOST_SUBMISSION_PATH");
+
+        if (hostSubmissionPath == null ||
+                hostSubmissionPath.isBlank()) {
+
+            throw new IllegalStateException(
+                    "HOST_SUBMISSION_PATH is not configured"
+            );
+        }
+
+        if (containerPath.startsWith(submissionPath)) {
+
+            String relativePath =
+                    containerPath.substring(
+                            submissionPath.length()
+                    );
+
+            return hostSubmissionPath +
+                    relativePath;
+        }
+
+        return containerPath;
+    }
 
     private void killContainer(
             String containerName) {

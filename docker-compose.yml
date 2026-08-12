@@ -9,9 +9,9 @@ services:
 
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
     ports:
       - "3307:3306"
-
 
     volumes:
       - mysql-data:/var/lib/mysql
@@ -37,23 +37,17 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
 
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:29093
-
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
 
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
 
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
     volumes:
@@ -194,7 +188,8 @@ services:
 
       JWT_SECRET: ${JWT_SECRET}
 
-      SUBMISSION_PATH: /submissions
+      SUBMISSION_PATH: ${SUBMISSION_PATH}
+      HOST_SUBMISSION_PATH: ${HOST_SUBMISSION_PATH}
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -271,19 +266,14 @@ services:
 # =========================
 # VOLUMES
 # =========================
-
 volumes:
-
   mysql-data:
-
   kafka-data:
 
 
 # =========================
 # NETWORK
 # =========================
-
 networks:
-
   talenthire-network:
     driver: bridge

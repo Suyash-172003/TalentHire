@@ -1,3 +1,4 @@
+
 package com.talenthire.assessment.docker;
 
 import java.io.BufferedReader;
@@ -24,15 +25,15 @@ public class PythonExecutor implements CodeExecutor {
     }
 
     @Override
-    public String compile(Path workspace) {
+    public String compile(Path workSpace) {
 
-       
+    
         return null;
     }
 
     @Override
     public RunResult run(
-            Path workspace,
+            Path workSpace,
             String input) {
 
         RunResult result = new RunResult();
@@ -42,7 +43,6 @@ public class PythonExecutor implements CodeExecutor {
                 UUID.randomUUID()
                         .toString()
                         .substring(0, 8);
-
 
         ProcessBuilder builder = new ProcessBuilder(
                 "docker",
@@ -60,9 +60,10 @@ public class PythonExecutor implements CodeExecutor {
 
                 "-i",
 
-                "-v",
-                workspace.toAbsolutePath()
-                        + ":/workspace",
+                // Mount host workspace to Docker container
+                "--mount",
+                "type=bind,source=" + getHostWorkspacePath(workSpace)
+                        + ",target=/workspace",
 
                 "-w",
                 "/workspace",
@@ -73,7 +74,6 @@ public class PythonExecutor implements CodeExecutor {
                 "main.py"
         );
 
-
         try {
 
             long startTime =
@@ -82,30 +82,26 @@ public class PythonExecutor implements CodeExecutor {
             Process process =
                     builder.start();
 
-
-          
-
-            OutputStream os =
+            // Send input to Python program
+            OutputStream outputStream =
                     process.getOutputStream();
 
-            os.write(input.getBytes());
+            outputStream.write(
+                    input.getBytes()
+            );
 
-            os.flush();
-            os.close();
-
+            outputStream.flush();
+            outputStream.close();
 
             
-
             boolean finished =
                     process.waitFor(
                             RUN_TIMEOUT,
                             TimeUnit.SECONDS
                     );
 
-
             long endTime =
                     System.nanoTime();
-
 
             result.setExecutionTime(
                     TimeUnit.NANOSECONDS.toMillis(
@@ -113,12 +109,13 @@ public class PythonExecutor implements CodeExecutor {
                     )
             );
 
-
-            
+          
             if (!finished) {
 
+                // Kill Java-side Docker process
                 process.destroyForcibly();
 
+                // Kill actual Docker container
                 killContainer(containerName);
 
                 result.setRuntimeError(
@@ -130,9 +127,7 @@ public class PythonExecutor implements CodeExecutor {
                 return result;
             }
 
-
            
-
             BufferedReader reader =
                     new BufferedReader(
                             new InputStreamReader(
@@ -149,15 +144,13 @@ public class PythonExecutor implements CodeExecutor {
                     reader.readLine()) != null) {
 
                 output.append(line)
-                     .append("\n");
+                        .append("\n");
             }
 
-
-           
             int exitCode =
                     process.exitValue();
 
-
+          
             if (exitCode != 0) {
 
                 BufferedReader errorReader =
@@ -174,7 +167,7 @@ public class PythonExecutor implements CodeExecutor {
                         errorReader.readLine()) != null) {
 
                     error.append(line)
-                         .append("\n");
+                            .append("\n");
                 }
 
                 result.setRuntimeError(
@@ -185,6 +178,7 @@ public class PythonExecutor implements CodeExecutor {
 
             } else {
 
+                // Successful execution
                 result.setOutput(
                         output.toString()
                 );
@@ -192,19 +186,16 @@ public class PythonExecutor implements CodeExecutor {
                 result.setRuntimeError(null);
             }
 
-
             return result;
-
 
         } catch (IOException e) {
 
             result.setRuntimeError(
-                    "Execution failed: "
-                    + e.getMessage()
+                    "Execution failed: " +
+                    e.getMessage()
             );
 
             return result;
-
 
         } catch (InterruptedException e) {
 
@@ -219,9 +210,44 @@ public class PythonExecutor implements CodeExecutor {
     }
 
 
-    // ==============================
-    // KILL CONTAINER
-    // ==============================
+    
+    private String getHostWorkspacePath(
+            Path workSpace) {
+
+        String containerPath =
+                workSpace.toAbsolutePath().toString();
+
+        String submissionPath =
+                "/submissions";
+
+        String hostSubmissionPath =
+                System.getenv("HOST_SUBMISSION_PATH");
+
+        if (hostSubmissionPath == null ||
+                hostSubmissionPath.isBlank()) {
+
+            throw new IllegalStateException(
+                    "HOST_SUBMISSION_PATH is not configured"
+            );
+        }
+
+        if (containerPath.startsWith(submissionPath)) {
+
+            String relativePath =
+                    containerPath.substring(
+                            submissionPath.length()
+                    );
+
+            
+            return hostSubmissionPath +
+                    relativePath;
+        }
+
+        return containerPath;
+    }
+
+
+   
 
     private void killContainer(
             String containerName) {

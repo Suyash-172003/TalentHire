@@ -248,16 +248,19 @@ public class AssessmentServiceImpl implements AssessmentService {
 	}
 
 	private Path createWorkSpace() throws IOException {
-		
-		 Path path = Path.of(
-		            System.getenv()
-		                    .getOrDefault(
-		                            "SUBMISSION_PATH",
-		                            "C:\\Submission"
-		                    )
-		    );
+	    String baseDir = System.getenv().getOrDefault(
+	            "SUBMISSION_PATH",
+	            System.getProperty("java.io.tmpdir") // OS-agnostic fallback
+	    );
 
-		return Files.createTempDirectory(path,"submission-");
+	    Path path = Path.of(baseDir);
+
+	    // Create the base directory if it doesn't exist yet
+	    if (!Files.exists(path)) {
+	        Files.createDirectories(path);
+	    }
+
+	    return Files.createTempDirectory(path, "submission-");
 	}
 
 	@Override

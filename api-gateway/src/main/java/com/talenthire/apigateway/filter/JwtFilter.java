@@ -35,6 +35,10 @@ public class JwtFilter implements WebFilter {
 
         String path =
                 request.getURI().getPath();
+        
+        if (request.getMethod() == org.springframework.http.HttpMethod.OPTIONS) {
+            return chain.filter(exchange);
+        }
 
 
 

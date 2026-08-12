@@ -20,3 +20,7 @@ Thumbs.db
 .env
 bin/
 obj/
+
+application-service/resumeUploads/
+data/
+*.class

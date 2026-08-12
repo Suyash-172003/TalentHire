@@ -38,8 +38,8 @@ public class JavaExecutor implements CodeExecutor {
                 "--cpus=1",
 
                 "--memory=256m",
-                "-v",
-                workSpace.toAbsolutePath() + ":/workspace",
+                "--mount",
+                "type=bind,source=" + getHostWorkspacePath(workSpace) + ",target=/workspace",
                 "-w",
                 "/workspace",
                 "talenthire-java-runner",
@@ -137,8 +137,9 @@ public class JavaExecutor implements CodeExecutor {
 
                 "-i",
 
-                "-v",
-                workSpace.toAbsolutePath() + ":/workspace",
+                "--mount",
+                "type=bind,source=" + getHostWorkspacePath(workSpace)
+                        + ",target=/workspace",
 
                 "-w",
                 "/workspace",
@@ -297,8 +298,35 @@ public class JavaExecutor implements CodeExecutor {
             return result;
         }
     }
+   
+    private String getHostWorkspacePath(Path workSpace) {
 
+        String containerPath = workSpace.toAbsolutePath().toString();
 
+        String submissionPath = "/submissions";
+
+        String hostSubmissionPath =
+                System.getenv("HOST_SUBMISSION_PATH");
+
+        if (hostSubmissionPath == null || hostSubmissionPath.isBlank()) {
+            throw new IllegalStateException(
+                    "HOST_SUBMISSION_PATH is not configured"
+            );
+        }
+
+        if (containerPath.startsWith(submissionPath)) {
+
+            String relativePath =
+                    containerPath.substring(submissionPath.length());
+
+            // IMPORTANT:
+            // Do NOT call Path.of(...).toAbsolutePath()
+            // because HOST_SUBMISSION_PATH is a Windows HOST path.
+            return hostSubmissionPath + relativePath;
+        }
+
+        return containerPath;
+    }
 
 
     private void killContainer(
