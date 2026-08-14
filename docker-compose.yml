@@ -21,6 +21,34 @@ services:
 
     restart: unless-stopped
 
+  payment-service:
+    build:
+      context: ./PaymentService
+
+    container_name: talenthire-payment
+
+    depends_on:
+      - mysql
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8085
+
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;database=talenthire_payment_db;user=root;password=${MYSQL_ROOT_PASSWORD};"
+
+      Jwt__Secret: ${JWT_SECRET}
+
+      Razorpay__KeyId: ${RAZORPAY_KEY_ID}
+      Razorpay__KeySecret: ${RAZORPAY_KEY_SECRET}
+
+    ports:
+      - "8085:8085"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
 
   # =========================
   # KAFKA
