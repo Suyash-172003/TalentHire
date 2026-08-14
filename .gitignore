@@ -1,6 +1,6 @@
 # Eclipse
 .metadata/
-
+node_modules/
 # Maven
 target/
 
