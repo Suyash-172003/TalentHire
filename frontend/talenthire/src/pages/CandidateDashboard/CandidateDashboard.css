@@ -1,0 +1,977 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard {
+
+    height: 100vh;
+
+    display: flex;
+
+    background: #F8F5EF;
+
+    font-family: 'Inter', sans-serif;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+/* Background Glow */
+
+.dashboard::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 450px;
+
+    height: 450px;
+
+    background: #F7B348;
+
+    border-radius: 50%;
+
+    filter: blur(150px);
+
+    bottom: -150px;
+
+    left: -150px;
+
+    opacity: .5;
+
+}
+
+.dashboard::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 400px;
+
+    height: 400px;
+
+    background: #8A74FF;
+
+    border-radius: 50%;
+
+    filter: blur(140px);
+
+    right: -120px;
+
+    top: -120px;
+
+    opacity: .4;
+
+}
+
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+
+    width: 270px;
+
+    height: calc(100vh - 40px);
+
+    margin: 20px;
+
+    flex-shrink: 0;
+
+    background: rgba(255, 255, 255, .75);
+
+    backdrop-filter: blur(20px);
+
+    border-radius: 30px;
+
+    padding: 35px 25px;
+
+    box-shadow: 0 25px 50px rgba(0, 0, 0, .08);
+
+    position: sticky;
+
+    top: 20px;
+
+    z-index: 5;
+
+}
+
+.sidebar h2 {
+
+    font-family: 'Cormorant Garamond';
+
+    font-size: 42px;
+
+    color: #171428;
+
+    margin-bottom: 40px;
+
+}
+
+.sidebar ul {
+
+    list-style: none;
+
+}
+
+.sidebar li {
+
+    padding: 15px 18px;
+
+    margin-bottom: 10px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    color: #555;
+
+    font-weight: 500;
+
+    transition: .3s;
+
+}
+
+.sidebar li:hover,
+
+.sidebar .active {
+
+    background: #171428;
+
+    color: white;
+
+}
+
+/* ================= MAIN CONTENT ================= */
+
+.main {
+
+    flex: 1;
+
+    height: 100vh;
+
+    overflow-y: auto;
+
+    padding: 30px 40px;
+
+    position: relative;
+
+    z-index: 3;
+
+}
+
+/* Hide scrollbar */
+
+.main::-webkit-scrollbar {
+
+    width: 8px;
+
+}
+
+
+.main::-webkit-scrollbar-thumb {
+
+    background: #ccc;
+
+    border-radius: 10px;
+
+}
+
+/* ================= TOPBAR ================= */
+
+.topbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.topbar input {
+
+    width: 350px;
+
+    height: 50px;
+
+    border: none;
+
+    outline: none;
+
+    border-radius: 25px;
+
+    padding: 0 25px;
+
+    background: white;
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    background: rgba(255, 255, 255, .9);
+
+    padding: 14px 22px;
+
+    border-radius: 18px;
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+}
+
+.notification {
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+}
+
+.profile-details {
+
+    display: flex;
+
+    flex-direction: column;
+
+    line-height: 1.2;
+
+}
+
+.profile-details h4 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.profile-details p {
+
+    margin: 4px 0 0;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+.logout-btn {
+
+    padding: 8px 15px;
+
+    font-size: 14px;
+
+    border-radius: 12px;
+}
+
+.logout-btn:hover {
+
+    background: #F7B348;
+
+    color: #171428;
+
+}
+
+/* ================= WELCOME ================= */
+
+.welcome {
+    margin-top: 10px;
+    max-width: 850px;
+}
+
+.welcome h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    line-height: 1;
+    color: #171428;
+}
+
+.welcome h2 {
+    margin-top: 8px;
+    font-size: 46px;
+    font-weight: 700;
+    color: #F6B04D;
+}
+
+.welcome p {
+    margin-top: 18px;
+    max-width: 650px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #666;
+}
+
+.welcome-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.welcome-actions button {
+    margin: 0;
+    padding: 15px 34px;
+    border: none;
+    border-radius: 14px;
+    background: #171428;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.welcome-search {
+    width: 330px;
+    height: 52px;
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    padding: 0 22px;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+}
+
+.sort-select {
+    width: 180px;
+    height: 56px;
+    border: none;
+    outline: none;
+    border-radius: 14px;
+    padding: 0 18px;
+    font-size: 15px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ================= STATS ================= */
+
+.stats {
+
+    display: flex;
+
+    gap: 20px;
+
+    margin-top: 45px;
+
+}
+
+.stats div {
+
+    flex: 1;
+
+    background: rgba(255, 255, 255, .8);
+
+    backdrop-filter: blur(15px);
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .07);
+
+}
+
+.stats h2 {
+
+    font-size: 45px;
+
+    color: #171428;
+
+}
+
+.stats p {
+
+    color: #777;
+
+}
+
+/* ================= CONTENT ================= */
+
+.content {
+    margin-top: 50px;
+}
+
+.left {
+    width: 100%;
+}
+
+.content h2 {
+
+    color: #171428;
+
+    margin-bottom: 20px;
+
+}
+
+/* ================= JOB CARD ================= */
+
+.job {
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 24px 28px;
+
+    margin-bottom: 22px;
+
+    box-shadow: 0 15px 35px rgba(0, 0, 0, .08);
+
+    transition: .3s;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 30px;
+
+}
+
+.job:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
+
+}
+
+.job h3 {
+
+    font-size: 24px;
+
+}
+
+.job p {
+
+    font-size: 18px;
+
+    margin: 10px 0;
+
+}
+
+.job span {
+
+    color: #777;
+
+}
+
+.job button {
+
+    width: 130px;
+
+    height: 48px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #171428;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+.job button:hover {
+
+    background: #2b2546;
+
+}
+
+.job-info {
+
+    flex: 1;
+
+}
+
+.job-company {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: #171428;
+
+    margin-bottom: 8px;
+
+}
+
+.job-title {
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    margin-bottom: 15px;
+
+}
+
+.job-details {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    margin-bottom: 15px;
+
+}
+
+.job-details span {
+
+    font-size: 15px;
+
+    color: #666;
+
+}
+
+.job-skills {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 15px;
+
+}
+
+.skill {
+
+    background: #F3F4F6;
+
+    color: #171428;
+
+    padding: 7px 14px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+}
+
+.job-action {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+/* ================= RIGHT SIDE CARDS ================= */
+
+.box {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    margin-bottom: 25px;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .07);
+
+}
+
+.box h3 {
+
+    margin-bottom: 20px;
+
+    color: #171428;
+
+}
+
+.box p {
+
+    margin-bottom: 12px;
+
+    color: #666;
+
+}
+
+.box button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 15px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    background: #171428;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+/* ================= APPLIED BUTTON ================= */
+
+.applied-btn {
+
+    background: #EAF8EE !important;
+
+    color: #1F8A4D !important;
+
+    border: none;
+
+    padding: 12px 25px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+    cursor: not-allowed;
+
+}
+
+/* ================= APPLY MODAL ================= */
+
+
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow-y: auto;
+    /* NEW */
+    padding: 30px 20px;
+    /* NEW */
+
+    z-index: 9999;
+}
+
+.apply-modal {
+    width: 720px;
+    max-width: 90vw;
+
+    max-height: 90vh;
+    /* NEW */
+    overflow-y: auto;
+    /* NEW */
+
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+
+    animation: popup .25s ease;
+}
+
+.apply-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.apply-modal::-webkit-scrollbar-thumb {
+    background: #cfcfcf;
+    border-radius: 20px;
+}
+
+@keyframes popup {
+    from {
+
+        opacity: 0;
+
+        transform: scale(.9);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
+}
+
+.apply-modal h2 {
+
+    margin-bottom: 20px;
+
+    text-align: center;
+
+    color: #171428;
+
+}
+
+.apply-modal p {
+
+    margin-bottom: 12px;
+
+    font-size: 16px;
+
+    color: #444;
+
+}
+
+.apply-modal strong {
+
+    color: #171428;
+
+}
+
+/* ================= RESUME UPLOAD ================= */
+
+.resume-upload input[type="file"] {
+
+    width: 100%;
+
+    margin: 20px 0;
+
+    padding: 8px;
+
+    border-radius: 10px;
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+}
+
+.resume-upload input[type="file"]::file-selector-button {
+
+    background: #171428;
+
+    color: white;
+
+    border: none;
+
+    padding: 7px 14px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+}
+
+
+.selected-file {
+
+    margin-bottom: 15px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* ================= MODAL BUTTONS ================= */
+
+.modal-buttons {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+}
+
+
+.modal-buttons button {
+
+    border: none;
+
+    padding: 12px 24px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+}
+
+.modal-buttons button:first-child {
+
+    background: #e5e5e5;
+
+    color: #333;
+
+}
+
+.modal-buttons button:last-child {
+    background: #171428;
+
+    color: white;
+
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+
+@media(max-width:1100px) {
+    .sidebar {
+
+        display: none;
+
+    }
+
+    .main {
+
+        width: 100%;
+
+        padding: 25px;
+
+    }
+
+    .stats,
+
+    .content {
+
+        flex-direction: column;
+
+    }
+
+    .welcome h1 {
+
+        font-size: 45px;
+
+    }
+
+}
+
+@media(max-width:900px) {
+
+
+    .job {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .job-action {
+
+        width: 100%;
+
+    }
+
+    .job button {
+
+        width: 100%;
+
+    }
+
+    .topbar input {
+
+        width: 220px;
+
+    }
+
+    .apply-modal {
+
+        width: 95%;
+        max-height: 90vh;
+
+    }
+
+}
+
+
+.latest-card {
+    flex: 2;
+    text-align: left;
+}
+
+.latest-card h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.latest-card h4 {
+    font-size: 20px;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.latest-card p {
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.status-pill {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: #FEF3C7;
+    color: #92400E;
+    font-weight: 600;
+}
+
+.apply-job-header {
+    margin-bottom: 20px;
+}
+
+.apply-job-header h3 {
+    margin-bottom: 5px;
+    color: #1f2937;
+}
+
+.apply-job-header h4 {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.apply-job-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 18px 0;
+}
+
+.apply-job-details span {
+    background: #F3F4F6;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.job-description {
+    margin: 15px 0;
+    line-height: 1.7;
+    color: #4B5563;
+}
+
+.apply-modal hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #E5E7EB;
+}
