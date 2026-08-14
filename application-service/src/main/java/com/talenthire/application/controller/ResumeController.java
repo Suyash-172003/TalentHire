@@ -1,0 +1,73 @@
+package com.talenthire.application.controller;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.talenthire.application.dto.UploadResumeResponse;
+import com.talenthire.application.service.ResumeService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/resume")
+@RequiredArgsConstructor
+public class ResumeController {
+	
+	private final ResumeService resumeService;
+	
+	@GetMapping("/recruiter/view/{resumeId}")
+	public ResponseEntity<Resource> recruiterViewResume(
+	        @PathVariable Integer resumeId) {
+
+	    Resource resource = resumeService.recruiterViewResume(resumeId);
+
+	    return ResponseEntity.ok()
+	            .header(HttpHeaders.CONTENT_DISPOSITION,
+	                    "inline; filename=\"" + resource.getFilename() + "\"")
+	            .contentType(MediaType.APPLICATION_PDF)
+	            .body(resource);
+	}
+	
+	
+	@PostMapping("/upload")
+    public ResponseEntity<?> uploadResume(@RequestParam("file") MultipartFile file,
+            @RequestHeader("X-User-Id") Integer candidateId) {
+
+        UploadResumeResponse response =
+                resumeService.uploadResume(file, candidateId);
+
+        return ResponseEntity.ok(response);
+    }
+	
+	@GetMapping
+	public ResponseEntity<?> getMyResumes(
+	        @RequestHeader("X-User-Id") Integer candidateId) {
+
+	    return ResponseEntity.ok(
+	            resumeService.getMyResumes(candidateId));
+	}
+	
+	@GetMapping("/view")
+	public ResponseEntity<?> viewResume(Integer resumeId,
+	        @RequestHeader("X-User-Id") Integer candidateId) {
+
+		Resource resource = resumeService.viewResume(resumeId,candidateId);
+
+	    return ResponseEntity.ok()
+	            .contentType(MediaType.APPLICATION_PDF)
+	            .header(HttpHeaders.CONTENT_DISPOSITION,
+	                    "inline; filename=\"resume.pdf\"")
+	            .body(resource);
+	}
+
+}

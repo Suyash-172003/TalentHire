@@ -1,0 +1,307 @@
+services:
+
+  # =========================
+  # MYSQL
+  # =========================
+  mysql:
+    image: mysql:8.0
+    container_name: talenthire-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+  payment-service:
+    build:
+      context: ./PaymentService
+
+    container_name: talenthire-payment
+
+    depends_on:
+      - mysql
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8085
+
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;database=talenthire_payment_db;user=root;password=${MYSQL_ROOT_PASSWORD};"
+
+      Jwt__Secret: ${JWT_SECRET}
+
+      Razorpay__KeyId: ${RAZORPAY_KEY_ID}
+      Razorpay__KeySecret: ${RAZORPAY_KEY_SECRET}
+
+    ports:
+      - "8085:8085"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # KAFKA
+  # =========================
+  kafka:
+    image: apache/kafka:latest
+    container_name: talenthire-kafka
+
+    ports:
+      - "9092:9092"
+
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # EUREKA
+  # =========================
+  eureka-server:
+    build:
+      context: ./eureka-server
+
+    container_name: talenthire-eureka
+
+    ports:
+      - "8761:8761"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # AUTH SERVICE
+  # =========================
+  auth-service:
+    build:
+      context: ./auth-service
+
+    container_name: talenthire-auth
+
+    depends_on:
+      - mysql
+      - eureka-server
+
+    environment:
+      MYSQL_HOST: mysql
+      EUREKA_URL: http://eureka-server:8761/eureka/
+
+      JWT_SECRET: ${JWT_SECRET}
+
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+    ports:
+      - "8081:8081"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # JOB SERVICE
+  # =========================
+  job-service:
+    build:
+      context: ./job-service
+
+    container_name: talenthire-job
+
+    depends_on:
+      - mysql
+      - eureka-server
+
+    environment:
+      MYSQL_HOST: mysql
+      EUREKA_URL: http://eureka-server:8761/eureka/
+
+    ports:
+      - "8082:8082"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # APPLICATION SERVICE
+  # =========================
+  application-service:
+    build:
+      context: ./application-service
+
+    container_name: talenthire-application
+
+    depends_on:
+      - mysql
+      - kafka
+      - eureka-server
+
+    environment:
+      MYSQL_HOST: mysql
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_URL: http://eureka-server:8761/eureka/
+
+      GROQ_API_KEY: ${GROQ_API_KEY}
+
+    volumes:
+      - ./data/resumeUploads:/app/resumeUploads
+
+    ports:
+      - "8083:8083"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # ASSESSMENT SERVICE
+  # =========================
+  assessment-service:
+    build:
+      context: ./assessment-service
+
+    container_name: talenthire-assessment
+
+    depends_on:
+      - mysql
+      - kafka
+      - eureka-server
+
+    environment:
+      MYSQL_HOST: mysql
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_URL: http://eureka-server:8761/eureka/
+
+      JWT_SECRET: ${JWT_SECRET}
+
+      SUBMISSION_PATH: ${SUBMISSION_PATH}
+      HOST_SUBMISSION_PATH: ${HOST_SUBMISSION_PATH}
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/submissions:/submissions
+
+    ports:
+      - "8084:8084"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # NOTIFICATION SERVICE
+  # =========================
+  notification-service:
+    build:
+      context: ./notification-service
+
+    container_name: talenthire-notification
+
+    depends_on:
+      - kafka
+      - eureka-server
+
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_URL: http://eureka-server:8761/eureka/
+
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+    ports:
+      - "8086:8086"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+  # =========================
+  # API GATEWAY
+  # =========================
+  api-gateway:
+    build:
+      context: ./api-gateway
+
+    container_name: talenthire-gateway
+
+    depends_on:
+      - eureka-server
+      - auth-service
+      - job-service
+      - application-service
+      - assessment-service
+      - notification-service
+
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      JWT_SECRET: ${JWT_SECRET}
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - talenthire-network
+
+    restart: unless-stopped
+
+
+# =========================
+# VOLUMES
+# =========================
+volumes:
+  mysql-data:
+  kafka-data:
+
+
+# =========================
+# NETWORK
+# =========================
+networks:
+  talenthire-network:
+    driver: bridge

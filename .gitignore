@@ -1,0 +1,26 @@
+# Eclipse
+.metadata/
+
+# Maven
+target/
+
+# STS / Eclipse
+.project
+.classpath
+.settings/
+
+# Logs
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+.vs/
+.env
+bin/
+obj/
+
+application-service/resumeUploads/
+data/
+*.class
