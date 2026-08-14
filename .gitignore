@@ -1,6 +1,9 @@
 # Eclipse
 .metadata/
+
+# Node.js
 node_modules/
+
 # Maven
 target/
 
@@ -16,11 +19,19 @@ target/
 .DS_Store
 Thumbs.db
 
+# Visual Studio
 .vs/
+
+# Environment
 .env
+
+# .NET
 bin/
 obj/
 
+# Application uploads/data
 application-service/resumeUploads/
 data/
-*.class
+
+# Java
+*.class	
