@@ -18,6 +18,7 @@ import VerifyOtp from "./pages/Login/VerifyOtp";
 import ResetPassword from "./pages/Login/ResetPassword";
 import CandidateAssessment from "./pages/Assessment/CandidateAssessments";
 import CandidateInterviews from "./pages/CandidateDashboard/CandidateInterviews";
+import Payment from "./pages/RecruiterDashboard/Payment";
 
 
 function App() {
@@ -37,6 +38,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         {/* Protected Routes */}
+
+
+        <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
 
         <Route
           path="/candidate/dashboard"

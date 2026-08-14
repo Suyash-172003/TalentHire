@@ -63,3 +63,16 @@ export const resetPassword = async (request) => {
 
 };
 
+export const getPaymentStatus = async (token) => {
+
+    const response = await axios.get(
+        "http://localhost:8085/payment/status",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    return response.data;
+};

@@ -2,7 +2,7 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { loginUser } from "../../api/axiosService";
+import { loginUser, getPaymentStatus } from "../../api/axiosService";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
@@ -24,29 +24,92 @@ function Login() {
         e.preventDefault();
 
         try {
+
             const response = await loginUser(data);
 
-            // Save Token
+            // Save JWT
             localStorage.setItem("token", response.token);
 
-            // Save User
-            localStorage.setItem("user", JSON.stringify(response));
+            // Save user information
+            localStorage.setItem(
+                "user",
+                JSON.stringify(response)
+            );
 
             alert("Login Successful");
 
+            // CANDIDATE
+
             if (response.userRole === "CANDIDATE") {
+
                 navigate("/candidate/dashboard");
-            } else if (response.userRole === "RECRUITER") {
-                navigate("/recruiter/dashboard");
-            } else {
-                navigate("/");
+
+                return;
             }
+
+            // RECRUITER
+
+
+            if (response.userRole === "RECRUITER") {
+
+                try {
+
+                    const paymentStatus =
+                        await getPaymentStatus(response.token);
+
+                    console.log(
+                        "Payment Status:",
+                        paymentStatus
+                    );
+
+                    // PAYMENT ACTIVE
+
+                    if (
+                        paymentStatus.isPaid === true &&
+                        paymentStatus.status === "PAID"
+                    ) {
+
+                        navigate("/recruiter/dashboard");
+
+                        return;
+                    }
+
+                    // NOT PAID / EXPIRED
+
+                    navigate("/payment");
+
+                    return;
+
+                } catch (paymentError) {
+
+                    console.error(
+                        "Payment status error:",
+                        paymentError
+                    );
+
+                    // If payment service cannot be reached,
+                    // don't allow recruiter directly into dashboard.
+
+                    alert(
+                        "Unable to check payment status. Please try again."
+                    );
+
+                    return;
+                }
+            }
+
+            navigate("/");
+
         } catch (error) {
+
             console.log(error);
-            alert("Login Failed");
+
+            alert(
+                error.response?.data?.message ||
+                "Login Failed"
+            );
         }
     };
-
     return (
         <div className="login-page container-fluid">
 
@@ -172,7 +235,7 @@ function Login() {
                                 Sign In
                             </button>
 
-                           
+
 
                             {/* <div className="divider">
 
