@@ -16,7 +16,7 @@ const Payment = () => {
 
             // 1. Create Razorpay order
             const response = await axios.post(
-                "http://localhost:8085/payment/create-order",
+                "http://16.171.67.13:8085/payment/create-order",
                 {},
                 {
                     headers: {
@@ -64,7 +64,7 @@ const Payment = () => {
                         // 3. Verify payment on backend
                         const verifyResponse =
                             await axios.post(
-                                "http://localhost:8085/payment/verify",
+                                "http://16.171.67.13:8085/payment/verify",
 
                                 {
                                     razorpayOrderId:

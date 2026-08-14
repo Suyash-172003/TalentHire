@@ -1,7 +1,7 @@
 import axios from "axios";
 import { MdFormatIndentDecrease } from "react-icons/md";
 
-var  baseURL="http://localhost:8080";
+var  baseURL="http://16.171.67.13:8080";
 
 var  baseURLForTesting="http://localhost:8084";
 
@@ -66,7 +66,7 @@ export const resetPassword = async (request) => {
 export const getPaymentStatus = async (token) => {
 
     const response = await axios.get(
-        "http://localhost:8085/payment/status",
+        "http://16.171.67.13:8085/payment/status",
         {
             headers: {
                 Authorization: `Bearer ${token}`

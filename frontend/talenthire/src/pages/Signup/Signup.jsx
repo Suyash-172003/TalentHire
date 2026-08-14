@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { registerUser } from "../../api/axiosService";
+import { validatePassword } from "../../utils/passwordValidation";
 
 function Signup() {
 
@@ -27,6 +28,13 @@ function Signup() {
     const create = async (e) => {
         e.preventDefault();
 
+        if (!validatePassword(data.password)) {
+            alert(
+                "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character."
+            );
+            return;
+        }
+
         if (data.password !== data.confirmPassword) {
             alert("Passwords do not match");
             return;
@@ -46,7 +54,6 @@ function Signup() {
             console.log(error);
 
             alert("Registration Failed");
-
         }
     };
 
@@ -139,7 +146,9 @@ function Signup() {
                                         value={data.password}
                                         onChange={onTextChange}
                                         required
+                                        minLength={8}
                                     />
+                                    
 
                                     <span
                                         className="eye"
@@ -149,6 +158,10 @@ function Signup() {
                                     </span>
 
                                 </div>
+                                <small className="text-muted">
+                                        Password must contain 8+ characters, uppercase, lowercase,
+                                        number and special character.
+                                    </small>
 
                             </div>
 
@@ -200,11 +213,10 @@ function Signup() {
                                 <div className="role-selection">
 
                                     <div
-                                        className={`role-card ${
-                                            data.userRole === "CANDIDATE"
-                                                ? "active-role"
-                                                : ""
-                                        }`}
+                                        className={`role-card ${data.userRole === "CANDIDATE"
+                                            ? "active-role"
+                                            : ""
+                                            }`}
                                         onClick={() =>
                                             setData({
                                                 ...data,
@@ -226,11 +238,10 @@ function Signup() {
                                     </div>
 
                                     <div
-                                        className={`role-card ${
-                                            data.userRole === "RECRUITER"
-                                                ? "active-role"
-                                                : ""
-                                        }`}
+                                        className={`role-card ${data.userRole === "RECRUITER"
+                                            ? "active-role"
+                                            : ""
+                                            }`}
                                         onClick={() =>
                                             setData({
                                                 ...data,

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { resetPassword } from "../../api/axiosService";
+import { validatePassword } from "../../utils/passwordValidation";
 
 function ResetPassword() {
 
@@ -40,12 +41,20 @@ function ResetPassword() {
 
         e.preventDefault();
 
+        if (!validatePassword(data.newPassword)) {
+
+            alert(
+                "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character."
+            );
+
+            return;
+        }
+
         if (data.newPassword !== data.confirmPassword) {
 
             alert("Passwords do not match.");
 
             return;
-
         }
 
         try {
@@ -69,7 +78,6 @@ function ResetPassword() {
             alert("Unable to reset password.");
 
         }
-
     };
 
     return (
@@ -115,111 +123,75 @@ function ResetPassword() {
                             <div className="mb-4">
 
                                 <label className="form-label">
-
                                     New Password
-
                                 </label>
 
                                 <div className="position-relative">
 
                                     <input
-
-                                        type={
-                                            showPassword
-                                                ? "text"
-                                                : "password"
-                                        }
-
+                                        type={showPassword ? "text" : "password"}
                                         name="newPassword"
-
                                         className="form-control custom-input pe-5"
-
                                         placeholder="Enter new password"
-
                                         value={data.newPassword}
-
                                         onChange={onTextChange}
-
                                         required
-
+                                        minLength={8}
                                     />
 
                                     <span
-
                                         className="eye"
-
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
-
                                     >
-
-                                        {
-
-                                            showPassword
-                                                ? <FaEyeSlash />
-                                                : <FaEye />
-
-                                        }
-
+                                        {showPassword ? (
+                                            <FaEyeSlash />
+                                        ) : (
+                                            <FaEye />
+                                        )}
                                     </span>
 
                                 </div>
+
+                                <small className="text-muted">
+                                    Password must contain 8+ characters, uppercase,
+                                    lowercase, number and special character.
+                                </small>
 
                             </div>
 
                             <div className="mb-4">
 
                                 <label className="form-label">
-
                                     Confirm Password
-
                                 </label>
 
                                 <div className="position-relative">
 
                                     <input
-
-                                        type={
-                                            showConfirmPassword
-                                                ? "text"
-                                                : "password"
-                                        }
-
+                                        type={showConfirmPassword ? "text" : "password"}
                                         name="confirmPassword"
-
                                         className="form-control custom-input pe-5"
-
                                         placeholder="Confirm password"
-
                                         value={data.confirmPassword}
-
                                         onChange={onTextChange}
-
                                         required
-
                                     />
 
                                     <span
-
                                         className="eye"
-
                                         onClick={() =>
                                             setShowConfirmPassword(
                                                 !showConfirmPassword
                                             )
                                         }
-
                                     >
-
-                                        {
-
-                                            showConfirmPassword
-                                                ? <FaEyeSlash />
-                                                : <FaEye />
-
-                                        }
-
+                                        {showConfirmPassword ? (
+                                            <FaEyeSlash />
+                                        ) : (
+                                            <FaEye />
+                                        )}
                                     </span>
 
                                 </div>
