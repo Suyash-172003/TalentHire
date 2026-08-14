@@ -151,7 +151,6 @@ const Payment = () => {
         }
     };
 
-
     return (
         <div className="payment-page">
 
