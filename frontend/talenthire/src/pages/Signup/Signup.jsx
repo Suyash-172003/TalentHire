@@ -274,7 +274,7 @@ function Signup() {
 
                             {/* Google */}
 
-                            <button
+                            {/* <button
                                 type="button"
                                 className="btn google-btn w-100"
                             >
@@ -283,7 +283,7 @@ function Signup() {
 
                                 Continue with Google
 
-                            </button>
+                            </button> */}
 
                         </form>
 
