@@ -1,9 +1,9 @@
 import axios from "axios";
-import { MdFormatIndentDecrease } from "react-icons/md";
+
 
 var  baseURL="http://16.171.67.13:8080";
 
-var  baseURLForTesting="http://localhost:8084";
+
 
 export const registerUser = async (user) => {
 
