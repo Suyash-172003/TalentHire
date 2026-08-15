@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-var  baseURL="http://16.171.67.13:8080";
+var  baseURL="https://16-192-202-172.nip.io";
 
 
 
@@ -66,7 +66,7 @@ export const resetPassword = async (request) => {
 export const getPaymentStatus = async (token) => {
 
     const response = await axios.get(
-        "http://16.171.67.13:8085/payment/status",
+        "https://16-192-202-172.nip.io/payment/status",
         {
             headers: {
                 Authorization: `Bearer ${token}`

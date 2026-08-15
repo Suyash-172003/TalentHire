@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const axiosService = axios.create({
-    // baseURL: "http://localhost:8080"
-    baseURL: "http://16.171.67.13:8080"
+    baseURL: "https://16-192-202-172.nip.io"
 });
 
 export default axiosService;
